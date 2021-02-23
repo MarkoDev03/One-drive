@@ -1,0 +1,17 @@
+{
+    "header":
+    [
+        {
+            "name":"Log in",
+            "class":"header-href"
+        },
+        {
+            "name":"Sign up",
+            "class":"header-href"
+        },
+        {
+            "name":"Contact",
+            "class":"header-contact"
+        }
+    ]
+}

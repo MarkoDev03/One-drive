@@ -1,0 +1,69 @@
+:root{
+    --bg-color:rgb(224, 222, 222);
+    --txt-color:#2970e2;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@1,200&display=swap');
+
+body{
+    padding: 0px;
+    margin: 0px;
+    background-color: var(--bg-color);
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.header-index{
+    width: 100%;
+    background-color: var(--bg-color);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 2px 3px 3px 2px rgb(160, 160, 160);
+}
+.contact-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-href,.fa-search{
+    font-size: 20px;
+    text-decoration: none;
+    color: var(--txt-color);
+    margin-right: 30px;
+    display: inline-block;
+    padding: 3px 2px;
+    position: relative;
+}
+.header-href:after{    
+    content: "";
+    display: block;
+    height: 2px;
+    left: 50%;
+    position: absolute;
+    background: var(--txt-color);
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+  }
+  .header-href:hover:after{ 
+    width: 100%; 
+    left: 0; 
+  }
+.header-contact{
+    font-size: 20px;
+    text-decoration: none;
+    background-color: var(--txt-color);
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 35px;
+    padding-right: 35px;
+    border-radius: 10px;
+    color: white;
+    transition: all 0.5s !important;
+}
+.header-contact:hover{
+    box-shadow: inset -140px 0px 0px #104fb4;
+    transition: 285ms;
+}
