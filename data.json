@@ -3,15 +3,18 @@
     [
         {
             "name":"Log in",
-            "class":"header-href"
+            "class":"header-href",
+            "id":"1"
         },
         {
             "name":"Sign up",
-            "class":"header-href"
+            "class":"header-href",
+            "id":"2"
         },
         {
             "name":"Contact",
-            "class":"header-contact"
+            "class":"header-contact",
+            "id":"3"
         }
     ]
 }
