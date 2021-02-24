@@ -25,19 +25,10 @@ var contactHeader = document.querySelector('.contact-header');
          window.location.href= "index.html";
       }else if (get == 2) {
          window.location.href= "create-account.html";
+      }else if(get == 1) {
+         window.location.href = 'log-in.html'
       }
     }
 
-    //send email
-    document.querySelector('#submit').addEventListener('click',() => {
-      Email.send({
-               Host:"smtp.mailtrap.io",
-               Username:"3614ca97b06892",
-               Password:"f66ed6c438d0a3",          
-               To:"mmarko.perovici3@gmail.com",
-               From:document.getElementById('mail-input').value,
-               Subject:document.getElementById("subject-input").value,
-               Body:"From:  " + document.getElementById('mail-input').value + "<br><br>" + "Message:  " + document.getElementById("message-input").value + "<br><br>",
-        }).then(mesage => alert(mesage)
-        );
-      })
+    //create account
+   
