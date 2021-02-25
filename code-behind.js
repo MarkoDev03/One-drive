@@ -22,7 +22,7 @@ var contactHeader = document.querySelector('.contact-header');
 
      switch(get) {
         case "1":
-           window.location.href= "contact-us.html";
+           window.location.href= "log-in.html";
               break;
          case "2":
             window.location.href= "create-account.html"; 
@@ -66,8 +66,8 @@ var contactHeader = document.querySelector('.contact-header');
       function sendMail() {
          Email.send({
             Host:"smtp.mailtrap.io",
-            Username:"3614ca97b06892",
-            Password:"f66ed6c438d0a3",          
+            Username:"6241169ec85c51",
+            Password:"e7b51c6c0341ee",          
             To:"mmarko.perovici3@gmail.com",
             From:document.getElementById('mail-input').value,
             Subject:document.getElementById("subject-input").value,
@@ -117,4 +117,9 @@ var contactHeader = document.querySelector('.contact-header');
    function iconEvent(ID) {
       sessionStorage.setItem("optionPageID",ID);
    }
- 
+
+   function createAccountPageID() {
+      openPage(2);
+   }
+
+       
