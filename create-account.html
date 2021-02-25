@@ -31,35 +31,7 @@
         </form>
     </div>
 </body>
-
-<script>
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  var firebaseConfig = {
-    apiKey: "AIzaSyBInVpEsEvXzZtYDLy7qNA4AOIaS-5mjb8",
-    authDomain: "saveprojects-e2b7f.firebaseapp.com",
-    projectId: "saveprojects-e2b7f",
-    storageBucket: "saveprojects-e2b7f.appspot.com",
-    messagingSenderId: "1068677321956",
-    appId: "1:1068677321956:web:97a4d0b9ddeb63520588f1",
-    measurementId: "G-HXW1NYY74D"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-
-  function createAccount(){
-      let email = document.getElementById('e-mail-input');
-      let password = document.getElementById('password-input');
-      const promise = auth.createUserWithEmailAndPassword(email.value, password.value);
-      promise.catch(e => alert(e.message));
-      alert("si");
-    }
-
-    
-</script>
-</script>
+<script src="create-account-script.js"></script>
 <script src="code-behind.js"></script>
      
 </html>

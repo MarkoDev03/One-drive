@@ -1,5 +1,5 @@
 :root{
-    --bg-color:rgb(240, 240, 240);
+    --bg-color:white;
     --txt-color:#2970e2;
 }
 
@@ -20,7 +20,7 @@ body{
     display: flex;
     justify-content: space-around;
     align-items: center;
-    box-shadow: 2px 3px 3px 2px rgb(160, 160, 160);
+   
 }
 .contact-header{
     display: flex;
@@ -85,6 +85,12 @@ body{
     padding-left: 65px;
     padding-right: 65px;
 }
+.image-middle{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 @keyframes mailer{
     0%{
         transform: scale(-1);
@@ -133,4 +139,52 @@ body{
     background-color: var(--txt-color);
     padding-left: 50px;
     padding-right: 50px;
+}
+
+.forma-contact{
+    flex-direction: row;
+
+    
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+}
+.hed-line{
+    color: white;
+    background: #0575E6;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #021B79, #0575E6);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #021B79, #0575E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+     height: 500px;
+     width: 500px;
+     display: flex;
+     align-items: flex-start;
+     flex-direction: column;
+
+}
+.form-margin{
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: white;
+}
+#message{
+    font-size: 18px;
+    margin-top: -30px;
+}
+.hed-line p{
+    margin-left: 50px;
+    text-transform: none;
+}
+
+.body-animation{
+    background: #ff00cc;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #333399, #ff00cc);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
