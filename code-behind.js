@@ -19,15 +19,24 @@ var contactHeader = document.querySelector('.contact-header');
     function openPage(id) {
       sessionStorage.setItem("pageId",id);
       var get = sessionStorage.getItem("pageId");
-      if(get == 3) {
-         window.location.href= "contact-us.html";
-      }else if (get == 4) {
-         window.location.href= "index.html";
-      }else if (get == 2) {
-         window.location.href= "create-account.html";
-      }else if(get == 1) {
-         window.location.href = 'log-in.html'
-      }
+
+     switch(get) {
+        case "1":
+           window.location.href= "contact-us.html";
+              break;
+         case "2":
+            window.location.href= "create-account.html"; 
+               break;
+         case "3":
+              window.location.href= "contact-us.html";
+                break;
+         case "4":
+               window.location.href= "index.html";
+                 break;
+         default:
+                 return null;
+                   break;      
+     }
     }
 
     //create account
@@ -66,3 +75,46 @@ var contactHeader = document.querySelector('.contact-header');
      }).then(mesage => alert(mesage)
      );
    }
+
+   //sub-class 
+   class DataProvider{
+      async getFooter() {
+         try {
+            let data = await fetch('data.json');
+            let items = await data.json();
+            let icons = items.footer;
+            icons = icons.map(item => {
+               let icon = item.icon, iconEvenet = item.event;
+               return {icon, iconEvenet};
+            });
+            return icons;
+         }
+         catch(error)
+         {
+           console.log(error);
+           alert(error);
+           return null;
+         }
+         finally{
+            console.log("Loaded");
+         }
+      }
+   }
+   class UserInterface{
+      displayFooter(icons) {
+         let result = '';
+         icons.forEach(icon => {
+            result += `<i class="${icon.icon}" onclick="iconEvent(${icon.iconEvenet})"></i>`;
+         });
+         document.querySelector('.footer').innerHTML = result;
+      }
+   }
+   document.addEventListener('DOMContentLoaded',(event) => {
+      const DATA = new DataProvider();
+      const GUI  = new UserInterface();
+      DATA.getFooter().then(item => GUI.displayFooter(item));
+   });
+   function iconEvent(ID) {
+      sessionStorage.setItem("optionPageID",ID);
+   }
+ 

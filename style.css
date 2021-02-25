@@ -27,7 +27,7 @@ body{
     justify-content: center;
     align-items: center;
 }
-.header-href,.fa-search{
+.header-href{
     font-size: 20px;
     text-decoration: none;
     color: var(--txt-color);
@@ -187,4 +187,31 @@ body{
 background: -webkit-linear-gradient(to left, #333399, #ff00cc);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
+}
+#submit{
+    animation: pulse 1s ease infinite;
+}
+@keyframes pulse{
+    0%{
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);      
+    }
+
+    100%{
+        box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+    }
+}
+
+.footer{
+    position: fixed;
+    bottom: 0px;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+}
+.f-icon{
+    font-size: 25px;
 }

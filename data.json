@@ -1,11 +1,6 @@
 {
     "header":
-    [      
-        {
-            "name":"Home",
-            "class":"header-href",
-            "id":"4"
-        },  
+    [            
         {
             "name":"Log in",
             "class":"header-href",
@@ -22,5 +17,28 @@
             "id":"3"
         }
         
+    ],
+    "footer":
+    [
+        {
+            "icon":"fas fa-home f-icon",
+            "event":1
+        },
+        {
+            "icon":"fas fa-search f-icon",
+            "event":2
+        },
+        {
+            "icon":"far fa-caret-square-up f-icon",
+            "event":3
+        },
+        {
+            "icon":"fas fa-cog f-icon",
+            "event":4
+        },
+        {
+            "icon":"far fa-user-circle f-icon",
+            "event":5
+        }
     ]
 }
