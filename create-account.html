@@ -7,9 +7,6 @@
     <title>Marko</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-
-
-<!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
@@ -24,22 +21,14 @@
         <div class="contact-headline">
             <p>create account</p>
         </div>
-        <form class="form-index">
-           
-          
+        <form class="form-index">   
             <input type="text" name="email" id="e-mail-input" placeholder="E-mail" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="password" name="password" id="password-input" placeholder="Password" autocomplete="off" autofocus="off" class="input-box" required>
-            <label class="chose-file">
-                <input type="file" class="myFile" onchange="uploadImage(event)"/>
-                +
-            </label> 
+            <label class="chose-file"><input type="file" class="myFile" onchange="uploadImage(event)"/>+</label> 
             <button class="submit-button" id="create-account" onclick="createAccount()">CREATE</button>
-        </form>
-        
+        </form>        
     </div>
     <footer class="footer"></footer>
 </body>
-
-<script src="code-behind.js"></script>
-     
+<script src="code-behind.js"></script>    
 </html>
