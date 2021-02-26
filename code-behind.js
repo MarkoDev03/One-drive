@@ -1,5 +1,5 @@
 var contactHeader = document.querySelector('.contact-header');
-
+let files = {};
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
      .then(response => response.json())
@@ -57,11 +57,40 @@ var contactHeader = document.querySelector('.contact-header');
     function createAccount(){
         let email = document.getElementById('e-mail-input');
         let password = document.getElementById('password-input');
-        const promise = auth.createUserWithEmailAndPassword(email.value, password.value);
-        promise.catch(e => alert(e.message));
-        alert("si");
+       auth.createUserWithEmailAndPassword(email.value, password.value)
+       .catch(e => alert(e.message));
+ alert("si");
       }
-  
+
+   //log in
+   function loghIn(){		
+		var emailIN = document.getElementById("email");
+		var passwordIN = document.getElementById("password");		
+		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
+		status.catch(e => alert(e.message));	
+	}
+
+   //log out
+    function logOut() {    
+		auth.signOut();
+		alert("Signed Out");
+    }
+
+    //upload image
+    function uploadImage(e){
+     console.log(e);
+      var files = e.target.files;
+      //  var storageRef = firebase.storage().ref("num");
+      //  storageRef.put(file);
+       for (const file of files) {
+          firebase
+        .storage()
+          .ref("images")
+           .child(file.name)
+            .put(file);
+       }
+    }
+
       //send email
       function sendMail() {
          Email.send({

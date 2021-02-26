@@ -189,7 +189,7 @@ body{
     margin-top: 100px;
 }
 
-.body-animation{
+.body-animation,.index-body{
     background: #ff00cc;  /* fallback for old browsers */
 background: -webkit-linear-gradient(to left, #333399, #ff00cc);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -226,4 +226,25 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 #create-acc{
     color:var(--txt-color)
+}
+.index-imagee{
+    width: 70%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.chose-file{
+    border: 2px dashed var(--txt-color);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 40px;
+    width: 400px;
+    text-align: center;
+    font-size: 20px;
+    color:var(--txt-color);
+    font-weight: 900;
+}
+input[type="file"] {
+   display: none;
 }
