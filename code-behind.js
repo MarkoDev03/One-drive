@@ -57,17 +57,24 @@ let files = {};
     function createAccount(){
         let email = document.getElementById('e-mail-input');
         let password = document.getElementById('password-input');
-       auth.createUserWithEmailAndPassword(email.value, password.value)
+        let username = document.getElementById('e-username-input');
+       auth.createUserWithEmailAndPassword(email.value, password.value) .then((userCredential) => {         
+         var user = userCredential.user;
+         localStorage.setItem("username",user.email);
+         localStorage.setItem("")
+        window.location.href = "page.html";
+       })
        .catch(e => alert(e.message));
  alert("si");
       }
 
    //log in
-   function loghIn(){		
+   function logIn(){		
 		var emailIN = document.getElementById("email");
 		var passwordIN = document.getElementById("password");		
 		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
-		status.catch(e => alert(e.message));	
+		status.catch(e => alert(e.message));
+
 	}
 
    //log out

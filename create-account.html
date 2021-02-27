@@ -17,16 +17,17 @@
     <header class="header-index">
         <div class="contact-header"></div>
     </header>
-    <div class="contact-us">
+    <div class="contact-us" id="create-acount-form">
         <div class="contact-headline">
             <p>create account</p>
         </div>
-        <form class="form-index">   
+        <div class="form-index">   
+            <input type="text" name="usernma" id="e-username-input" placeholder="Username" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="text" name="email" id="e-mail-input" placeholder="E-mail" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="password" name="password" id="password-input" placeholder="Password" autocomplete="off" autofocus="off" class="input-box" required>
             <label class="chose-file"><input type="file" class="myFile" onchange="uploadImage(event)"/>+</label> 
             <button class="submit-button" id="create-account" onclick="createAccount()">CREATE</button>
-        </form>        
+        </div>        
     </div>
     <footer class="footer"></footer>
 </body>
