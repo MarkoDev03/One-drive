@@ -1,5 +1,6 @@
 var contactHeader = document.querySelector('.contact-header');
 let files = {};
+
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
      .then(response => response.json())
@@ -58,14 +59,14 @@ let files = {};
         let email = document.getElementById('e-mail-input');
         let password = document.getElementById('password-input');
         let username = document.getElementById('e-username-input');
-       auth.createUserWithEmailAndPassword(email.value, password.value) .then((userCredential) => {         
+       auth.createUserWithEmailAndPassword(email.value, password.value).then((userCredential) => {         
          var user = userCredential.user;
          localStorage.setItem("username",user.email);
-         localStorage.setItem("")
+         // localStorage.setItem("")
         window.location.href = "page.html";
        })
        .catch(e => alert(e.message));
- alert("si");
+ alert("Your account is created!");
       }
 
    //log in
@@ -74,7 +75,7 @@ let files = {};
 		var passwordIN = document.getElementById("password");		
 		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
 		status.catch(e => alert(e.message));
-
+alert("\azd");
 	}
 
    //log out
@@ -96,6 +97,37 @@ let files = {};
            .child(file.name)
             .put(file);
        }
+    }
+
+    //reset password email verification
+    function resetPassword() {
+      let forgottenEmail = document.querySelector('#email').value;
+     if(forgottenEmail != "")
+     {
+      firebase.auth().sendPasswordResetEmail(forgottenEmail).then(function() {
+         window.alert("Message sent to email: " +  forgottenEmail );
+      }).catch(function(error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+            window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+      });
+     }else {
+        window.alert("Enter your email adress:");
+     }
+    }
+
+    //verify account
+    function verifyAccount() {
+       var user = firebase.auth().currentUser;
+       user.sendEmailVerification().then(function(){
+            window.alert("Account verification sent!");
+       }).catch(function(error) {
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       })
     }
 
       //send email
@@ -136,6 +168,8 @@ let files = {};
          }
       }
    }
+
+   //class for userinterface
    class UserInterface{
       displayFooter(icons) {
          let result = '';
@@ -145,15 +179,40 @@ let files = {};
          document.querySelector('.footer').innerHTML = result;
       }
    }
+
+   //dom content listener
    document.addEventListener('DOMContentLoaded',(event) => {
       const DATA = new DataProvider();
       const GUI  = new UserInterface();
       DATA.getFooter().then(item => GUI.displayFooter(item));
    });
+
+   //open pages from footer
    function iconEvent(ID) {
       sessionStorage.setItem("optionPageID",ID);
+      switch(sessionStorage.getItem("optionPageID")){
+         case "1":
+            window.location.href = "index.html";
+            break;
+            case "2":
+               window.location.href = "search.html";
+               break;
+               case "3":
+                  window.location.href = "upload.html";
+                  break;
+                  case "4":
+                     window.location.href = "settings.html";
+                     break;
+                     case "5":
+                        window.location.href = "profile.html";
+                        break;
+                        default:
+                           return null;
+                           break;
+      }
    }
 
+   //dont have account? create one
    function createAccountPageID() {
       openPage(2);
    }
