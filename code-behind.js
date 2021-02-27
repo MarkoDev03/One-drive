@@ -65,7 +65,12 @@ let files = {};
          // localStorage.setItem("")
         window.location.href = "page.html";
        })
-       .catch(e => alert(e.message));
+       .catch(function (error){
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       });
  alert("Your account is created!");
       }
 
@@ -74,8 +79,15 @@ let files = {};
 		var emailIN = document.getElementById("email");
 		var passwordIN = document.getElementById("password");		
 		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
-		status.catch(e => alert(e.message));
-alert("\azd");
+      status.then(function() {
+         // window.location.href = "page.html";
+      })
+		status.catch(function (error){
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+      });
 	}
 
    //log out
@@ -113,7 +125,7 @@ alert("\azd");
             window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
       });
      }else {
-        window.alert("Enter your email adress:");
+        window.alert("Enter your email adress firs!");
      }
     }
 
@@ -130,6 +142,17 @@ alert("\azd");
        })
     }
 
+    //delete account
+    function deleteAccount() {
+       firebase.auth().currentUser.delete().then(function(){
+          window.alert("Account successfuly deleted.");
+       }).catch(function (error){
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       });
+    }
       //send email
       function sendMail() {
          Email.send({
@@ -216,5 +239,3 @@ alert("\azd");
    function createAccountPageID() {
       openPage(2);
    }
-
-       
