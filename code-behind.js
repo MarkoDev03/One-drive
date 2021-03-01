@@ -160,11 +160,13 @@ let files = {};
        var user = firebase.auth().currentUser;
        
        if(user){
-        var files = e.target.files;
-        for(const file in files){
-           firebase.storage().ref("user")
-           .child(user.uid).put(file);
-        }
+       var filess = e.target.files;
+       for (const filea of filess) {
+          firebase
+        .storage()
+          .ref("users/" + user.uid + '/profile.jpg')
+            .put(filea);
+       }
        } 
     }
       //send email
