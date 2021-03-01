@@ -50,6 +50,7 @@ let files = {};
       appId: "1:1068677321956:web:97a4d0b9ddeb63520588f1",
       measurementId: "G-HXW1NYY74D"
     };
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -153,6 +154,19 @@ let files = {};
          window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
        });
     }
+
+    //logged user uploads profile image
+    function uploadImageUser(e){
+       var user = firebase.auth().currentUser;
+       
+       if(user){
+        var files = e.target.files;
+        for(const file in files){
+           firebase.storage().ref("user")
+           .child(user.uid).put(file);
+        }
+       } 
+    }
       //send email
       function sendMail() {
          Email.send({
@@ -221,7 +235,13 @@ let files = {};
                window.location.href = "search.html";
                break;
                case "3":
+                  var user = firebase.auth().currentUser;
+               if (user) {
                   window.location.href = "upload.html";
+               }
+                else {
+                   alert("You must log in!");
+                }
                   break;
                   case "4":
                      window.location.href = "settings.html";
