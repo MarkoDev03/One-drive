@@ -64,7 +64,7 @@ let files = {};
          var user = userCredential.user;
          localStorage.setItem("username",user.email);
          // localStorage.setItem("")
-        window.location.href = "page.html";
+        window.location.href = "settings.html";
        })
        .catch(function (error){
          var errorCode = error.code;
@@ -155,6 +155,21 @@ let files = {};
        });
     }
 
+    //upadte account email
+    function updateMail() {
+       var user = firebase.auth().currentUser;
+       var newEmail = document.getElementById('#new-mail');
+       user.updateEmail(newEmail.value).then(function () {
+          alert("Mail updated successfully!");
+       }).catch(function(error){
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       });
+    }
+
+
     //logged user uploads profile image
     function uploadImageUser(e){
        var user = firebase.auth().currentUser;
@@ -164,11 +179,28 @@ let files = {};
        for (const filea of filess) {
           firebase
         .storage()
-          .ref("users/" + user.uid + '/profile.jpg')
-            .put(filea);
+          .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
+            .put(filea);           
        }
-       } 
     }
+   }
+
+   //user is logged to firebase
+   firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+         firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
+            document.getElementById('img').src = imgurl;
+                        });
+                        var username = user.email;
+                        var didsplayname = username.slice(0, -10);
+                        document.getElementById('usernamename').innerHTML = `<p>${didsplayname}</p>`;
+      } else {
+         document.getElementById('usernamename').innerHTML = `<p>username</p>`;
+         document.getElementById('img').src = 'https://lh3.googleusercontent.com/proxy/KU6TMWxL6be-4mW_-TwdvWQgXsQA9xcCklZ9ye5H06NYrc3cISYStWGgk7FvCdTQogs0YPZrl60yz57JfkqvZ0YG4d5QJyNFsOidObPToqCF-lg7C8gSzqo';
+      }
+    });
+
+
       //send email
       function sendMail() {
          Email.send({
@@ -256,7 +288,7 @@ let files = {};
                            break;
       }
    }
-
+    
    //dont have account? create one
    function createAccountPageID() {
       openPage(2);
