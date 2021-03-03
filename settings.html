@@ -25,13 +25,13 @@
     </header>
 
 <div class="body-context">
-    <div class="set-profile-iamge set-class">
+    <div class="set-profile-iamge set-class set-padding">
         <label class="chose-file margin-file" id="profile_image"><input type="file" class="myFile" onchange="uploadImageUser(event)"/>+</label>
-        <p for="">Set profile image</p>
+        <p class="l-margin">Set profile image</p>
     </div>
 
-    <div class="set-profile-iamge set-class flex-down">
-        <button onclick="updateMail()" class="setting-button top-mrg">Update email</button>
+    <div class="set-profile-iamge set-class flex-down" onclick="showMailUpdater()">
+        <button  class="setting-button top-mrg">Update email</button>   
     </div>
 
     <div class="set-profile-iamge set-class flex-down">
@@ -39,8 +39,24 @@
         <button onclick="verifyAccount()" class="setting-button">Verify account</button>
         <button onclick="deleteAccount()" class="setting-button delete">Delete account</button>
     </div>
+
+    <div class="set-profile-iamge set-class flex-down" onclick="logOut()">
+        <button  class="setting-button top-mrg">Log out</button>   
+    </div>
    
 </div>
+
+<div class="set-displ">
+<div class="set-profile-iamge set-class popup" id="ch-mail">
+    <button class="setting-button top-mrg">Update email</button>
+    <input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new">
+    <div class="flex-button">
+        <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button>
+        <button class="new-mail" onclick="updateMail()">UPDATE</button>
+    </div>
+</div>
+</div>
+<div class="overlay-pop-up"></div>
     <footer class="footer"></footer>
 </body>
 <script src="code-behind.js"></script>

@@ -318,3 +318,82 @@ input[type="file"] {
 .top-mrg{
     margin-top: 0px;
 }
+.input-box-new{
+    border: none;
+    outline: none;
+    border-bottom: 1px solid var(--txt-color);
+    padding: 10px;
+    font-size: 16px;
+    color: var(--txt-color);
+    background-color: transparent;
+    margin-top: 10px;
+    width: 90%;
+}
+
+.popup{
+   width: 400px;
+   height: fit-content;
+   background:  rgba(255, 255, 255, 1); 
+   justify-content: flex-start;
+   flex-direction: column;
+   padding: 20px;
+   z-index: 99999999999;
+   animation: zoom .5s;
+   position: fixed;
+   display: flex;
+}
+
+.new-mail{
+    border: none;
+    outline: none;
+    border: 1px solid whitesmoke;
+    padding: 5px;
+    font-size: 18px;
+    border-radius: 5px;
+    color: whitesmoke;
+    margin-top: 20px;
+    background-color: var(--txt-color);
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+.set-displ{
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999999999;
+}
+
+.overlay-pop-up{
+    background:  rgba(0, 0, 0, 0.6); 
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0px;
+    z-index: 2;
+    display: none;
+}
+.flex-button{
+    margin-right: -145px;
+}
+
+.new-mail:hover{
+    background:  rgb(0, 74, 172); 
+    transition: 285ms;
+}
+
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+  }
+.set-padding{
+    justify-content: flex-start;
+    padding-left: 15px;
+}
+.l-margin{
+    margin-left: 20px;
+}

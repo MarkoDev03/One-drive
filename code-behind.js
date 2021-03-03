@@ -40,6 +40,18 @@ let files = {};
      }
     }
 
+    //show mail changer
+    function showMailUpdater() {
+       document.querySelector('.set-displ').style.display = 'flex';
+       document.querySelector('.overlay-pop-up').style.display = 'flex';
+    }
+
+    //hide mail changer
+    function cancleUpdateMail() {
+      document.querySelector('.set-displ').style.display = 'none';
+      document.querySelector('.overlay-pop-up').style.display = 'none';
+    }
+
     //create account
     var firebaseConfig = {
       apiKey: "AIzaSyBInVpEsEvXzZtYDLy7qNA4AOIaS-5mjb8",
@@ -158,9 +170,10 @@ let files = {};
     //upadte account email
     function updateMail() {
        var user = firebase.auth().currentUser;
-       var newEmail = document.getElementById('#new-mail');
+       var newEmail = document.getElementById('new-mail-set');
        user.updateEmail(newEmail.value).then(function () {
           alert("Mail updated successfully!");
+          setTimeout(1000,window.location.reload());
        }).catch(function(error){
          var errorCode = error.code;
          var errorMessage = error.message;
@@ -181,7 +194,9 @@ let files = {};
         .storage()
           .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
             .put(filea);           
+
        }
+       window.location.reload();
     }
    }
 
