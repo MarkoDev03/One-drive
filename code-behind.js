@@ -142,6 +142,20 @@ let files = {};
      }
     }
 
+    //user cannot remember the password
+    function resetUserPasswordLogging() {
+       var forgottenEmail = document.getElementById('email').value;
+       if(forgottenEmail != null){
+          firebase.auth().sendPasswordResetEmail(forgottenEmail).then(function(){
+             window.alert("Message sent to email:" + forgottenEmail);
+          }).catch(function(error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+            window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+      });
+       }
+    }
     //verify account
     function verifyAccount() {
        var user = firebase.auth().currentUser;
@@ -194,8 +208,13 @@ let files = {};
         .storage()
           .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
             .put(filea).on("state_changed",snapshot=> {
+               if((snapshot.bytesTransferred / snapshot.totalBytes) * 100 === "0"){
+                  document.getElementById('load-animations').style.display = "none";
+                 }else{
+                  
                document.querySelector('.progressBar').value =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-               document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
+               document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";            
+                 }
             });           
        }
        
@@ -335,4 +354,9 @@ function uploadFileToFirebase(e){
    //page reloader
    function pageReloader(){
     window.location.reload();
+   }
+
+   //send message page
+   function help(){
+      openPage(3);
    }

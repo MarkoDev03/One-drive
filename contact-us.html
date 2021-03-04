@@ -6,16 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marko</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/plugins/TextPlugin.min.js" integrity="sha256-Ejarrovr4RBRcG2RU6VSgostt/u+Og06Cm6CCrHPJMA=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js" integrity="sha256-lPE3wjN2a7ABWHbGz7+MKBJaykyzqCbU96BJWjio86U=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
 </head>
 <body class="body-animation">
     <header class="header-index">
         <div class="contact-header"></div>
+        <div class="user-logged-info">
+            <div id="usernamename"></div>
+            <img src="" alt="" id="img" class="proile-image">
+        </div>
     </header>
     <div class="forma-contact">
         <div class="hed-line">
@@ -23,11 +27,11 @@
             <p>Contact us</p>
             <p id="message">Feel free to send us message at any give time</p>
         </div>
-        <div class="form-index form-margin">
+        <div class="form-index form-margin conact-width">
             <input type="text" name="subject" id="subject-input" placeholder="Subject" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="text" name="mail" id="mail-input" placeholder="E-mail" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="text" name="message" id="message-input" placeholder="Message" autocomplete="off" autofocus="off" class="input-box" required>
-            <button class="submit-button" id="submit" onclick="sendMail()">SEND</button>
+            <button class="submit-button submit-responsive" id="submit" onclick="sendMail()">SEND</button>
         </div>
     </div>
     <footer class="footer"></footer>

@@ -7,13 +7,20 @@
     <title>Marko</title>
     <link rel="stylesheet" href="style.css">
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
 </head>
 <body  class="index-body">
     <header class="header-index">
         <div class="contact-header"></div>
+        <div class="user-logged-info">
+            <div id="usernamename"></div>
+            <img src="" alt="" id="img" class="proile-image">
+        </div>
     </header>
     <div class="contact-us">
         <div class="contact-headline">
@@ -22,12 +29,17 @@
         <div class="form-index">
             <input type="text" name="emadfsdfil" id="email" placeholder="E-mail" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="password" name="fvsdfsdf" id="password" placeholder="Password" autocomplete="off" autofocus="off" class="input-box" required>
-            <button class="submit-button" id="login-buttom" onclick="logIn()">Log in</button>
+            <div class="register-now">
+                <div onclick="createAccountPageID()">
+                     <span class="reset-password new-color">Create account</span>
+                    <i class="fas fa-arrow-right new-color"></i>
+                </div>
+               
+                <p class="reset-password" onclick="resetUserPasswordLogging()">Forgot Password?</p>
+             </div>
+            <button class="submit-button connect-button" id="login-buttom" onclick="logIn()">Log in</button>
         </div>
-        <div class="register-now">
-          <p>Don't have account?<span id="create-acc" onclick="createAccountPageID()">Create one</span></p>
-         
-        </div>
+
     </div>
     <footer class="footer"></footer>
 </body>

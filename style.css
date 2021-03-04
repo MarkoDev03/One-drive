@@ -140,6 +140,7 @@ body{
     background-color: var(--txt-color);
     padding-left: 50px;
     padding-right: 50px;
+    cursor: pointer;
 }
 
 .forma-contact{
@@ -442,4 +443,98 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 .update-button:hover{
     background-color: rgb(4, 145, 4);
     transition: 285ms;
+}
+.register-now{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+.reset-password{
+    color: red;
+    cursor: pointer;  
+}
+
+.connect-button{
+    width: 100%;
+    margin-top: 10px;
+}
+.new-color{
+    color: rgb(11, 194, 5);
+}
+#percentage{
+    margin-left:10px ;
+    color: rgb(11, 194, 5);
+}
+.top-create{
+    margin-top: 50px;
+}
+
+
+
+@media only screen and (max-width:400px) {
+    .contact-header{
+        display: none;
+    }
+    .set-class{
+        width: 90%;
+    }
+    .input-box{
+        width: 100%;
+    }
+    .contact-us{
+        width: 85%;
+        padding: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        box-shadow: 0px 0px 0px 1px var(--txt-color);
+    }
+    .register-now{
+        font-size: 14px;
+    }
+    .form-index{
+        width: 80%;
+    }
+    .submit-button{
+        padding: 7px;
+    }
+    .contact-headline{
+        font-size: 25px;
+    }
+    .top-create{
+        margin-top: 30px;
+    }
+    .header-index{
+        height: 35px;
+    }
+    .forma-contact{
+        flex-direction: column; width: 90%;
+    }
+    .form-margin{
+        padding-left: 5px;
+        padding-right:5px;
+    }
+    .hed-line{
+        padding: 10px;
+     width:94%;
+     font-size: 25px;
+     height: 200px;
+
+    }
+    .hed-line p{
+        margin-left: 5px;
+    }
+    .fa-envelope{
+        margin-top: 10px;
+    }
+    #message{
+        font-size: 18px;
+        margin-top: -10px;
+    }
+    .submit-responsive{
+        width: 100%;
+        margin-bottom: 20px;
+    }
 }
