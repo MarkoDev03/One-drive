@@ -120,23 +120,24 @@ let files = {};
           .ref("images")
            .child(file.name)
             .put(file);
+            
        }
     }
 
     //reset password email verification
     function resetPassword() {
-      let forgottenEmail = document.querySelector('#email').value;
-     if(forgottenEmail != "")
-     {
-      firebase.auth().sendPasswordResetEmail(forgottenEmail).then(function() {
-         window.alert("Message sent to email: " +  forgottenEmail );
+        var user = firebase.auth().currentUser;
+        if(user) {
+      firebase.auth().sendPasswordResetEmail(user.email).then(function() {
+         window.alert("Message sent to email: " +  user.email );
       }).catch(function(error) {
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
             window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
       });
-     }else {
+   }
+     else {
         window.alert("Enter your email adress firs!");
      }
     }
@@ -192,9 +193,12 @@ let files = {};
           firebase
         .storage()
           .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
-            .put(filea);              
+            .put(filea).on("state_changed",snapshot=> {
+               document.querySelector('.progressBar').value =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+               document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
+            });           
        }
-        window.location.reload(); 
+       
     }else{
        alert("You must log in to post profile image:");
     }
@@ -216,6 +220,20 @@ let files = {};
       }
     });
 
+        //logged user uploads files in storage
+function uploadFileToFirebase(e){
+   var user = firebase.auth().currentUser;      
+        if(user){
+            for(let i=0;i<e.target.files.length;i++){
+            let file = e.target.files[i];
+        firebase.storage()
+   .ref("users/" + user.uid +'/data/'+ file.name).put(file); 
+                     }
+           }
+           else{
+              alert("You must log in!");
+           }
+   }
 
       //send email
       function sendMail() {
@@ -312,4 +330,9 @@ let files = {};
    //login-redirect
    function redirectLogIn(){
       openPage(1);
+   }
+
+   //page reloader
+   function pageReloader(){
+    window.location.reload();
    }

@@ -245,7 +245,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     color:var(--txt-color);
     font-weight: 900;
 }
-input[type="file"] {
+.hide-file {
    display: none;
 }
 .body-context{
@@ -399,4 +399,47 @@ input[type="file"] {
 }
 .green{
     color: rgb(0, 150, 0);
+}
+.flex-style{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100;
+}
+.column-gird{
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.main-content{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.progress-div{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 10px;
+}
+.progressBar{
+    width: 50%;
+}
+.update-button{
+    background-color: rgb(0, 214, 0);
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    border-radius: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    
+}
+.update-button:hover{
+    background-color: rgb(4, 145, 4);
+    transition: 285ms;
 }
