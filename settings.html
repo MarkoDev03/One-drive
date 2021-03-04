@@ -40,8 +40,9 @@
         <button onclick="deleteAccount()" class="setting-button delete">Delete account</button>
     </div>
 
-    <div class="set-profile-iamge set-class flex-down" onclick="logOut()">
-        <button  class="setting-button top-mrg">Log out</button>   
+    <div class="set-profile-iamge set-class flex-down">
+        <button  class="setting-button top-mrg green" onclick="redirectLogIn()">Log in</button>   
+        <button  class="setting-button top-mrg" onclick="logOut()">Log out</button>   
     </div>
    
 </div>
@@ -60,4 +61,6 @@
     <footer class="footer"></footer>
 </body>
 <script src="code-behind.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js">
+</script>
 </html>

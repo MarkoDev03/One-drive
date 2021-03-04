@@ -35,8 +35,7 @@ let files = {};
                window.location.href= "index.html";
                  break;
          default:
-                 return null;
-                   break;      
+                 return null;     
      }
     }
 
@@ -93,7 +92,7 @@ let files = {};
 		var passwordIN = document.getElementById("password");		
 		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
       status.then(function() {
-         // window.location.href = "page.html";
+         iconEvent(4);
       })
 		status.catch(function (error){
          var errorCode = error.code;
@@ -193,12 +192,14 @@ let files = {};
           firebase
         .storage()
           .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
-            .put(filea);           
-
+            .put(filea);              
        }
-       window.location.reload();
+        window.location.reload(); 
+    }else{
+       alert("You must log in to post profile image:");
     }
    }
+
 
    //user is logged to firebase
    firebase.auth().onAuthStateChanged(function(user) {
@@ -211,7 +212,7 @@ let files = {};
                         document.getElementById('usernamename').innerHTML = `<p>${didsplayname}</p>`;
       } else {
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
-         document.getElementById('img').src = 'https://lh3.googleusercontent.com/proxy/KU6TMWxL6be-4mW_-TwdvWQgXsQA9xcCklZ9ye5H06NYrc3cISYStWGgk7FvCdTQogs0YPZrl60yz57JfkqvZ0YG4d5QJyNFsOidObPToqCF-lg7C8gSzqo';
+         document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
       }
     });
 
@@ -300,11 +301,15 @@ let files = {};
                         break;
                         default:
                            return null;
-                           break;
       }
    }
     
    //dont have account? create one
    function createAccountPageID() {
       openPage(2);
+   }
+
+   //login-redirect
+   function redirectLogIn(){
+      openPage(1);
    }

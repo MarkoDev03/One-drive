@@ -397,3 +397,6 @@ input[type="file"] {
 .l-margin{
     margin-left: 20px;
 }
+.green{
+    color: rgb(0, 150, 0);
+}

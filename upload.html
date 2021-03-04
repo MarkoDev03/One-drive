@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+
+</head>
+<body   class="index-body">
+
+    <header class="header-index">        
+        <div class="contact-header"></div>        
+        <div class="user-logged-info">
+        <div id="usernamename"></div>
+        <img src="" alt="" id="img" class="proile-image">
+    </div>
+    </header>
+    <div>
+        <label for="file">Choose file to upload</label>
+        <input type="file" id="isa" name="file-add" onchange="uploadFileToFirebase(event)" >
+      </div>
+     
+    <!-- <div class="set-profile-iamge set-class set-padding">
+       <input type="file" />
+        <p class="l-margin">Add file</p>   
+         <progress min="0" max="100" value=""></progress>
+    </div> -->
+<!-- 
+    <label for="file">Choose file to upload</label>
+    <input type="file" id="file" name="file" multiple> -->
+
+
+    <footer class="footer"></footer>
+</body>
+<script src="code-behind.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js">
+</script>
+<script>
+    //logged user uploads files in storage
+function uploadFileToFirebase(e){
+var user = firebase.auth().currentUser;      
+     if(user){
+//       var filess = e.target.files;
+//       for (const fileIn of filess) {
+//          firebase
+//        .storage()
+//        .ref("users/" + user.uid +'/data/'+ fileIn.name)
+//            .put(fileIn);           
+
+//       }
+//       window.location.reload();
+//    }
+
+
+for(let i=0;i<e.target.files.length;i++){
+let file = e.target.files[i];
+firebase
+.storage()
+.ref("users/" + user.uid +'/data/'+ file.name)
+   .put(file); 
+}
+
+}
+}
+</script>
+</html>
