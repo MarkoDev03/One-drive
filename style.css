@@ -472,7 +472,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 
 
-@media only screen and (max-width:400px) {
+@media only screen and (max-width:600px) {
     .contact-header{
         display: none;
     }
@@ -537,4 +537,16 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
         width: 100%;
         margin-bottom: 20px;
     }
+    .body-context{
+        margin-top: 7px;
+    }
+    .popup{
+        width: 70%;
+    }
+    .flex-button{
+        margin-right: -57px;
+    }
+}
+#load-animations{
+    display: none;
 }

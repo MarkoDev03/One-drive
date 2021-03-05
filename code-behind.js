@@ -211,7 +211,7 @@ let files = {};
                if((snapshot.bytesTransferred / snapshot.totalBytes) * 100 === "0"){
                   document.getElementById('load-animations').style.display = "none";
                  }else{
-                  
+                  document.getElementById('load-animations').style.display = 'flex';
                document.querySelector('.progressBar').value =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";            
                  }
@@ -226,18 +226,43 @@ let files = {};
 
    //user is logged to firebase
    firebase.auth().onAuthStateChanged(function(user) {
+
       if (user) {
+         //display user's profile image
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
             document.getElementById('img').src = imgurl;
                         });
                         var username = user.email;
                         var didsplayname = username.slice(0, -10);
                         document.getElementById('usernamename').innerHTML = `<p>${didsplayname}</p>`;
+                        
+                        //display all storage files
+                        var storage = firebase.storage();
+                        var storageRef = storage.ref();
+                        var i = 0;
+         storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
+            result.items.forEach(function(imageRef){
+                 console.log(imageRef.name.toString());
+                i++;
+                var iiName = imageRef.name.toString();
+                showUsersStorageContectOnPage(i, imageRef,iiName);
+         });
+      });
       } else {
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
          document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
       }
     });
+
+    //show users data/ from storage on page
+    function showUsersStorageContectOnPage(row, images,name) {
+               images.getDownloadURL().then(function(URL) {
+                  console.log(URL);
+               let HTML = '';
+               HTML += '<a href="'+URL+'">'+name+'</a><p>'+row+'</p><img src="'+URL+'" alt="" width="100px" height="100px">';
+               document.getElementById('bodyID').innerHTML += HTML;
+               });
+    }
 
         //logged user uploads files in storage
 function uploadFileToFirebase(e){
@@ -247,6 +272,7 @@ function uploadFileToFirebase(e){
             let file = e.target.files[i];
         firebase.storage()
    .ref("users/" + user.uid +'/data/'+ file.name).put(file); 
+
                      }
            }
            else{
