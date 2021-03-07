@@ -230,8 +230,10 @@ let files = {};
       if (user) {
          //display user's profile image
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-            document.getElementById('img').src = imgurl;
-                        });
+            var profileimage =imgurl;
+            document.getElementById('img').src = profileimage;
+                        });              
+                         
                         var username = user.email;
                         var didsplayname = username.slice(0, -10);
                         document.getElementById('usernamename').innerHTML = `<p>${didsplayname}</p>`;
@@ -244,8 +246,12 @@ let files = {};
             result.items.forEach(function(imageRef){
                  console.log(imageRef.name.toString());
                 i++;
-                var iiName = imageRef.name.toString();
-                showUsersStorageContectOnPage(i, imageRef,iiName);
+          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
+  var iiName = imageRef.name.toString();
+  var userID = user.uid;
+                showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,userID);
+                });
+              
          });
       });
       } else {
@@ -255,14 +261,31 @@ let files = {};
     });
 
     //show users data/ from storage on page
-    function showUsersStorageContectOnPage(row, images,name) {
+    function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,userID) {
                images.getDownloadURL().then(function(URL) {
-                  console.log(URL);
-               let HTML = '';
-               HTML += '<a href="'+URL+'">'+name+'</a><p>'+row+'</p><img src="'+URL+'" alt="" width="100px" height="100px">';
+                
+               let HTML = ``;
+               HTML+=`<article class="storage-article"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt" onclick="deleteThisPost('${name}')"></i></div><div class="right-options"><i class="far fa-bookmark"></i></div></div><div class="article-description"><b class="user-username">name: </b><p class="post-name">${name}</p></div></article>`;
                document.getElementById('bodyID').innerHTML += HTML;
                });
     }
+
+    //delete file from firebase storage
+function deleteThisPost(name){
+   var user = firebase.auth().currentUser;
+      document.getElementById('st-dis').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+   document.getElementById('delete-txt').innerHTML = `<p>Do you want to delete&nbsp;<p><p class="new-color-3"><b>${name}<b><p>?` ;
+   document.getElementById('delete').addEventListener('click',() =>{
+       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
+         document.getElementById('st-dis').style.display = 'none';
+         document.getElementById('new-overlay').style.display = 'none';
+      pageReloader();
+   }).catch((error)=>{
+      alert(error);
+   })
+   })
+ }
 
         //logged user uploads files in storage
 function uploadFileToFirebase(e){
@@ -271,7 +294,15 @@ function uploadFileToFirebase(e){
             for(let i=0;i<e.target.files.length;i++){
             let file = e.target.files[i];
         firebase.storage()
-   .ref("users/" + user.uid +'/data/'+ file.name).put(file); 
+   .ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
+      if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
+         document.getElementById('uploading-proces').style.display="none";
+      }else{
+         document.getElementById('uploading-proces').style.display="flex";
+         document.getElementById('uploading-proces-value').value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+         document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
+      }
+   })
 
                      }
            }

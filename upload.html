@@ -15,20 +15,49 @@
 </head>
 <body   class="index-body">
 
-    <header class="header-index">        
+    <header class="header-index-2 header-index">        
         <div class="contact-header"></div>        
         <div class="user-logged-info">
         <div id="usernamename"></div>
         <img src="" alt="" id="img" class="proile-image">
     </div>
     </header>
-    <div class="set-profile-iamge set-class flex-down">
-        <label for="file">Choose file to upload</label>
-        <input type="file" id="isa" name="file-add" onchange="uploadFileToFirebase(event)" >
-      </div>
-     
-   <div id="bodyID" style="display: flex;flex-direction: column;"></div>
 
+        
+
+
+
+
+
+      <div class="set-class set-padding column-gird top-m">
+        <div class="main-content">
+            <div class="flex-style">
+                <label class="chose-file margin-file" id="profile_image"><input type="file" class="myFile hide-file" onchange="uploadFileToFirebase(event)"/>+</label>
+                <p class="l-margin">Choose file</p>
+            </div>
+            <button onclick="pageReloader()" class="update-button green">Update</button>
+        </div>
+
+    <div class="progress-div" id="uploading-proces">
+        <progress min="0" max="100" value="0" id="uploading-proces-value"></progress>
+        <p id="total-transfered-percetage"></p>
+    </div>
+    </div>
+
+     
+    <div id="bodyID" class="storage-posts-reference"></div> 
+    <div class="hf" style="height: 50px;width: 1px;"></div>
+
+    <div class="set-displ" id="st-dis">
+        <div class=" set-class popup" id="ch-mail">
+            <button class="setting-button top-mrg delete-ex" id="delete-txt"></button>
+            <div class="flex-button">
+                <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button>
+                <button class="new-mail" id="delete">DELETE</button>
+            </div>
+        </div>
+        </div>
+        <div class="overlay-pop-up" id="new-overlay"></div>
 
     <footer class="footer"></footer>
 </body>
