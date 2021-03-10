@@ -244,14 +244,20 @@ let files = {};
                         var i = 0;
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
             result.items.forEach(function(imageRef){
-                 console.log(imageRef.name.toString());
+                 console.log(imageRef.name.toString());  
+                 imageRef.getMetadata().then(s=>{
+                    console.log(s.size/1000000);
+                    var fileSizeProperty = (s.size/1000000).toFixed(2);     
+                    var fileType = s.contentType;   
+                    var timeCreated = (s.timeCreated).slice(0,-14);              
+                    var time = (s.timeCreated).substring(11);
+                    var newCurrnetTime = time.slice(0,-8);                                   
                 i++;
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-  var iiName = imageRef.name.toString();
-  var userID = user.uid;
-                showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,userID);
+  var iiName = imageRef.name.toString();                   
+                showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime);
                 });
-              
+               }).catch(function(er){console.log(er)})
          });
       });
       } else {
@@ -261,21 +267,34 @@ let files = {};
     });
 
     //show users data/ from storage on page
-    function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,userID) {
+    function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime) {
                images.getDownloadURL().then(function(URL) {
                 
                let HTML = ``;
-               HTML+=`<article class="storage-article"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt" onclick="deleteThisPost('${name}')"></i></div><div class="right-options"><i class="far fa-bookmark"></i></div></div><div class="article-description"><b class="user-username">name: </b><p class="post-name">${name}</p></div></article>`;
+               HTML+=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
+                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="right-options"><i class="far fa-bookmark"></i></div></div>
+               <div class="article-description"><b class="user-username">name:</b><p class="post-name">${name}</p></div>
+               <div class="article-description"><b class="user-username">size:</b><p class="post-name">${fileSizeProperty} MB</p></div>
+               <div class="article-description"><b class="user-username">type:</b><p class="post-name">${fileType}</p></div>
+               <div class="article-description"><b class="user-username">posted:</b><p class="post-name">${timeCreated} at ${newCurrnetTime}</p></div>
+
+               </article>`;
+               
                document.getElementById('bodyID').innerHTML += HTML;
                });
     }
 
     //delete file from firebase storage
-function deleteThisPost(name){
+function deleteThisPost(name,size,type,date,time){
    var user = firebase.auth().currentUser;
       document.getElementById('st-dis').style.display = 'flex';
       document.getElementById('new-overlay').style.display = 'flex';
-   document.getElementById('delete-txt').innerHTML = `<p>Do you want to delete&nbsp;<p><p class="new-color-3"><b>${name}<b><p>?` ;
+   document.getElementById('delete-txt').innerHTML = `
+   <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
+   <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div>
+   <div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div>
+   <div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>
+   ` ;
    document.getElementById('delete').addEventListener('click',() =>{
        firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';
@@ -300,10 +319,10 @@ function uploadFileToFirebase(e){
       }else{
          document.getElementById('uploading-proces').style.display="flex";
          document.getElementById('uploading-proces-value').value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+         console.log(snapshot.totalBytes);
          document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
       }
    })
-
                      }
            }
            else{

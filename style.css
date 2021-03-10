@@ -559,7 +559,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
         width: 70%;
     }
     .flex-button{
-        margin-right: -57px;
+        margin-right: -27px;
     }
     .set-class{
         margin-top: 10px;
@@ -650,4 +650,36 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 #uploading-proces{
     display: none;
+}
+.txt-fnt{
+    font-size: 30px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-right: 10px;
+}
+.new-fnt{
+    font-size: 30px;
+    margin-left: 10px;
+}
+
+#new-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#delete-txt{
+    font-size: 15px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+#ch-mail,.set-display-flex{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 7px;
+}
+.flx-metadata{
+    margin-top: 2px;
 }
