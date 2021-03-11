@@ -53,13 +53,27 @@
         <div class="set-class popup" id="ch-mail">
             <button class="setting-button" style="padding:0px">Do you want to delete</button>
             <div class="set-display-flex" id="delete-txt"></div>
-            <div class="flex-button new-flex-button" style="width: 100%;"> 
+            <div class="flex-button"> 
                 <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button>
                 <button class="new-mail" id="delete">DELETE</button>
             </div>
         </div>
         </div>
         <div class="overlay-pop-up" id="new-overlay"></div>
+
+
+         <div class="set-displ" id="previe-popup" style="padding: 10px;">
+        
+            <div class="set-class popup" id="ch-mail">
+                <button class="setting-button" style="padding:0px" id="text-message"></button>
+                <img src="" alt="" id="preview-image">
+                <div class="set-display-flex" id="desc"></div>
+                <div class="flex-button"> 
+                    <button class="new-mail" onclick="closeImagePreview()">CLOSE</button>
+                
+                </div>
+            </div>
+            </div>
 
     <footer class="footer"></footer>
 </body>

@@ -607,11 +607,15 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     color: black;
     margin-left: 7px;
 }
-.fa-ellipsis-v,.fa-download,.fa-trash-alt,.fa-bookmark{
+.fa-ellipsis-v,.fa-download,.fa-trash-alt,.fa-bookmark,.fa-eye{
     font-size: 23px;
     color: black;
     margin-right: 10px;
 }
+.fa-eye{
+    margin-right: 0px;
+}
+
 .image-of-user-storage{
     width: 100%;
     height: 250px;
@@ -682,4 +686,11 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 .flx-metadata{
     margin-top: 2px;
+}
+
+
+
+#preview-image{
+    width: 100%;
+    height: fit-content;
 }

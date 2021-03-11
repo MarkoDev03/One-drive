@@ -73,8 +73,6 @@ let files = {};
         let username = document.getElementById('e-username-input');
        auth.createUserWithEmailAndPassword(email.value, password.value).then((userCredential) => {         
          var user = userCredential.user;
-         localStorage.setItem("username",user.email);
-         // localStorage.setItem("")
         window.location.href = "settings.html";
        })
        .catch(function (error){
@@ -223,7 +221,6 @@ let files = {};
     }
    }
 
-
    //user is logged to firebase
    firebase.auth().onAuthStateChanged(function(user) {
 
@@ -234,13 +231,11 @@ let files = {};
             document.getElementById('img').src = profileimage;
                         });              
                          
-                        var username = user.email;
-                        var didsplayname = username.slice(0, -10);
+                        var username = user.email, didsplayname = username.slice(0, -10);
                         document.getElementById('usernamename').innerHTML = `<p>${didsplayname}</p>`;
                         
                         //display all storage files
-                        var storage = firebase.storage();
-                        var storageRef = storage.ref();
+                        var storage = firebase.storage(),storageRef = storage.ref();
                         var i = 0;
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
             result.items.forEach(function(imageRef){
@@ -248,14 +243,15 @@ let files = {};
                  imageRef.getMetadata().then(s=>{
                     console.log(s.size/1000000);
                     var fileSizeProperty = (s.size/1000000).toFixed(2);     
-                    var fileType = s.contentType;   
-                    var timeCreated = (s.timeCreated).slice(0,-14);              
-                    var time = (s.timeCreated).substring(11);
-                    var newCurrnetTime = time.slice(0,-8);                                   
+                    var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
+                    time = (s.timeCreated).substring(11),newCurrnetTime = time.slice(0,-8),
+                    useriID = user.uid;                    
                 i++;
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-  var iiName = imageRef.name.toString();                   
-                showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime);
+  var iiName = imageRef.name.toString();  
+       
+               
+                showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID);
                 });
                }).catch(function(er){console.log(er)})
          });
@@ -267,12 +263,14 @@ let files = {};
     });
 
     //show users data/ from storage on page
-    function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime) {
+    function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID) {
                images.getDownloadURL().then(function(URL) {
                 
                let HTML = ``;
                HTML+=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
-                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="right-options"><i class="far fa-bookmark"></i></div></div>
+                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
+               <i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i>
+               </div>
                <div class="article-description"><b class="user-username">name:</b><p class="post-name">${name}</p></div>
                <div class="article-description"><b class="user-username">size:</b><p class="post-name">${fileSizeProperty} MB</p></div>
                <div class="article-description"><b class="user-username">type:</b><p class="post-name">${fileType}</p></div>
@@ -284,6 +282,35 @@ let files = {};
                });
     }
 
+    //show preview of image
+function preview(locationOfImage,type) {
+   if(type === "image/png" || type === "image/jpeg" || type === "image/jpeg"){
+
+      var src = locationOfImage;
+      document.getElementById('preview-image').style.display = 'flex';
+      document.getElementById('preview-image').src =  src;
+      document.getElementById('previe-popup').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+      document.getElementById('text-message').style.display = 'none';
+
+   }
+   else{
+      document.getElementById('text-message').style.display = 'flex';
+     document.getElementById('text-message').innerText =  "Cannot preview the "  + type + " file";
+      document.getElementById('preview-image').style.display = 'none';
+      document.getElementById('previe-popup').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+   }
+}
+            
+     //close image preview
+     function closeImagePreview(){
+          document.getElementById('previe-popup').style.display = 'none';
+           document.getElementById('new-overlay').style.display = 'none';
+     }
+
+
+
     //delete file from firebase storage
 function deleteThisPost(name,size,type,date,time){
    var user = firebase.auth().currentUser;
@@ -294,7 +321,7 @@ function deleteThisPost(name,size,type,date,time){
    <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div>
    <div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div>
    <div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>
-   ` ;
+   `;
    document.getElementById('delete').addEventListener('click',() =>{
        firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';
@@ -306,6 +333,12 @@ function deleteThisPost(name,size,type,date,time){
    })
  }
 
+
+
+
+
+    
+ 
         //logged user uploads files in storage
 function uploadFileToFirebase(e){
    var user = firebase.auth().currentUser;      
