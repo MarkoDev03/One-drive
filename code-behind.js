@@ -228,12 +228,8 @@ let files = {};
          //display user's profile image
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
             var profileimage =imgurl;
-            document.getElementById('img').src = profileimage;
-                        });              
-                         
-                        var username = user.email, didsplayname = username.slice(0, -10);
-                        document.getElementById('usernamename').innerHTML = `<p>${didsplayname}</p>`;
-                        
+                        });                                     
+                        var username = user.email, didsplayname = username.slice(0, -10);                                           
                         //display all storage files
                         var storage = firebase.storage(),storageRef = storage.ref();
                         var i = 0;
@@ -267,16 +263,14 @@ let files = {};
                images.getDownloadURL().then(function(URL) {
                 
                let HTML = ``;
-               HTML+=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
-                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               <i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i>
-               </div>
-               <div class="article-description"><b class="user-username">name:</b><p class="post-name">${name}</p></div>
-               <div class="article-description"><b class="user-username">size:</b><p class="post-name">${fileSizeProperty} MB</p></div>
-               <div class="article-description"><b class="user-username">type:</b><p class="post-name">${fileType}</p></div>
-               <div class="article-description"><b class="user-username">posted:</b><p class="post-name">${timeCreated} at ${newCurrnetTime}</p></div>
-
-               </article>`;
+               HTML+=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options">
+               <a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
+                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>
+                <div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div>
+                <div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div>
+                <div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div>
+                <div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;
                
                document.getElementById('bodyID').innerHTML += HTML;
                });
@@ -310,7 +304,6 @@ function preview(locationOfImage,type) {
      }
 
 
-
     //delete file from firebase storage
 function deleteThisPost(name,size,type,date,time){
    var user = firebase.auth().currentUser;
@@ -318,10 +311,7 @@ function deleteThisPost(name,size,type,date,time){
       document.getElementById('new-overlay').style.display = 'flex';
    document.getElementById('delete-txt').innerHTML = `
    <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
-   <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div>
-   <div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div>
-   <div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>
-   `;
+   <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
    document.getElementById('delete').addEventListener('click',() =>{
        firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';
@@ -333,12 +323,28 @@ function deleteThisPost(name,size,type,date,time){
    })
  }
 
+        //show info about post
+        function infoData(name,size,type,date,time){
+           document.getElementById('info-popup').style.display = 'flex';
+           document.getElementById('new-overlay').style.display = 'flex';
+           document.getElementById('info-mail').style.display = 'flex';
+         document.getElementById('data-info').innerHTML = `
+         <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
+         <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div>
+         <div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div>
+         <div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
+         document.getElementById('data-info').style.display = 'block';
+         document.getElementById('data-info').style.fontSize = '15px'
+        } 
 
+        //Close data info
+        function closeDataInfo(){
+         document.getElementById('info-popup').style.display = 'none';
+         document.getElementById('new-overlay').style.display = 'none';
+         document.getElementById('info-mail').style.display = 'none';
+         document.getElementById('data-info').style.display = 'none';
+        }
 
-
-
-    
- 
         //logged user uploads files in storage
 function uploadFileToFirebase(e){
    var user = firebase.auth().currentUser;      

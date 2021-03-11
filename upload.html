@@ -11,24 +11,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="style.css">
 </head>
 <body   class="index-body">
-
-    <header class="header-index-2 header-index">        
-        <div class="contact-header"></div>        
-        <div class="user-logged-info">
-        <div id="usernamename"></div>
-        <img src="" alt="" id="img" class="proile-image">
-    </div>
+    <header class="header-index sticky-header">       
+        <p class="name-netowork"><b>Saveprojects</b></p>
+    <div class="contact-header"></div>
     </header>
-
-        
-
-
-
-
-
       <div class="set-class set-padding column-gird top-m">
         <div class="main-content">
             <div class="flex-style">
@@ -63,17 +53,25 @@
 
 
          <div class="set-displ" id="previe-popup" style="padding: 10px;">
-        
             <div class="set-class popup" id="ch-mail">
                 <button class="setting-button" style="padding:0px" id="text-message"></button>
                 <img src="" alt="" id="preview-image">
                 <div class="set-display-flex" id="desc"></div>
                 <div class="flex-button"> 
                     <button class="new-mail" onclick="closeImagePreview()">CLOSE</button>
-                
                 </div>
             </div>
             </div>
+
+            <div class="set-displ" id="info-mail" style="padding: 10px;">
+                <div class="set-class popup" id="info-popup">
+                    <button class="setting-button" style="padding:0px">File info</button>
+                    <div class="setting-button" style="padding:0px" id="data-info"></div>
+                    <div class="flex-button"> 
+                        <button class="new-mail" onclick="closeDataInfo()">CLOSE</button>
+                    </div>
+                </div>
+                </div>
 
     <footer class="footer"></footer>
 </body>

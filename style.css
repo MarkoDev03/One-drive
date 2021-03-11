@@ -4,6 +4,7 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@1,200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 
 body{
     padding: 0px;
@@ -13,7 +14,7 @@ body{
 }
 
 .header-index{
-    height: 35px;
+    height: 30px;
     width: 100%;
     background-color: var(--bg-color);
     padding-top: 4px;
@@ -488,9 +489,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 
 @media only screen and (max-width:600px) {
-    .contact-header{
-        display: none;
-    }
+
     .set-class{
         width: 90%;
     }
@@ -522,7 +521,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
         margin-top: 30px;
     }
     .header-index{
-        height: 35px;
+        height: 30px;
     }
     .forma-contact{
         flex-direction: column; width: 90%;
@@ -564,6 +563,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     .set-class{
         margin-top: 10px;
     }
+    
 }
 #load-animations{
     display: none;
@@ -620,22 +620,24 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     width: 100%;
     height: 250px;
 
+
 }
 .left-options{
     display: flex;
     justify-content: center;
 }
 .article-description{
-   width: 100%;
+   width: 98%;
+   padding: 0px;
    margin-left: auto;
    margin-right: auto;
-   display: flex;
-   justify-content: flex-start;
-   align-items: center;
-   height: 20px;
+   display:inline-flex;
+   align-items: flex-start;
+justify-content: flex-start;
 }
 .post-name{
     color:navy;
+ 
 }
 .storage-posts-reference{
     display: grid;
@@ -652,6 +654,11 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 .top-m{
      margin-top: 50px;
 }
+.sticky-header{
+   position: fixed;
+   top: 0px;
+}
+
 #uploading-proces{
     display: none;
 }
@@ -693,4 +700,12 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 #preview-image{
     width: 100%;
     height: fit-content;
+}
+
+.name-netowork{
+    font-weight: bold;
+    font-family: 'Dancing Script', cursive;
+   font-size: 25px;
+   margin-left: -15px;
+   margin-top: 20px;
 }
