@@ -25,7 +25,7 @@
                 <label class="chose-file margin-file" id="profile_image"><input type="file" class="myFile hide-file" onchange="uploadFileToFirebase(event)"/>+</label>
                 <p class="l-margin">Choose file</p>
             </div>
-            <button onclick="pageReloader()" class="update-button green">Update</button>
+            <button  class="update-button green" onclick="sendToIndex()">Update</button>
         </div>
 
     <div class="progress-div" id="uploading-proces">
@@ -33,46 +33,8 @@
         <p id="total-transfered-percetage"></p>
     </div>
     </div>
-
-     
-    <div id="bodyID" class="storage-posts-reference"></div> 
-    <div class="hf" style="height: 50px;width: 1px;"></div>
-
-    <div class="set-displ" id="st-dis" style="padding: 10px;">
-        
-        <div class="set-class popup" id="ch-mail">
-            <button class="setting-button" style="padding:0px">Do you want to delete</button>
-            <div class="set-display-flex" id="delete-txt"></div>
-            <div class="flex-button"> 
-                <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button>
-                <button class="new-mail" id="delete">DELETE</button>
-            </div>
-        </div>
-        </div>
-        <div class="overlay-pop-up" id="new-overlay"></div>
-
-
-         <div class="set-displ" id="previe-popup" style="padding: 10px;">
-            <div class="set-class popup" id="ch-mail">
-                <button class="setting-button" style="padding:0px" id="text-message"></button>
-                <img src="" alt="" id="preview-image">
-                <div class="set-display-flex" id="desc"></div>
-                <div class="flex-button"> 
-                    <button class="new-mail" onclick="closeImagePreview()">CLOSE</button>
-                </div>
-            </div>
-            </div>
-
-            <div class="set-displ" id="info-mail" style="padding: 10px;">
-                <div class="set-class popup" id="info-popup">
-                    <button class="setting-button" style="padding:0px">File info</button>
-                    <div class="setting-button" style="padding:0px" id="data-info"></div>
-                    <div class="flex-button"> 
-                        <button class="new-mail" onclick="closeDataInfo()">CLOSE</button>
-                    </div>
-                </div>
-                </div>
-
+<div id="postcontent" ></div>
+<p id="txt" class="storage-posts-reference">s</p>
     <footer class="footer"></footer>
 </body>
 <script src="code-behind.js"></script>

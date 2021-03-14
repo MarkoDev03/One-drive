@@ -11,6 +11,7 @@ body{
     margin: 0px;
     font-family: 'Nunito Sans', sans-serif;
     background: linear-gradient(to left, #333399, #ff00cc);
+    overflow: visible;
 }
 
 .header-index{
@@ -313,6 +314,10 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     text-align: left;
     margin-top: 10px;
     font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 .flex-down{
     flex-direction: column;
@@ -637,8 +642,12 @@ justify-content: flex-start;
 }
 .post-name{
     color:navy;
- 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
+
 .storage-posts-reference{
     display: grid;
     width: 310px;
@@ -693,8 +702,12 @@ justify-content: flex-start;
 }
 .flx-metadata{
     margin-top: 2px;
-}
+    height: fit-content;
+    width: 90%;
+    display: inline-block;
+    
 
+}
 
 
 #preview-image{
@@ -708,4 +721,8 @@ justify-content: flex-start;
    font-size: 25px;
    margin-left: -15px;
    margin-top: 20px;
+}
+.video{
+    height:fit-content;
+    width: 250px;
 }

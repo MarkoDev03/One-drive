@@ -23,17 +23,11 @@ let files = {};
 
      switch(get) {
         case "1":
-           window.location.href= "log-in.html";
+         window.location.href= "contact-us.html";;
               break;
          case "2":
-            window.location.href= "create-account.html"; 
-               break;
-         case "3":
-              window.location.href= "contact-us.html";
-                break;
-         case "4":
-               window.location.href= "index.html";
-                 break;
+            window.location.href= "log-in.html";
+               break;       
          default:
                  return null;     
      }
@@ -49,6 +43,7 @@ let files = {};
     function cancleUpdateMail() {
       document.querySelector('.set-displ').style.display = 'none';
       document.querySelector('.overlay-pop-up').style.display = 'none';
+      document.body.style.overflowY = 'visible';
     }
 
     //create account
@@ -197,23 +192,22 @@ let files = {};
 
     //logged user uploads profile image
     function uploadImageUser(e){
-       var user = firebase.auth().currentUser;
-       
+       var user = firebase.auth().currentUser;    
        if(user){
        var filess = e.target.files;
        for (const filea of filess) {
           firebase
         .storage()
           .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
-            .put(filea).on("state_changed",snapshot=> {
+            .put(filea).on("state_changed",snapshot=> {            
                if((snapshot.bytesTransferred / snapshot.totalBytes) * 100 === "0"){
-                  document.getElementById('load-animations').style.display = "none";
+                  document.getElementById('load-animations').style.display = "none";                  
                  }else{
                   document.getElementById('load-animations').style.display = 'flex';
                document.querySelector('.progressBar').value =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-               document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";            
-                 }
-            });           
+               document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";   
+                 }  
+            });                    
        }
        
     }else{
@@ -244,9 +238,7 @@ let files = {};
                     useriID = user.uid;                    
                 i++;
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-  var iiName = imageRef.name.toString();  
-       
-               
+  var iiName = imageRef.name.toString();            
                 showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID);
                 });
                }).catch(function(er){console.log(er)})
@@ -260,18 +252,14 @@ let files = {};
 
     //show users data/ from storage on page
     function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID) {
-               images.getDownloadURL().then(function(URL) {
-                
+               images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
                HTML+=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options">
-               <a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
-                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>
-                <div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div>
-                <div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div>
-                <div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div>
-                <div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
+                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;
                
+
+                
                document.getElementById('bodyID').innerHTML += HTML;
                });
     }
@@ -279,7 +267,7 @@ let files = {};
     //show preview of image
 function preview(locationOfImage,type) {
    if(type === "image/png" || type === "image/jpeg" || type === "image/jpeg"){
-
+      document.body.style.overflowY = 'hidden';
       var src = locationOfImage;
       document.getElementById('preview-image').style.display = 'flex';
       document.getElementById('preview-image').src =  src;
@@ -301,12 +289,14 @@ function preview(locationOfImage,type) {
      function closeImagePreview(){
           document.getElementById('previe-popup').style.display = 'none';
            document.getElementById('new-overlay').style.display = 'none';
+           document.body.style.overflowY = 'visible';
      }
 
 
     //delete file from firebase storage
 function deleteThisPost(name,size,type,date,time){
    var user = firebase.auth().currentUser;
+   document.body.style.overflowY = 'hidden';
       document.getElementById('st-dis').style.display = 'flex';
       document.getElementById('new-overlay').style.display = 'flex';
    document.getElementById('delete-txt').innerHTML = `
@@ -328,13 +318,15 @@ function deleteThisPost(name,size,type,date,time){
            document.getElementById('info-popup').style.display = 'flex';
            document.getElementById('new-overlay').style.display = 'flex';
            document.getElementById('info-mail').style.display = 'flex';
+           document.getElementById('data-info').style.display = 'flex';
          document.getElementById('data-info').innerHTML = `
-         <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
+         <div class="flx-metadata"><p>Name:</p><span><b class="new-color-3">${name}</b></span></div>
          <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div>
          <div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div>
          <div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
          document.getElementById('data-info').style.display = 'block';
          document.getElementById('data-info').style.fontSize = '15px'
+         document.body.style.overflowY = 'hidden';
         } 
 
         //Close data info
@@ -343,6 +335,7 @@ function deleteThisPost(name,size,type,date,time){
          document.getElementById('new-overlay').style.display = 'none';
          document.getElementById('info-mail').style.display = 'none';
          document.getElementById('data-info').style.display = 'none';
+         document.body.style.overflowY = 'visible';
         }
 
         //logged user uploads files in storage
@@ -361,8 +354,28 @@ function uploadFileToFirebase(e){
          console.log(snapshot.totalBytes);
          document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
       }
+      console.warn(file);
+      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getMetadata().then(snapshot => {
+         document.getElementById('txt').innerText = snapshot.contentType;
+         var type = snapshot.contentType;
+     
+      firebase.storage()
+      .ref("users/" + user.uid +'/data/'+ file.name).getDownloadURL().then(imageURLdownload =>{
+         if(type != "video/mp4"){
+         document.getElementById('postcontent').innerHTML=`<div style="background-image:url(${imageURLdownload}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div>`;                             
+          
+          
+         
+         
+         
+         }
+         else {
+            document.getElementById('postcontent').innerHTML = `<video src="${imageURLdownload}"  autoplay loop  muted class="video"></video>`;
+         }
+         })
+        })  
    })
-                     }
+             }
            }
            else{
               alert("You must log in!");
@@ -463,7 +476,7 @@ function uploadFileToFirebase(e){
 
    //login-redirect
    function redirectLogIn(){
-      openPage(1);
+      openPage(2);
    }
 
    //page reloader
@@ -473,5 +486,12 @@ function uploadFileToFirebase(e){
 
    //send message page
    function help(){
-      openPage(3);
+      openPage(1);
    }
+
+   //send user to index
+   function sendToIndex() {
+      iconEvent(1);
+   }
+
+  
