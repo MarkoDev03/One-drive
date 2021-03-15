@@ -392,6 +392,8 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 .flex-button{
     margin-right: -145px;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .new-mail:hover{
@@ -402,6 +404,16 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 .new-color-3{
     color: rgb(0, 74, 172);
 }
+
+.texts{
+    max-width: 250px;
+    height: fit-content;
+    display: flex;
+    height: fit-content;
+    color: rgb(0, 74, 172);
+    font-weight: 900;
+}
+
 .delete-ex{
     display: flex;
     justify-content: center;
@@ -622,8 +634,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 
 .image-of-user-storage{
-    width: 100%;
-    height: 250px;
+
 
 
 }
@@ -705,6 +716,7 @@ justify-content: flex-start;
     height: fit-content;
     width: 90%;
     display: inline-block;
+
     
 
 }
