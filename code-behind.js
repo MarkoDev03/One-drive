@@ -1,5 +1,6 @@
 var contactHeader = document.querySelector('.contact-header');
 let files = {};
+var logoutPopUpRequest = document.getElementById('log-out-mail');
 
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
@@ -12,7 +13,7 @@ let files = {};
      function fncHeader(data) {
         var item = data.header;
        for(var i = 0; i < item.length; i++) {
-        contactHeader.innerHTML += `<a class="${item[i].class}" onclick="openPage(${item[i].id})">${item[i].name}</a>`;
+        contactHeader.innerHTML += `<a class="${item[i].class}" onclick="openPageInHeader(${item[i].id})">${item[i].name}</a>`;
        }       
     }
 
@@ -26,13 +27,41 @@ let files = {};
          window.location.href= "contact-us.html";;
               break;
          case "2":
-            window.location.href= "log-in.html";
-               break;       
+            window.location.href= "log-in.html";   
          default:
                  return null;     
      }
     }
 
+    //open page in header by using id
+    function openPageInHeader(pageId){
+      sessionStorage.setItem("pageIdInHeader",pageId);
+      var get = sessionStorage.getItem("pageIdInHeader");
+
+     switch(get) {
+        case "1":
+         window.location.href= "contact-us.html";;
+              break;
+         case "2":
+            var user = firebase.auth().currentUser;
+            if(user) {
+               logoutPopUpRequest.style.display = 'flex';
+               document.getElementById('new-overlay').style.display = 'flex';
+            }
+            else {
+               window.location.href= "log-in.html"; 
+            }  
+         default:
+                 return null;     
+     }
+    }
+
+    //close log out pop up
+    function closeLogOutPopUp() {
+      logoutPopUpRequest.style.display = 'none';
+      document.getElementById('new-overlay').style.display = 'none';
+    }
+        
     //show mail changer
     function showMailUpdater() {
        document.querySelector('.set-displ').style.display = 'flex';
@@ -59,8 +88,9 @@ let files = {};
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-  
+
+
+
   //create account
     function createAccount(){
         let email = document.getElementById('e-mail-input');
@@ -229,7 +259,7 @@ let files = {};
                         var i = 0;
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
             result.items.forEach(function(imageRef){
-                 console.log(imageRef.name.toString());  
+                 console.log(imageRef.name.toString()); 
                  imageRef.getMetadata().then(s=>{
                     console.log(s.size/1000000);
                     var fileSizeProperty = (s.size/1000000).toFixed(2);     
@@ -244,9 +274,14 @@ let files = {};
                }).catch(function(er){console.log(er)})
          });
       });
+
+      var emailFom = document.getElementById('mail-input');
+      // emailFom.value = user.email;
       } else {
+         
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
          document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
+        
       }
     });
 
@@ -254,17 +289,21 @@ let files = {};
     function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID) {
                images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div style="background-image:url(${URL}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"
-                onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;
-               
+                 
             if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
             }else if (fileType === "video/mp4") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
                <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
                <video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
+            }else if (fileType === "application/octet-stream"){
+                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+            }else {
+                 HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
+                <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
+                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
             }
                 
                document.getElementById('bodyID').innerHTML += HTML;
@@ -272,33 +311,45 @@ let files = {};
     }
 
     //show preview of image
-function preview(locationOfImage,type) {
-   if(type === "image/png" || type === "image/jpeg" || type === "image/jpeg"){
-      document.body.style.overflowY = 'hidden';
-      var src = locationOfImage;
-      document.getElementById('preview-image').style.display = 'flex';
-      document.getElementById('preview-image').src =  src;
+  function preview(locationOfImage,type) {
+   var div = document.getElementById('preview-div');
+   var src = locationOfImage;
+   div.style.display ='flex'; 
+   document.body.style.overflowY = 'hidden';
+   if(type === "image/png" || type === "image/jpeg" || type === "image/jpeg"){  
+      div.innerHTML = `<img src="${src}" alt="" class="preview-image">`;
       document.getElementById('previe-popup').style.display = 'flex';
       document.getElementById('new-overlay').style.display = 'flex';
       document.getElementById('text-message').style.display = 'none';
-
-   }
-   else{
-      document.getElementById('text-message').style.display = 'flex';
-     document.getElementById('text-message').innerText =  "Cannot preview the "  + type + " file";
-      document.getElementById('preview-image').style.display = 'none';
+   }else if(type === "video/mp4") {    
+      div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-image"></video>`;
       document.getElementById('previe-popup').style.display = 'flex';
       document.getElementById('new-overlay').style.display = 'flex';
+      document.getElementById('text-message').style.display = 'none';
+   }else if(type === "audio/wav" || type === "audio/mp3") {
+      div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-audio" id="audio"></video>`;
+      document.getElementById('previe-popup').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+      document.getElementById('text-message').style.display = 'none';
+   }else{
+      document.getElementById('text-message').style.display = 'flex';
+     document.getElementById('text-message').innerText =  "Cannot preview the "  + type + " file";
+      document.getElementById('previe-popup').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+      image.classList.remove('preview-image');
    }
 }
             
      //close image preview
      function closeImagePreview(){
+      document.body.style.overflowY = 'visible';
+      var div = document.getElementById('preview-div');
+      div.innerHTML = ``;
           document.getElementById('previe-popup').style.display = 'none';
            document.getElementById('new-overlay').style.display = 'none';
-           document.body.style.overflowY = 'visible';
+           div.style.display = 'none';
+           document.getElementById('audio').pause();      
      }
-
 
     //delete file from firebase storage
 function deleteThisPost(name,size,type,date,time){
@@ -330,7 +381,7 @@ function deleteThisPost(name,size,type,date,time){
        if (name.length > 25) {
        name = name.substr(0,25) + '...';
       }
-      
+
          document.getElementById('data-info').innerHTML = `
          <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
          <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
@@ -350,10 +401,12 @@ function deleteThisPost(name,size,type,date,time){
 
         //logged user uploads files in storage
 function uploadFileToFirebase(e){
+   document.getElementById('postcontent').innerHTML = ``;
    var user = firebase.auth().currentUser;      
         if(user){
             for(let i=0;i<e.target.files.length;i++){
             let file = e.target.files[i];
+            
         firebase.storage()
    .ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
       if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
@@ -365,25 +418,25 @@ function uploadFileToFirebase(e){
          document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
       }
       console.warn(file);
-      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getMetadata().then(snapshot => {
-         document.getElementById('txt').innerText = snapshot.contentType;
-         var type = snapshot.contentType;
+      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getMetadata().then(snapshot => {;
+         var fileType = snapshot.contentType,name = snapshot.name,fileSizeProperty=2,timeCreated=1,newCurrnetTime=2,profileimage=null,didsplayname=null;
      
       firebase.storage()
       .ref("users/" + user.uid +'/data/'+ file.name).getDownloadURL().then(imageURLdownload =>{
-         if(type != "video/mp4"){
-         document.getElementById('postcontent').innerHTML=`<div style="background-image:url(${imageURLdownload}), url(./media/none-pic.png);background-size: 310px 250px;background-repeat:no-repeat" class="image-of-user-storage"></div>`;                             
-          
-          
          
-         
-         
+         if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="${imageURLdownload}" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;      
+         }else if (fileType === "video/mp4") {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}"><video src="${imageURLdownload}" autoplay loop muted width="100%" height="auto"  class="radiustht"></video><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;               
+         }else if (fileType === "application/octet-stream"){
+             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;            
+         }else {
+             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;" class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;    
          }
-         else {
-            document.getElementById('postcontent').innerHTML = `<video src="${imageURLdownload}"  autoplay loop  muted class="video"></video>`;
-         }
-         })
+             
+            document.getElementById('postcontent').innerHTML += HTML;
         })  
+      }) 
    })
              }
            }
@@ -402,7 +455,7 @@ function uploadFileToFirebase(e){
             From:document.getElementById('mail-input').value,
             Subject:document.getElementById("subject-input").value,
             Body:"From:  " + document.getElementById('mail-input').value + "<br><br>" + "Message:  " + document.getElementById("message-input").value + "<br><br>",
-     }).then(mesage => alert(mesage)
+     }).then(mesage => {alert(mesage); window.location.reload();}
      );
    }
 
@@ -481,7 +534,7 @@ function uploadFileToFirebase(e){
     
    //dont have account? create one
    function createAccountPageID() {
-      openPage(2);
+      window.location.href = 'create-account.html';
    }
 
    //login-redirect
@@ -502,6 +555,7 @@ function uploadFileToFirebase(e){
    //send user to index
    function sendToIndex() {
       iconEvent(1);
+      document.getElementById('postcontent').innerHTML = '';
    }
 
   

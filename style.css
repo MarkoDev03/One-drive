@@ -35,6 +35,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: -40px;
 }
 .header-href{
     font-size: 20px;
@@ -378,6 +379,8 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     display: none;
     justify-content: center;
     align-items: center;
+    align-self: center;
+    align-content: center;
     z-index: 99999999999;
 }
 
@@ -403,6 +406,8 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 .new-color-3{
     color: rgb(0, 74, 172);
+ 
+    
 }
 
 .texts{
@@ -585,7 +590,10 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 #load-animations{
     display: none;
 }
-
+#login-buttom:hover,#create-account:hover,#submit:hover{
+   background-color: #333399;
+    transition: 285ms
+}
 .storage-article{
     background:  rgba(255, 255, 255, 0.8); 
     border-radius: 5px;
@@ -661,10 +669,10 @@ justify-content: flex-start;
 
 .storage-posts-reference{
     display: grid;
-    width: 310px;
+    width: 350px;
     margin-left: auto;
     margin-right: auto;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 }
 
 .new-flex{
@@ -722,19 +730,36 @@ justify-content: flex-start;
 }
 
 
-#preview-image{
+.preview-image{
     width: 100%;
-    height: fit-content;
+    height: auto; 
+ 
+}
+.preview-audio{
+    width: 100%;
+    height: 30px;
 }
 
 .name-netowork{
     font-weight: bold;
     font-family: 'Dancing Script', cursive;
    font-size: 25px;
-   margin-left: -15px;
+   margin-left: -40px;
    margin-top: 20px;
 }
 .video{
     height:fit-content;
     width: 250px;
+}
+
+.post-options2{
+    display: flex;
+    justify-content: center;
+    align-content: flex-start;
+    flex-direction: column;
+    margin-top: 10px;
+}
+.radiustht{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }

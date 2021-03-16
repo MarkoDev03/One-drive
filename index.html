@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-functions.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body  class="index-body">
@@ -39,7 +40,7 @@
          <div class="set-displ" id="previe-popup" style="padding: 10px;">
             <div class="set-class popup" id="ch-mail">
                 <button class="setting-button" style="padding:0px" id="text-message"></button>
-                <img src="" alt="" id="preview-image">
+                <div id="preview-div"></div>
                 <div class="set-display-flex" id="desc"></div>
                 <div class="flex-button"> 
                     <button class="new-mail" onclick="closeImagePreview()">CLOSE</button>
@@ -56,6 +57,16 @@
                     </div>
                 </div>
                 </div>
+
+                <div class="set-displ" id="log-out-mail" style="padding: 10px;">
+                    <div class="set-class popup" id="log-out-mailp"> 
+                        <div class="setting-button" style="width: 100%;justify-content: center;text-align: center;">Do you want to log out?</div>
+                        <div class="flex-button" style="width: 100%;margin-right: 0px;justify-content: center;">
+                            <button  onclick="logOut()"  class="new-mail" style="background-color: red;">LOG OUT</button> 
+                            <button class="new-mail" onclick="closeLogOutPopUp()">CANCLE</button>
+                        </div>
+                    </div>
+                    </div>
     
   <footer class="footer"></footer>
 </body>

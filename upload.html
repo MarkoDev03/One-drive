@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-functions.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="style.css">
 </head>
@@ -22,7 +23,7 @@
       <div class="set-class set-padding column-gird top-m">
         <div class="main-content">
             <div class="flex-style">
-                <label class="chose-file margin-file" id="profile_image"><input type="file" class="myFile hide-file" onchange="uploadFileToFirebase(event)"/>+</label>
+                <label class="chose-file margin-file" id="profile_image"><input type="file" class="myFile hide-file" onchange="uploadFileToFirebase(event)" multiple/>+</label>
                 <p class="l-margin">Choose file</p>
             </div>
             <button  class="update-button green" onclick="sendToIndex()">Update</button>
@@ -33,9 +34,10 @@
         <p id="total-transfered-percetage"></p>
     </div>
     </div>
-<div id="postcontent" ></div>
-<p id="txt" class="storage-posts-reference">s</p>
+<div id="postcontent" class="storage-posts-reference" ></div>
     <footer class="footer"></footer>
+
+    
 </body>
 <script src="code-behind.js"></script>
 <script src="https://smtpjs.com/v3/smtp.js">
