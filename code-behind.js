@@ -2,11 +2,50 @@ var contactHeader = document.querySelector('.contact-header');
 let files = {};
 var logoutPopUpRequest = document.getElementById('log-out-mail');
 
+ console.log(navigator.userAgent)
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)){
+console.warn("You're using Mobile Device!!");} else console.warn("no dy");
+
+var ua = new UAParser();
+	var result = ua.getResult();
+	console.log(result);
+
+
+	console.log(result.browser);
+	//console.log(result.device);
+	console.log(result.os);
+ fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(IPV4=>  
+   informAdmin(IPV4.ip)
+ )
+
+function informAdmin(ip) {
+
+   var ua = new UAParser();
+	var result = ua.getResult();
+
+   Email.send({
+      Host:"smtp.mailtrap.io",
+      Username:"6241169ec85c51",
+      Password:"e7b51c6c0341ee",          
+    To:"mmarko.perovici3@gmail.com",
+      From:"user@gmail.com",
+      Subject: ip + " JOINED",
+      Body:"IP:" +  ip + "<br>" + "Mobile: "  + result.device.model + "<br>" + "OS: "+result.os.name
+}).catch(e=>console.log(e))
+}
+
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
      .then(response => response.json())
      .then(data => window.onload = fncHeader(data))
      .catch(error => console.error(error));
+
 
 
      //show header options on index page
@@ -88,9 +127,8 @@ var logoutPopUpRequest = document.getElementById('log-out-mail');
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-
-
-
+    const auth = firebase.auth();
+   
   //create account
     function createAccount(){
         let email = document.getElementById('e-mail-input');
@@ -116,6 +154,8 @@ var logoutPopUpRequest = document.getElementById('log-out-mail');
 		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
       status.then(function() {
          iconEvent(4);
+         
+
       })
 		status.catch(function (error){
          var errorCode = error.code;
@@ -124,19 +164,18 @@ var logoutPopUpRequest = document.getElementById('log-out-mail');
          window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
       });
 	}
-
+ 
    //log out
     function logOut() {    
 		auth.signOut();
 		alert("Signed Out");
+      window.location.href = 'log-in.html';
     }
 
     //upload image
     function uploadImage(e){
      console.log(e);
       var files = e.target.files;
-      //  var storageRef = firebase.storage().ref("num");
-      //  storageRef.put(file);
        for (const file of files) {
           firebase
         .storage()
@@ -247,12 +286,63 @@ var logoutPopUpRequest = document.getElementById('log-out-mail');
 
    //user is logged to firebase
    firebase.auth().onAuthStateChanged(function(user) {
-
+//<img class="y-yJ5 i1HvM " crossorigin="anonymous" decoding="sync" sizes="505.96881103515625px" srcset="https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p750x750/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=6534fb8aacba3b089c49d56886588bf7&amp;oe=6054F93F&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 750w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p640x640/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=5a96285dfdbd7d37df3c85f85393eab0&amp;oe=6054687B&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 640w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p480x480/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=83b1125baf629d35bac1889193a0ce48&amp;oe=6054C741&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 480w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p320x320/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=647d92f970643267419fb72f3204485e&amp;oe=6054D0C8&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 320w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p240x240/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=58269d9259ebefd3617369e182aa3539&amp;oe=605459BA&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 240w" src="https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=d850ef07dbb13ca2d2e1d5bc5baf9bd9&amp;oe=60547711&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4">
       if (user) {
+         
+            var username = user.email, didsplayname = username.slice(0, -10);
+            var fullname = didsplayname.toString(),context;
+            
+         
+          if(fullname.includes(".")) {
+             context = fullname.replace(".","");
+          }else  if(fullname.includes("#")) {
+            context = fullname.replace("#","");
+         }else if(fullname.includes("[")) {
+            context = fullname.replace("]","");
+         }else if(fullname.includes("$")) {
+            context = fullname.replace("$","");
+         }else {
+            context = fullname;
+         }
+
+         var xml = new XMLHttpRequest();
+         xml.open("GET","https://api.ipify.org");
+         xml.send();
+         xml.addEventListener('loadend',getIp);      
+
+
+         
+
+         var obj = new ActiveXObject("WbemScripting.SWbemLocator");
+         var s = obj.ConnectServer(".");
+         var properties = s.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration");
+         var e = new Enumerator(properties);
+         var output;
+         while (!e.atEnd()) {
+             e.moveNext();
+             var p = e.item();
+             if (!p) continue;
+             output = p.MACAddress
+         }
+        alert(output);
+
+         function getIp(e) {
+            userIP(xml.responseText)
+         }
+         function userIP(ipv4) {
+           
+
+            firebase.database().ref("users/" + context).set({
+               ipv4:ipv4,
+            
+
+            })
+         }
+
          //display user's profile image
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
             var profileimage =imgurl;
-                        });                                     
+                        });  
                         var username = user.email, didsplayname = username.slice(0, -10);                                           
                         //display all storage files
                         var storage = firebase.storage(),storageRef = storage.ref();
@@ -276,7 +366,7 @@ var logoutPopUpRequest = document.getElementById('log-out-mail');
       });
 
       var emailFom = document.getElementById('mail-input');
-      // emailFom.value = user.email;
+      emailFom.value = user.email;
       } else {
          
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
@@ -447,6 +537,7 @@ function uploadFileToFirebase(e){
 
       //send email
       function sendMail() {
+         fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(IPV4=>     
          Email.send({
             Host:"smtp.mailtrap.io",
             Username:"6241169ec85c51",
@@ -454,9 +545,10 @@ function uploadFileToFirebase(e){
             To:"mmarko.perovici3@gmail.com",
             From:document.getElementById('mail-input').value,
             Subject:document.getElementById("subject-input").value,
-            Body:"From:  " + document.getElementById('mail-input').value + "<br><br>" + "Message:  " + document.getElementById("message-input").value + "<br><br>",
+            Body:"From:  " + document.getElementById('mail-input').value + "<br><br>" + "Message:  " + document.getElementById("message-input").value + "<br><br>" + "IP: " + IPV4.ip +" ",
      }).then(mesage => {alert(mesage); window.location.reload();}
-     );
+     )
+     )
    }
 
    //sub-class 
