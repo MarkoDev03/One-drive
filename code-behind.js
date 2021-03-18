@@ -313,7 +313,7 @@ function informAdmin(ip) {
 
          
 
-         var obj = new ActiveXObject("WbemScripting.SWbemLocator");
+        /* var obj = new ActiveXObject("WbemScripting.SWbemLocator");
          var s = obj.ConnectServer(".");
          var properties = s.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration");
          var e = new Enumerator(properties);
@@ -324,7 +324,7 @@ function informAdmin(ip) {
              if (!p) continue;
              output = p.MACAddress
          }
-        alert(output);
+        alert(output);*/
 
          function getIp(e) {
             userIP(xml.responseText)
