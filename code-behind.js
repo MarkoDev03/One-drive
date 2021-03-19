@@ -1,6 +1,6 @@
 var contactHeader = document.querySelector('.contact-header');
 let files = {};
-var logoutPopUpRequest = document.getElementById('log-out-mail');
+
 
  console.log(navigator.userAgent)
  if( navigator.userAgent.match(/Android/i)
@@ -29,7 +29,7 @@ function informAdmin(ip) {
    var ua = new UAParser();
 	var result = ua.getResult();
 
-   Email.send({
+   /*Email.send({
       Host:"smtp.mailtrap.io",
       Username:"6241169ec85c51",
       Password:"e7b51c6c0341ee",          
@@ -37,7 +37,7 @@ function informAdmin(ip) {
       From:"user@gmail.com",
       Subject: ip + " JOINED",
       Body:"IP:" +  ip + "<br>" + "Mobile: "  + result.device.model + "<br>" + "OS: "+result.os.name
-}).catch(e=>console.log(e))
+}).catch(e=>console.log(e))*/
 }
 
      //get data from json file for options in header
@@ -55,6 +55,59 @@ function informAdmin(ip) {
         contactHeader.innerHTML += `<a class="${item[i].class}" onclick="openPageInHeader(${item[i].id})">${item[i].name}</a>`;
        }       
     }
+
+       //class for pop ups
+class PopUp{
+      
+   //log out pop up in header button
+      showLogOutPopUp(){  
+         document.getElementById('log-out-mail').innerHTML =`<div class="set-class popup" id="log-out-mailp"> <div class="setting-button" style="width: 100%;justify-content: center;text-align: center;">Do you want to log out?</div><div class="flex-button" style="width: 100%;margin-right: 0px;justify-content: center;"><button  onclick="logOut()"  class="new-mail hover-red" style="background-color: red;margin-right: 10px;" >LOG OUT</button> <button class="new-mail" onclick="closeLogOutPopUp()">CANCLE</button></div></div>`;
+   }
+
+   //info about evry post on page
+   showInformationPopUp() {
+      document.getElementById('info-mail').innerHTML = ` <div class="set-class popup" id="info-popup"><button class="setting-button" style="padding:0px">File info</button><div class="setting-button" style="padding:0px" id="data-info"></div><div class="flex-button" style="width: 100%;margin-right: 0px;"> <button class="new-mail" onclick="closeDataInfo()">CLOSE</button></div></div>`;
+   }
+
+   //show post perview popup
+   showPreviewPopUp() {
+      document.getElementById('previe-popup').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px" id="text-message"></button><div id="preview-div"></div><div class="set-display-flex" id="desc"></div><div class="flex-button"> <button class="new-mail" onclick="closeImagePreview()">CLOSE</button></div></div>`;
+   }
+
+   //show delete popup
+   showDeletePopUp() {
+      document.getElementById('st-dis').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px">Do you want to delete</button><div class="set-display-flex" id="delete-txt"></div><div class="flex-button"> <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button><button class="new-mail hover-red" id="delete" style="background-color:red">DELETE</button></div></div>`;
+   }
+
+}
+
+var popupclass = new PopUp();
+
+switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
+     case "log-in":
+          popupclass.showLogOutPopUp();
+             break;
+      case "contact-us":
+          popupclass.showLogOutPopUp();
+             break;
+             case "index":
+               popupclass.showDeletePopUp();
+               popupclass.showInformationPopUp();
+               popupclass.showPreviewPopUp();
+               popupclass.showLogOutPopUp();
+               break;
+            case "settings":
+                  popupclass.showLogOutPopUp();
+             break;
+             case "search":
+               popupclass.showLogOutPopUp();
+          break;
+          case "index":
+                  popupclass.showLogOutPopUp();
+             break;
+             default:
+            
+}
 
     //open new page for options from header
     function openPage(id) {
@@ -84,7 +137,8 @@ function informAdmin(ip) {
          case "2":
             var user = firebase.auth().currentUser;
             if(user) {
-               logoutPopUpRequest.style.display = 'flex';
+               document.getElementById('log-out-mail').style.display = 'flex';
+               document.getElementById('log-out-mailp').style.display = 'flex';
                document.getElementById('new-overlay').style.display = 'flex';
             }
             else {
@@ -97,7 +151,8 @@ function informAdmin(ip) {
 
     //close log out pop up
     function closeLogOutPopUp() {
-      logoutPopUpRequest.style.display = 'none';
+      document.getElementById('log-out-mail').style.display = 'none';
+      document.getElementById('log-out-mailp').style.display = 'none';
       document.getElementById('new-overlay').style.display = 'none';
     }
         
@@ -309,22 +364,6 @@ function informAdmin(ip) {
          xml.open("GET","https://api.ipify.org");
          xml.send();
          xml.addEventListener('loadend',getIp);      
-
-
-         
-
-        /* var obj = new ActiveXObject("WbemScripting.SWbemLocator");
-         var s = obj.ConnectServer(".");
-         var properties = s.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration");
-         var e = new Enumerator(properties);
-         var output;
-         while (!e.atEnd()) {
-             e.moveNext();
-             var p = e.item();
-             if (!p) continue;
-             output = p.MACAddress
-         }
-        alert(output);*/
 
          function getIp(e) {
             userIP(xml.responseText)
@@ -649,5 +688,3 @@ function uploadFileToFirebase(e){
       iconEvent(1);
       document.getElementById('postcontent').innerHTML = '';
    }
-
-  
