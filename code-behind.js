@@ -79,6 +79,11 @@ class PopUp{
       document.getElementById('st-dis').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px">Do you want to delete</button><div class="set-display-flex" id="delete-txt"></div><div class="flex-button"> <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button><button class="new-mail hover-red" id="delete" style="background-color:red">DELETE</button></div></div>`;
    }
 
+   //update mail
+   showMailUpdaterPopUp() {
+      document.getElementById('ch-mail').innerHTML = `<button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
+   }
+
 }
 
 var popupclass = new PopUp();
@@ -98,6 +103,7 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
                break;
             case "settings":
                   popupclass.showLogOutPopUp();
+                  popupclass.showMailUpdaterPopUp();
              break;
              case "search":
                popupclass.showLogOutPopUp();
@@ -106,6 +112,8 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
                   popupclass.showLogOutPopUp();
              break;
              default:
+                console.log("error");
+                break;
             
 }
 
@@ -124,6 +132,53 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
                  return null;     
      }
     }
+
+
+    //class for settings page
+    class APPLICATION_SETTINGS{
+
+      //settings for profile, password, reset
+      showResetDeleteUpdateAppOptions() {
+         document.getElementById('account-settings').innerHTML = ` <button onclick="resetPassword()" class="setting-button top-mrg">Reset password</button><button onclick="verifyAccount()" class="setting-button">Verify account</button><button onclick="deleteAccount()" class="setting-button delete">Delete account</button>`;
+      }
+
+      //log in and log out buttons
+      showLogInOut() {
+         document.getElementById('log-in-out').innerHTML = `<button  class="setting-button top-mrg green" onclick="redirectLogIn()">Log in</button><button  class="setting-button top-mrg" onclick="logOut()">Log out</button>`;
+      }
+
+      //update mail button
+      showMailUpdateButton() {
+         document.getElementById('update-mail').innerHTML = `<button  class="setting-button top-mrg">Update email</button>`;
+      }
+
+      //help button
+      showHelpButton() {
+         document.getElementById('help-button').innerHTML = `<button  class="setting-button top-mrg">Help</button>`;
+      }
+
+      //show files button
+      showFilesButton() {
+         document.getElementById('files-buttons').innerHTML = `<button  class="setting-button top-mrg">Files</button><button  class="setting-button top-mrg">Profile info</button>`;
+      }
+
+    }
+
+   const APPLICATION_SETTINGS_ = new APPLICATION_SETTINGS();
+
+   switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
+      case "settings":
+         APPLICATION_SETTINGS_.showResetDeleteUpdateAppOptions();
+         APPLICATION_SETTINGS_.showLogInOut();
+         APPLICATION_SETTINGS_.showMailUpdateButton();
+         APPLICATION_SETTINGS_.showHelpButton();
+         APPLICATION_SETTINGS_.showFilesButton();
+      break;
+      default:
+         console.log("error");
+         break;
+
+   }
 
     //open page in header by using id
     function openPageInHeader(pageId){
