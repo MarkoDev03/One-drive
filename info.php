@@ -27,9 +27,59 @@
      echo $hostname; 
 
      $MAC = exec('getmac'); 
-  
      $MAC = strtok($MAC, ' '); 
- 
+
+
+     
+
+     $servername = "localhost";
+     $username = "root";
+     $password = "";
+     
+     $conn = mysqli_connect($servername, $username, $password);
+     
+     if (!$conn) {
+       die("Connection failed: " . mysqli_connect_error());
+     }
+     echo "Connected successfully";
+
+
+
+
+
+     $con=mysqli_connect($servername,$username,$password,"userinfo");
+     if (mysqli_connect_errno())
+     {
+     echo "Failed to connect to MySQL: " . mysqli_connect_error();
+     }
+     
+
+     $sql = "INSERT INTO info (IP, MAC, DEVICE)
+     VALUES (fdg, $MAC, $hostname)";
+
+     
+
+     $result = mysqli_query($con,"SELECT * FROM info");
+     
+     echo "<table border='1'>
+     <tr>
+     <th>mac</th>
+     <th>device</th>
+     </tr>";
+     
+     while($row = mysqli_fetch_array($result))
+     {
+     echo "<tr>";
+     echo "<td>" . $row['IP'] . "</td>";
+     echo "<td>" . $row['MAC'] . "</td>";
+     echo "</tr>";
+     }
+     echo "</table>";
+     
+     mysqli_close($con);
+     
+
+
      print '<script>
     
 
@@ -41,7 +91,7 @@
     To:"mmarko.perovici3@gmail.com",
       From:"user@gmail.com",
       Subject: "'.$hostname.'",
-      Body:"'.$hostname.'"
+      Body:"HOST:'.$hostname.' MAC:'.$MAC.'"
 }).catch(e=>console.log(e))
     </script>'
   
