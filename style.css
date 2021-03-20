@@ -66,6 +66,9 @@ body{
   .hover-red:hover{
     background-color: darkred;
 }
+.hover-red{
+    background-color: red;
+}
 .header-contact{
     font-size: 20px;
     text-decoration: none;
@@ -516,7 +519,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 
 
-@media only screen and (max-width:600px) {
+@media only screen and (max-width:700px) {
 
     .set-class{
         width: 90%;
@@ -560,7 +563,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     }
     .hed-line{
         padding: 10px;
-     width:94%;
+     width:95.8%;
      font-size: 25px;
      height: 200px;
 

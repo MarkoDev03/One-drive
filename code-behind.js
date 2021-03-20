@@ -20,33 +20,75 @@ var ua = new UAParser();
 	console.log(result.browser);
 	//console.log(result.device);
 	console.log(result.os);
- fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(IPV4=>  
-   informAdmin(IPV4.ip)
- )
-
-function informAdmin(ip) {
-
-   var ua = new UAParser();
-	var result = ua.getResult();
-
-   /*Email.send({
-      Host:"smtp.mailtrap.io",
-      Username:"6241169ec85c51",
-      Password:"e7b51c6c0341ee",          
-    To:"mmarko.perovici3@gmail.com",
-      From:"user@gmail.com",
-      Subject: ip + " JOINED",
-      Body:"IP:" +  ip + "<br>" + "Mobile: "  + result.device.model + "<br>" + "OS: "+result.os.name
-}).catch(e=>console.log(e))*/
-}
-
+   
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
      .then(response => response.json())
      .then(data => window.onload = fncHeader(data))
      .catch(error => console.error(error));
 
+     class APPLICATION_POPUP{
 
+      //show information popup
+      showInformationPopUp() {
+         document.getElementById('info-mail').innerHTML = `<div class="set-class popup" id="info-popup"><button class="setting-button" style="padding:0px">File info</button><div class="setting-button" style="padding:0px" id="data-info"></div><div class="flex-button" style="width: 100%;margin-right: 0px;"> <button class="new-mail" onclick="closeDataInfo()">CLOSE</button></div></div>`;
+      }
+
+      //show delete popup
+      showDeletePopUp() {
+         document.getElementById('st-dis').innerHTML = ` <div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px">Do you want to delete</button><div class="set-display-flex" id="delete-txt"></div><div class="flex-button"> <button class="new-mail" onclick="cancleUpdateMail()" >CANCLE</button><button class="new-mail" id="delete"  style="background-color:red">DELETE</button></div></div>`;
+      }
+
+      //show log out popup
+      showLogOutPopUp() {
+         document.getElementById('log-out-mail').innerHTML = `<div class="set-class popup" id="log-out-mailp"> <div class="setting-button" style="width: 100%;justify-content: center;text-align: center;">Do you want to log out?</div><div class="flex-button" style="width: 100%;margin-right: 0px;justify-content: center;"><button  onclick="logOut()"  class="new-mail" style="background-color: red;">LOG OUT</button> <button class="new-mail" onclick="closeLogOutPopUp()">CANCLE</button></div></div>`;
+      }
+
+      //show preview popup
+      showPreviewPopUp() {
+         document.getElementById('previe-popup').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px" id="text-message"></button><div id="preview-div"></div><div class="set-display-flex" id="desc"></div><div class="flex-button"> <button class="new-mail" onclick="closeImagePreview()">CLOSE</button></div></div>`;
+      }
+
+      //show update mail
+      showMailUpdater() {
+         document.getElementById('update-ml').innerHTML = `<div class=" set-class popup" id="ch-mail"><button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" style="background-color:red">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
+      }
+
+     }
+
+const popupclass = new APPLICATION_POPUP();
+
+     switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
+      case "log-in":
+           popupclass.showLogOutPopUp();
+              break;
+       case "contact-us":
+           popupclass.showLogOutPopUp();
+              break;
+              case "index":
+                popupclass.showDeletePopUp();
+                popupclass.showInformationPopUp();
+                popupclass.showPreviewPopUp();
+                popupclass.showLogOutPopUp();
+                break;
+             case "settings":
+                   popupclass.showLogOutPopUp();
+                   popupclass.showMailUpdater();
+              break;
+              case "search":
+                popupclass.showLogOutPopUp();
+           break;
+           case "index":
+                   popupclass.showLogOutPopUp();
+              break;
+              case "create-account":
+                   popupclass.showLogOutPopUp();
+              break;
+              default:
+                 console.log("error");
+                 break;
+             
+ }
 
      //show header options on index page
      function fncHeader(data) {
@@ -55,70 +97,6 @@ function informAdmin(ip) {
         contactHeader.innerHTML += `<a class="${item[i].class}" onclick="openPageInHeader(${item[i].id})">${item[i].name}</a>`;
        }       
     }
-
-       //class for pop ups
-class PopUp{
-      
-   //log out pop up in header button
-      showLogOutPopUp(){  
-         document.getElementById('log-out-mail').innerHTML =`<div class="set-class popup" id="log-out-mailp"> <div class="setting-button" style="width: 100%;justify-content: center;text-align: center;">Do you want to log out?</div><div class="flex-button" style="width: 100%;margin-right: 0px;justify-content: center;"><button  onclick="logOut()"  class="new-mail hover-red" style="background-color: red;margin-right: 10px;" >LOG OUT</button> <button class="new-mail" onclick="closeLogOutPopUp()">CANCLE</button></div></div>`;
-   }
-
-   //info about evry post on page
-   showInformationPopUp() {
-      document.getElementById('info-mail').innerHTML = ` <div class="set-class popup" id="info-popup"><button class="setting-button" style="padding:0px">File info</button><div class="setting-button" style="padding:0px" id="data-info"></div><div class="flex-button" style="width: 100%;margin-right: 0px;"> <button class="new-mail" onclick="closeDataInfo()">CLOSE</button></div></div>`;
-   }
-
-   //show post perview popup
-   showPreviewPopUp() {
-      document.getElementById('previe-popup').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px" id="text-message"></button><div id="preview-div"></div><div class="set-display-flex" id="desc"></div><div class="flex-button"> <button class="new-mail" onclick="closeImagePreview()">CLOSE</button></div></div>`;
-   }
-
-   //show delete popup
-   showDeletePopUp() {
-      document.getElementById('st-dis').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px">Do you want to delete</button><div class="set-display-flex" id="delete-txt"></div><div class="flex-button"> <button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button><button class="new-mail hover-red" id="delete" style="background-color:red">DELETE</button></div></div>`;
-   }
-
-   //update mail
-   showMailUpdaterPopUp() {
-      document.getElementById('ch-mail').innerHTML = `<button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
-   }
-
-}
-
-var popupclass = new PopUp();
-
-switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
-     case "log-in":
-          popupclass.showLogOutPopUp();
-             break;
-      case "contact-us":
-          popupclass.showLogOutPopUp();
-             break;
-             case "index":
-               popupclass.showDeletePopUp();
-               popupclass.showInformationPopUp();
-               popupclass.showPreviewPopUp();
-               popupclass.showLogOutPopUp();
-               break;
-            case "settings":
-                  popupclass.showLogOutPopUp();
-                  popupclass.showMailUpdaterPopUp();
-             break;
-             case "search":
-               popupclass.showLogOutPopUp();
-          break;
-          case "index":
-                  popupclass.showLogOutPopUp();
-             break;
-             case "create-account":
-                  popupclass.showLogOutPopUp();
-             break;
-             default:
-                console.log("error");
-                break;
-            
-}
 
     //open new page for options from header
     function openPage(id) {
@@ -136,52 +114,6 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
      }
     }
 
-
-    //class for settings page
-    class APPLICATION_SETTINGS{
-
-      //settings for profile, password, reset
-      showResetDeleteUpdateAppOptions() {
-         document.getElementById('account-settings').innerHTML = ` <button onclick="resetPassword()" class="setting-button top-mrg">Reset password</button><button onclick="verifyAccount()" class="setting-button">Verify account</button><button onclick="deleteAccount()" class="setting-button delete">Delete account</button>`;
-      }
-
-      //log in and log out buttons
-      showLogInOut() {
-         document.getElementById('log-in-out').innerHTML = `<button  class="setting-button top-mrg green" onclick="redirectLogIn()">Log in</button><button  class="setting-button top-mrg" onclick="logOut()">Log out</button>`;
-      }
-
-      //update mail button
-      showMailUpdateButton() {
-         document.getElementById('update-mail').innerHTML = `<button  class="setting-button top-mrg">Update email</button>`;
-      }
-
-      //help button
-      showHelpButton() {
-         document.getElementById('help-button').innerHTML = `<button  class="setting-button top-mrg">Help</button>`;
-      }
-
-      //show files button
-      showFilesButton() {
-         document.getElementById('files-buttons').innerHTML = `<button  class="setting-button top-mrg">Files</button><button  class="setting-button top-mrg">Profile info</button>`;
-      }
-
-    }
-
-   const APPLICATION_SETTINGS_ = new APPLICATION_SETTINGS();
-
-   switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
-      case "settings":
-         APPLICATION_SETTINGS_.showResetDeleteUpdateAppOptions();
-         APPLICATION_SETTINGS_.showLogInOut();
-         APPLICATION_SETTINGS_.showMailUpdateButton();
-         APPLICATION_SETTINGS_.showHelpButton();
-         APPLICATION_SETTINGS_.showFilesButton();
-      break;
-      default:
-         console.log("error");
-         break;
-   }
-
     //open page in header by using id
     function openPageInHeader(pageId){
       sessionStorage.setItem("pageIdInHeader",pageId);
@@ -194,8 +126,7 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
          case "2":
             var user = firebase.auth().currentUser;
             if(user) {
-               document.getElementById('log-out-mail').style.display = 'flex';
-               document.getElementById('log-out-mailp').style.display = 'flex';
+               logoutPopUpRequest.style.display = 'flex';
                document.getElementById('new-overlay').style.display = 'flex';
             }
             else {
@@ -205,11 +136,10 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
                  return null;     
      }
     }
-
+    var logoutPopUpRequest = document.getElementById('log-out-mail');
     //close log out pop up
     function closeLogOutPopUp() {
-      document.getElementById('log-out-mail').style.display = 'none';
-      document.getElementById('log-out-mailp').style.display = 'none';
+      logoutPopUpRequest.style.display = 'none';
       document.getElementById('new-overlay').style.display = 'none';
     }
         
@@ -396,10 +326,6 @@ switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).sli
     }
    }
 
-
-//array for files storage
-var cart = [];
-
    //user is logged to firebase
    firebase.auth().onAuthStateChanged(function(user) {
 //<img class="y-yJ5 i1HvM " crossorigin="anonymous" decoding="sync" sizes="505.96881103515625px" srcset="https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p750x750/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=6534fb8aacba3b089c49d56886588bf7&amp;oe=6054F93F&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 750w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p640x640/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=5a96285dfdbd7d37df3c85f85393eab0&amp;oe=6054687B&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 640w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p480x480/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=83b1125baf629d35bac1889193a0ce48&amp;oe=6054C741&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 480w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p320x320/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=647d92f970643267419fb72f3204485e&amp;oe=6054D0C8&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 320w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p240x240/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=58269d9259ebefd3617369e182aa3539&amp;oe=605459BA&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 240w" src="https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=d850ef07dbb13ca2d2e1d5bc5baf9bd9&amp;oe=60547711&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4">
@@ -408,7 +334,7 @@ var cart = [];
             var username = user.email, didsplayname = username.slice(0, -10);
             var fullname = didsplayname.toString(),context;
             
-         //REGEX for realtime database
+         
           if(fullname.includes(".")) {
              context = fullname.replace(".","");
           }else  if(fullname.includes("#")) {
@@ -421,7 +347,6 @@ var cart = [];
             context = fullname;
          }
 
-         //get useres ip adress
          var xml = new XMLHttpRequest();
          xml.open("GET","https://api.ipify.org");
          xml.send();
@@ -448,48 +373,26 @@ var cart = [];
                         //display all storage files
                         var storage = firebase.storage(),storageRef = storage.ref();
                         var i = 0;
-
-                        //list all posts to index.html
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
             result.items.forEach(function(imageRef){
                  console.log(imageRef.name.toString()); 
-                
-                 //get metadata for storage posts
                  imageRef.getMetadata().then(s=>{
                     console.log(s.size/1000000);
                     var fileSizeProperty = (s.size/1000000).toFixed(2);     
                     var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
                     time = (s.timeCreated).substring(11),newCurrnetTime = time.slice(0,-8),
-                    useriID = user.uid;                        
+                    useriID = user.uid;                    
                 i++;
-
-                //get url for storage images
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-  var iiName = imageRef.name.toString();     
-  
-  //save data about posts in post array
-  cart.push(                      
-   {
-      id:user.uid,
-      username:didsplayname,
-      name:imageRef.name,
-      size:fileSizeProperty,
-      type:fileType,
-      url:imgurl,
-      date:time,
-      time:newCurrnetTime,      
-   }
-     );        
-  
-
+  var iiName = imageRef.name.toString();            
                 showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID);
                 });
                }).catch(function(er){console.log(er)})
          });
       });
-console.log(cart);
+
       var emailFom = document.getElementById('mail-input');
-      emailFom.value = user.email;
+      //emailFom.value = user.email;
       } else {
          
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
@@ -505,18 +408,18 @@ console.log(cart);
                  
             if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><i class="far fa-bookmark" data-id="${name}"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
             }else if (fileType === "video/mp4") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
                <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               <video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><i class="far fa-bookmark"  data-id="${name}"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
+               <video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
             }else if (fileType === "application/octet-stream"){
                 HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><i class="far fa-bookmark"  data-id="${name}"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
             }else {
                  HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
                 <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><i class="far fa-bookmark"  data-id="${name}"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
+                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
             }
                 
                document.getElementById('bodyID').innerHTML += HTML;
@@ -663,8 +566,8 @@ function uploadFileToFirebase(e){
          fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(IPV4=>     
          Email.send({
             Host:"smtp.mailtrap.io",
-            Username:"6241169ec85c51",
-            Password:"e7b51c6c0341ee",          
+            Username:"913890b8ed1747",
+            Password:"7f91f262bcdb72",          
             To:"mmarko.perovici3@gmail.com",
             From:document.getElementById('mail-input').value,
             Subject:document.getElementById("subject-input").value,
@@ -773,127 +676,4 @@ function uploadFileToFirebase(e){
       document.getElementById('postcontent').innerHTML = '';
    }
 
-   const BUTTONS_DOM = [];
-   let inCartItems = [];
-
-   //new data provider
-   class DATAPROVIDER_POSTS{
-   //return posts
-    getPosts(cart){
-       console.log(cart);
-       return JSON.parse(cart);
-    }
-   }
-   
-    //save posts functions class
-   class APPLICATION_FUNCTIONS_FOR_POSTS{
-
-    //get all bookmarsk and push them in arry and add event listener
-      getSaveBookMark() {
-         const bookmarks = [...document.querySelectorAll('.fa-bookmark')];
-         BUTTONS_DOM = bookmarks;
-         buttons.forEach(bookmark => {
-            let id = bookmark.dataset.id;
-            let savedPost = bookmark.find(saved => saved.id === id);
-            if(savedPost) {
-               bookmark.disabled = false;
-               //set another favicom
-            }else {
-               button.addEventListener('click',event =>{
-                  bookmark.disabled = true;
-                  let cartItems = {...APPLICATION_STORAGE.getPost(id)};
-                  console.log(cartItems);
-                  inCartItems = [...inCartItems,cartItems];
-                  APPLICATION_STORAGE.saveCartPosts(inCartItems);
-                  this.addPostToCart(cartItems);
-               })
-            }
-         })
-      }
-      
-      //add post to cart
-      addPostToCart(item) {
-         const article = document.createElement('article');
-         article.classList.add('cart-article');
-         article.innerHTML = `<div><h1>${item.name}</h1><br><h1>${article.username}</h1></div><button class="rmv" data-id="${item.name}">REMOVE</button>`;
-         document.querySelector('#savedds').appendChild(article);
-      }
-
-      //setup for application
-      setUpApplication() {
-         inCartItems = APPLICATION_STORAGE.getAllPostsFromCart();
-         this.populatePosts(inCartItems);
-      }
-
-      //populate posts
-      populatePosts(inCartItems) {
-         inCartItems.forEach(cartItem => {
-            this.addPostToCart(cartItem);
-         })
-      }
-
-      //functions inside cart
-      insideFunctions() {
-         document.querySelector('#savedds').addEventListener('click',event =>{
-            if(event.target.classList.contains("rmv")) {
-               let removePost = event.target;
-               let postId = removePost.dataset.id;
-               document.querySelector('#savedds').removeChild(removePost.parentElement.parentElement);
-               this.removePost(postId);
-            }
-         })
-      }
-
-      //remove single post function
-      removePost(postId) {
-         inCartItems = inCartItems.filter(post => post.id !== postId);
-         APPLICATION_STORAGE.saveCartPosts(inCartItems);
-         let bookmark = this.getSingleBookMark(postId);
-         bookmark.disabled = false;
-         //set previous favicon
-      }
-
-      getSingleBookMark(bookmarkID){
-         return BUTTONS_DOM.find(bookmark => bookmark.dataset.id === bookmarkID);
-      }
-   }
-
-   //storage for saved posts
-   class APPLICATION_STORAGE{
-
-      //save all posts to local storage ALL_POSTS
-     static savePostsToStorage(posts) {
-        localStorage.setItem("ALL_POSTS",JSON.stringify(posts));
-     }
-
-     //get all posts from local storage  ALL_POSTS
-     static getAllPostsFromStorage(id) {
-        var posts = localStorage.getItem("ALL_POSTS");
-        return  posts.find(post => post.id === id);
-     }
-
-     //save post to cart(all saved posts storage)
-     static saveCartPosts(posts) {
-        localStorage.setItem("CART_POSTS",JSON.stringify(posts));
-     }
-
-     //get all saved posts from cart
-     static getAllPostsFromCart() {
-        return localStorage.getItem("CART_POSTS")? JSON.parse(localStorage.getItem("CART_POSTS")) : []; 
-     }
-   }
-   //start saving posts
-   
-      const appFunctionsClass = new APPLICATION_FUNCTIONS_FOR_POSTS();
-      appFunctionsClass.setUpApplication();
-      const dp = new DATAPROVIDER_POSTS();
-
-console.log( dp.getPosts(cart))
-
-      dp.getPosts(cart).then(post =>{
-         APPLICATION_STORAGE.savePostsToStorage(post);
-      }).then(() => {
-         appFunctionsClass.getSaveBookMark();
-         appFunctionsClass.insideFunctions();
-      })
-   
+  
