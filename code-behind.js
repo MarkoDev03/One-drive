@@ -1,6 +1,6 @@
 var contactHeader = document.querySelector('.contact-header');
 let files = {};
-
+var posts = [];
 
  console.log(navigator.userAgent)
  if( navigator.userAgent.match(/Android/i)
@@ -20,7 +20,7 @@ var ua = new UAParser();
 	console.log(result.browser);
 	//console.log(result.device);
 	console.log(result.os);
-   
+
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
      .then(response => response.json())
@@ -56,7 +56,20 @@ var ua = new UAParser();
 
      }
 
+     //show application content to user
+     class APPLICATION_PAGE_CONTENT{
+
+      //display popups in index page
+      showPopUpLocationOnIndex() {
+         document.getElementById('pagecontent-index').innerHTML = `  <div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div>`;
+      }
+  
+
+
+     }
+
 const popupclass = new APPLICATION_POPUP();
+const contentclass = new APPLICATION_PAGE_CONTENT();
 
      switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
       case "log-in":
@@ -66,6 +79,7 @@ const popupclass = new APPLICATION_POPUP();
            popupclass.showLogOutPopUp();
               break;
               case "index":
+               contentclass.showPopUpLocationOnIndex();
                 popupclass.showDeletePopUp();
                 popupclass.showInformationPopUp();
                 popupclass.showPreviewPopUp();
@@ -328,42 +342,10 @@ const popupclass = new APPLICATION_POPUP();
 
    //user is logged to firebase
    firebase.auth().onAuthStateChanged(function(user) {
-//<img class="y-yJ5 i1HvM " crossorigin="anonymous" decoding="sync" sizes="505.96881103515625px" srcset="https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p750x750/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=6534fb8aacba3b089c49d56886588bf7&amp;oe=6054F93F&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 750w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/sh0.08/e35/p640x640/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=5a96285dfdbd7d37df3c85f85393eab0&amp;oe=6054687B&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 640w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p480x480/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=83b1125baf629d35bac1889193a0ce48&amp;oe=6054C741&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 480w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p320x320/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=647d92f970643267419fb72f3204485e&amp;oe=6054D0C8&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 320w,https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/p240x240/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=58269d9259ebefd3617369e182aa3539&amp;oe=605459BA&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4 240w" src="https://instagram.fbeg4-1.fna.fbcdn.net/v/t51.2885-15/e35/150140867_262871772028219_8056152452590206927_n.jpg?tp=1&amp;_nc_ht=instagram.fbeg4-1.fna.fbcdn.net&amp;_nc_cat=107&amp;_nc_ohc=wTEkQIcM8_YAX_YfP62&amp;ccb=7-4&amp;oh=d850ef07dbb13ca2d2e1d5bc5baf9bd9&amp;oe=60547711&amp;ig_cache_key=MjUwOTkwMzc2NjMyMzI4OTUzNw%3D%3D.2-ccb7-4">
+
       if (user) {
          
-            var username = user.email, didsplayname = username.slice(0, -10);
-            var fullname = didsplayname.toString(),context;
-            
-         
-          if(fullname.includes(".")) {
-             context = fullname.replace(".","");
-          }else  if(fullname.includes("#")) {
-            context = fullname.replace("#","");
-         }else if(fullname.includes("[")) {
-            context = fullname.replace("]","");
-         }else if(fullname.includes("$")) {
-            context = fullname.replace("$","");
-         }else {
-            context = fullname;
-         }
-
-         var xml = new XMLHttpRequest();
-         xml.open("GET","https://api.ipify.org");
-         xml.send();
-         xml.addEventListener('loadend',getIp);      
-
-         function getIp(e) {
-            userIP(xml.responseText)
-         }
-         function userIP(ipv4) {
            
-
-            firebase.database().ref("users/" + context).set({
-               ipv4:ipv4,
-            
-
-            })
-         }
 
          //display user's profile image
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
@@ -381,25 +363,82 @@ const popupclass = new APPLICATION_POPUP();
                     var fileSizeProperty = (s.size/1000000).toFixed(2);     
                     var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
                     time = (s.timeCreated).substring(11),newCurrnetTime = time.slice(0,-8),
-                    useriID = user.uid;                    
+                    useriID = user.uid;   
+                                     
                 i++;
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-  var iiName = imageRef.name.toString();            
+  var iiName = imageRef.name.toString();    
+
+  //save file, premesti ovo na post kad se klikne i prosled mu parametre
+  var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
+
+  var xml = new XMLHttpRequest();
+  xml.open("GET","https://api.ipify.org");
+  xml.send();
+  xml.addEventListener('loadend',getIp);      
+
+  function getIp(e) {
+     userIP(xml.responseText)
+  }
+  function userIP(ipv4) {
+    
+     firebase.database().ref("users/" + context).set({
+        ipv4:ipv4,
+        saved:{
+           post_id:user.uid+fileNameStorage,
+           post_url: imgurl,
+           username:didsplayname,
+           
+
+        }
+     
+     })
+  }
+          
                 showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID);
                 });
                }).catch(function(er){console.log(er)})
          });
       });
 
+      var username = user.email, didsplayname = username.slice(0, -10);
+      var fullname = didsplayname.toString(),context;
+      
+   
+    if(fullname.includes(".")) {
+       context = fullname.replace(".","");
+    }else  if(fullname.includes("#")) {
+      context = fullname.replace("#","");
+   }else if(fullname.includes("[")) {
+      context = fullname.replace("]","");
+   }else if(fullname.includes("$")) {
+      context = fullname.replace("$","");
+   }else {
+      context = fullname;
+   }
+      firebase.database().ref("users/" + context).on("value",function(snapshot){
+
+            var data = snapshot.val();
+            console.log(data.saved);
+         
+         
+      });
       var emailFom = document.getElementById('mail-input');
-      //emailFom.value = user.email;
+      emailFom.value = user.email;
+      
       } else {
          
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
          document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
-        
+
+     
+         
+
+
       }
     });
+    
+console.log(posts);
 
     //show users data/ from storage on page
     function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID) {
@@ -425,6 +464,8 @@ const popupclass = new APPLICATION_POPUP();
                document.getElementById('bodyID').innerHTML += HTML;
                });
     }
+  
+
 
     //show preview of image
   function preview(locationOfImage,type) {
