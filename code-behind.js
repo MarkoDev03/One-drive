@@ -500,17 +500,40 @@ console.log(posts);
    }
 }
   
-
+['a', 'b', 'c'].forEach(function callback(v) {
+   console.log(v);
+ });
+ let colors = ['red', 'blue', 'green'];
+// idx and sourceArr optional; sourceArr == colors
+colors.forEach(function(color, idx, sourceArr) {
+	console.log(color, idx, sourceArr)
+});
 function fetchSvedPosts(context,iiName) {
-   firebase.database().ref("users/" + context + "/savedPosts" ).once('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
+   var i = 0;
+   // firebase.database().ref("users/" + context + "/savedPosts/" ).once('value', (snapshot) => {
+     
+   //    snapshot.forEach(function(childSnapshot,idx,a) {
+   //           if(childSnapshot.val().file_name === iiName) {
+   //              console.log(idx + "ssss" + childSnapshot.val().file_name);
+   //             document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
+   //             onclick="removeSvedPost('${context}','${childSnapshot}','${childSnapshot.val().file_name}')"></i>`;
+            
+   //           }
+   //   });
+   // });
+
+   firebase.database().ref("users/" + context +"/savedPosts" ).once('value', (snapshot) => {
+     
+      snapshot.forEach(function(childSnapshot,idx,a) {
              if(childSnapshot.val().file_name === iiName) {
+                console.log(idx + "ssss" + childSnapshot.val().file_name);
                document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
-               onclick="removeSvedPost('${context}','${childSnapshot.key()}','${childSnapshot.val().file_name}')"></i>`;
+               onclick="removeSvedPost('${context}','${childSnapshot}','${childSnapshot.val().file_name}')"></i>`;
             
              }
      });
    });
+
 }
      //close image preview
      function closeImagePreview(){
@@ -527,7 +550,7 @@ function fetchSvedPosts(context,iiName) {
 
 function removeSvedPost(databasereference,postLocation, postName){
    firebase.database().ref("users/" + databasereference + "/savedPosts/" + postLocation).remove();
-   alert('re');
+   alert(postLocation);
 }
 
 //save post to storage
