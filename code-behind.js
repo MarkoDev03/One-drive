@@ -50,7 +50,7 @@ var ua = new UAParser();
       }
 
       //show update mail
-      showMailUpdater() {
+      showMailUpdaterDiv() {
          document.getElementById('update-ml').innerHTML = `<div class=" set-class popup" id="ch-mail"><button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" style="background-color:red">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
       }
 
@@ -60,9 +60,9 @@ var ua = new UAParser();
      class APPLICATION_PAGE_CONTENT{
 
       //display popups in index page
-      showPopUpLocationOnIndex() {
-         document.getElementById('pagecontent-index').innerHTML = `  <div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div>`;
-      }
+       showPopUpLocationOnIndex() {
+          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div>`;
+       }
   
 
 
@@ -71,38 +71,12 @@ var ua = new UAParser();
 const popupclass = new APPLICATION_POPUP();
 const contentclass = new APPLICATION_PAGE_CONTENT();
 
-     switch((location.pathname.substring(location.pathname.lastIndexOf("/") + 1)).slice(0,-5)) {
-      case "log-in":
-           popupclass.showLogOutPopUp();
-              break;
-       case "contact-us":
-           popupclass.showLogOutPopUp();
-              break;
-              case "index":
-               contentclass.showPopUpLocationOnIndex();
-                popupclass.showDeletePopUp();
-                popupclass.showInformationPopUp();
-                popupclass.showPreviewPopUp();
-                popupclass.showLogOutPopUp();
-                break;
-             case "settings":
-                   popupclass.showLogOutPopUp();
-                   popupclass.showMailUpdater();
-              break;
-              case "search":
-                popupclass.showLogOutPopUp();
-           break;
-           case "index":
-                   popupclass.showLogOutPopUp();
-              break;
-              case "create-account":
-                   popupclass.showLogOutPopUp();
-              break;
-              default:
-                 console.log("error");
-                 break;
-             
- }
+contentclass.showPopUpLocationOnIndex();
+popupclass.showDeletePopUp();
+popupclass.showInformationPopUp();
+popupclass.showPreviewPopUp();
+popupclass.showLogOutPopUp();
+popupclass.showMailUpdaterDiv();
 
      //show header options on index page
      function fncHeader(data) {
@@ -150,6 +124,7 @@ const contentclass = new APPLICATION_PAGE_CONTENT();
                  return null;     
      }
     }
+
     var logoutPopUpRequest = document.getElementById('log-out-mail');
     //close log out pop up
     function closeLogOutPopUp() {
@@ -160,6 +135,7 @@ const contentclass = new APPLICATION_PAGE_CONTENT();
     //show mail changer
     function showMailUpdater() {
        document.querySelector('.set-displ').style.display = 'flex';
+       document.getElementById('update-ml').style.display = 'flex';
        document.querySelector('.overlay-pop-up').style.display = 'flex';
     }
 
@@ -167,6 +143,7 @@ const contentclass = new APPLICATION_PAGE_CONTENT();
     function cancleUpdateMail() {
       document.querySelector('.set-displ').style.display = 'none';
       document.querySelector('.overlay-pop-up').style.display = 'none';
+      document.getElementById('update-ml').style.display = 'none';
       document.body.style.overflowY = 'visible';
     }
 
@@ -383,19 +360,14 @@ const contentclass = new APPLICATION_PAGE_CONTENT();
   function userIP(ipv4) {
     
      firebase.database().ref("users/" + context).set({
-        ipv4:ipv4,
-        saved:{
-           post_id:user.uid+fileNameStorage,
-           post_url: imgurl,
-           username:didsplayname,
-           
-
-        }
+        ipv4:ipv4
+        
      
      })
   }
-          
-                showUsersStorageContectOnPage(i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID);
+  var storageSveReference = user.uid+fileNameStorage;
+
+                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference);
                 });
                }).catch(function(er){console.log(er)})
          });
@@ -416,13 +388,6 @@ const contentclass = new APPLICATION_PAGE_CONTENT();
    }else {
       context = fullname;
    }
-      firebase.database().ref("users/" + context).on("value",function(snapshot){
-
-            var data = snapshot.val();
-            console.log(data.saved);
-         
-         
-      });
       var emailFom = document.getElementById('mail-input');
       emailFom.value = user.email;
       
@@ -441,30 +406,47 @@ const contentclass = new APPLICATION_PAGE_CONTENT();
 console.log(posts);
 
     //show users data/ from storage on page
-    function showUsersStorageContectOnPage(row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID) {
+    function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference) {
                images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
                  
             if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
+               <i class="far fa-bookmark"
+                onclick="savePostToStorage(
+                  '${context}','${URL}'
+                )"></i>
+
+               </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
             }else if (fileType === "video/mp4") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
                <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               <video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
+               <video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i>
+               </div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
             }else if (fileType === "application/octet-stream"){
                 HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
+               <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}')"></i>
+               </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
             }else {
                  HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
                 <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
+                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
+                <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}')"></i>
+                </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
             }
                 
                document.getElementById('bodyID').innerHTML += HTML;
                });
     }
-  
+  var niz = [1,2,3];
+  function s(niz){
+   niz.forEach(function(t){
+      console.log(t);
+   })
+  }
+  s(niz);
 
 
     //show preview of image
@@ -507,6 +489,46 @@ console.log(posts);
            div.style.display = 'none';
            document.getElementById('audio').pause();      
      }
+  var s = [];
+//save post to storage
+function savePostToStorage(niz,ur//databasereference,fileurl,filename,filesize,filetype,datecreated,timecreated,username,storageid
+   ) {
+     
+      s.push(
+         {niz,ur
+         }
+         );
+         firebase.database().ref("users/" + niz).set({
+            saved:{s}
+         })
+       /*niz.forEach(function(e){
+         firebase.database().ref("users/" + niz[0]).set({
+            saved:[{e}]
+         })
+       })*/
+      /*for(var i =0;i<niz.length;i++){
+          firebase.database().ref("users/" + niz[0]).set({
+            saved:[{id:niz[0],img:niz[2]}]
+         })
+      }*/
+     
+  /* firebase.database().ref("users/" + databasereference).set({
+      saved:{
+      filename:{
+      post_id:storageid,
+      post_url: fileurl,
+      username:username,
+      file_name:filename,
+      file_size:filesize,
+      file_type:filetype,
+      date_created:datecreated,
+      time_created:timecreated
+   }}
+   })*/
+    console.log(s)
+}
+
+
 
     //delete file from firebase storage
 function deleteThisPost(name,size,type,date,time){
