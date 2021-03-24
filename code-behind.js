@@ -420,7 +420,7 @@ console.log(posts);
                  
             if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
+               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
              <div id="${name}">
              <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>
              </div>
@@ -465,7 +465,7 @@ console.log(posts);
 
                 </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
             }
-            fetchSvedPosts(context,name);
+            fetchSvedPosts(context,URL,name,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage);
                document.getElementById('bodyID').innerHTML += HTML;
                });
     }
@@ -508,7 +508,8 @@ console.log(posts);
 colors.forEach(function(color, idx, sourceArr) {
 	console.log(color, idx, sourceArr)
 });
-function fetchSvedPosts(context,iiName) {
+
+function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage) {
    var i = 0;
    // firebase.database().ref("users/" + context + "/savedPosts/" ).once('value', (snapshot) => {
      
@@ -522,15 +523,33 @@ function fetchSvedPosts(context,iiName) {
    //   });
    // });
 
-   firebase.database().ref("users/" + context +"/savedPosts" ).once('value', (snapshot) => {
+   var cont;
+         if(filename.includes(".")) {
+            cont = filename.replace(/\./g,' ');
+         }else  if(filename.includes("#")) {
+            cont = filename.replace(/\#/g,' ');
+        }else if(filename.includes("[")) {
+         cont = filename.replace(/\[/g,' ');
+        }else if(filename.includes("$")) {
+         cont = filename.replace(/\$/g,' ');
+        }else {
+         cont = filename;
+        }
+
+   firebase.database().ref("users/" + context + "/" + cont + "/").once('value', (snapshot) => {
      
-      snapshot.forEach(function(childSnapshot,idx,a) {
-             if(childSnapshot.val().file_name === iiName) {
-                console.log(idx + "ssss" + childSnapshot.val().file_name);
+      snapshot.forEach(function(childSnapshot) {
+             //if(childSnapshot.val().file_name === filename) {
+             
+               // for(i=0;  i < childSnapshot.length; i++){
+               //    console.log(childSnapshot[i]);//<---returns list of unique URLS
+                
+               //  }
+console.log(childSnapshot.val())
                document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
-               onclick="removeSvedPost('${context}','${childSnapshot}','${childSnapshot.val().file_name}')"></i>`;
+               onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
             
-             }
+            // }
      });
    });
 
@@ -548,15 +567,30 @@ function fetchSvedPosts(context,iiName) {
 
   var savedPosts = [];
 
-function removeSvedPost(databasereference,postLocation, postName){
-   firebase.database().ref("users/" + databasereference + "/savedPosts/" + postLocation).remove();
-   alert(postLocation);
+function removeSvedPost(filename, databasereference,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage){
+   var cont;
+   if(filename.includes(".")) {
+      cont = filename.replace(/\./g,' ');
+   }else  if(filename.includes("#")) {
+      cont = filename.replace(/\#/g,' ');
+  }else if(filename.includes("[")) {
+   cont = filename.replace(/\[/g,' ');
+  }else if(filename.includes("$")) {
+   cont = filename.replace(/\$/g,' ');
+  }else {
+   cont = filename;
+  }
+
+   firebase.database().ref("users/" + databasereference +"/"  + cont).remove();
+   document.getElementById(filename).innerHTML = `<i class="far fa-bookmark" onclick="savePostToStorage('${databasereference}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
+    
+
 }
 
 //save post to storage
 function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,datecreated,timecreated,username,storageid,profileimage) {
      
-   document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark"></i>`;
+  
    savedPosts.push(
          {
             post_id:storageid,
@@ -570,15 +604,46 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
             profile_image:profileimage
          }
          );
+var cont;
+         if(filename.includes(".")) {
+            cont = filename.replace(/\./g,' ');
+         }else  if(filename.includes("#")) {
+            cont = filename.replace(/\#/g,' ');
+        }else if(filename.includes("[")) {
+         cont = filename.replace(/\[/g,' ');
+        }else if(filename.includes("$")) {
+         cont = filename.replace(/\$/g,' ');
+        }else {
+         cont = filename;
+        }
 
-          firebase.database().ref("users/" + databasereference + "/").set({
+        document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark"
+        onclick="removeSvedPost('${cont}','${databasereference}','${fileurl}','${filename}','${filesize}','${filetype}','${datecreated}','${timecreated}','${username}','${storageid}','${profileimage}')"
+        
+        ></i>`;
+          firebase.database().ref("users/" + databasereference + "/" + cont + "/").set({
            
-            savedPosts
+            post:{post_id:storageid,
+            post_url: fileurl,
+            username:username,
+            file_name:filename,
+            file_size:filesize,
+            file_type:filetype,
+            date_created:datecreated,
+            time_created:timecreated,
+            profile_image:profileimage}
             
           })
 
-        
-        
+          fileName(cont,databasereference);
+      
+          firebase.database().ref("users/" + databasereference + "/" + cont ).once('value', (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                   console.log(childSnapshot.val());
+                   
+           });
+         });
+
    //  firebase.database().ref("users/" + databasereference ).once('value', (snapshot) => {
    //    snapshot.forEach((childSnapshot) => {
    //    document.getElementById('pw').innerHTML = 
@@ -590,30 +655,41 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
    //  });
     var user = firebase.auth().currentUser;
 
+   //    var cont;
+   //    if(filename.includes(".")) {
+   //       cont = filename.replace(/\./g,' ');
+   //    }else  if(filename.includes("#")) {
+   //       cont = filename.replace(/\#/g,' ');
+   //   }else if(filename.includes("[")) {
+   //    cont = filename.replace(/\[/g,' ');
+   //   }else if(filename.includes("$")) {
+   //    cont = filename.replace(/\$/g,' ');
+   //   }else {
+   //    cont = filename;
+   //   }
 
-      var cont;
-      if(filename.includes(".")) {
-         cont = filename.replace(/\./g,' ');
-      }else  if(filename.includes("#")) {
-         cont = filename.replace(/\#/g,' ');
-     }else if(filename.includes("[")) {
-      cont = filename.replace(/\[/g,' ');
-     }else if(filename.includes("$")) {
-      cont = filename.replace(/\$/g,' ');
-     }else {
-      cont = filename;
-     }
-
-      var i = user.email.replace(/\./g,' ');
+   //    var i = user.email.replace(/\./g,' ');
 
       // firebase.database().ref("users/" + i + '/' +cont).set({
       //    savedPosts
       //  })
 }
+function fileName(name,data) {
+   
 
-
+   firebase.database().ref("users/" + name + "/"+data ).once('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+             console.log(childSnapshot.val());
+             
+     });
+   });
+}
+function dataUrl(data) {return data.toString()}
 function listit() {
+   
+try{
    var user = firebase.auth().currentUser;
+   if(user) {
    var username = user.email, didsplayname = username.slice(0, -10);
       var fullname = didsplayname.toString(),context;
   
@@ -629,15 +705,19 @@ function listit() {
    }else {
       context = fullname;
    }
-   
-   firebase.database().ref("users/" + context + "/savedPosts" ).once('value', (snapshot) => {
+   firebase.database().ref("users/" + context  + "/").once('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
-             console.log(childSnapshot.val().file_name);
-             document.getElementById('sasd').innerHTML += `<p>${childSnapshot.val().file_name}</p>`;
+             console.log(childSnapshot.val());
+             
      });
    });
    
+   
 }
+}
+catch(error) {console.warn(error);}
+}
+window.onload = listit();
 
 function shoro() {
    var user = firebase.auth().currentUser;
@@ -658,18 +738,14 @@ function shoro() {
       context = fullname;
    }
    
-   firebase.database().ref("users/" + context + "/savedPosts" ).once('value', (snapshot) => {
+   firebase.database().ref("users/" + context + "/" + cont + "/").once('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
              console.log(childSnapshot.val().file_name);
              document.getElementById('pw').innerHTML += `<p>${childSnapshot.val().file_name}</p>`;
      });
    });}
-   var br = 0;
-   br++;
+ 
   
-   if(br == 1) {
-      document.getElementById('sa').disabled = true;
-   }
 }
 
 
