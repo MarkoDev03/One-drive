@@ -44,6 +44,10 @@ var posts = [];
          document.getElementById('update-ml').innerHTML = `<div class=" set-class popup" id="ch-mail"><button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" style="background-color:red">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
       }
 
+      showAlertUser() {
+         document.getElementById('alert-popup').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px" id="text-message-alert"></button><div class="set-display-flex" id="desc-alert"></div><div class="flex-button"> <button class="new-mail" onclick="closeALert()">CLOSE</button></div></div>`;
+      }
+
      }
 
      //class that displays all popups in div on all pages
@@ -51,7 +55,7 @@ var posts = [];
 
       //display popups in index page
        showPopUpLocationOnIndex() {
-          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div>`;
+          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div><div class="set-displ" id="alert-popup" style="padding: 10px;"></div>`;
        }
 
      }
@@ -66,6 +70,7 @@ popupclass.showInformationPopUp();
 popupclass.showPreviewPopUp();
 popupclass.showLogOutPopUp();
 popupclass.showMailUpdaterDiv();
+popupclass.showAlertUser();
 
      //show header options on evry html page
      function fncHeader(data) {
@@ -143,19 +148,21 @@ popupclass.showMailUpdaterDiv();
       //create account to firebase storage
        auth.createUserWithEmailAndPassword(email.value, password.value).then((userCredential) => {         
         window.location.href = "settings.html";
+
+        //alert user
+        alertUserAboutSuccess("Your account is created!");
        })
        .catch(function (error){
          //error variables 
          var errorCode = error.code;
          var errorMessage = error.message;
 
+         alertUserAboutSuccess(errorMessage);    
+
          //error logs to administrator
          console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
        });
-
-       //alert user about successfully created account
-       alert("Your account is created!");
+      
       }
 
    //log in
@@ -172,9 +179,11 @@ popupclass.showMailUpdaterDiv();
        var errorCode = error.code;
        var errorMessage = error.message;
 
+      //error message
+       alertUserAboutSuccess(errorMessage);
+
        //error logs to administrator
        console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-       window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
       });
 	}
  
@@ -182,8 +191,10 @@ popupclass.showMailUpdaterDiv();
     function logOut() {    
 		auth.signOut();
 
+      //alert user about logging out
+		alertUserAboutSuccess("Logged Out");
+
       //redirect user to login page 
-		alert("Signed Out");
       window.location.href = 'log-in.html';
     }
 
@@ -198,22 +209,24 @@ popupclass.showMailUpdaterDiv();
       firebase.auth().sendPasswordResetEmail(user.email).then(function() {
 
          //message sent successfully
-         window.alert("Message sent to email: " +  user.email );
+         alertUserAboutSuccess("Message sent to email: " +  user.email );
       })
       .catch(function(error) {
          //error variables 
          var errorCode = error.code;
          var errorMessage = error.message;
 
+         //alert user about error
+         alertUserAboutSuccess(errorMessage);s
+
          //error logs to administrator
-         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);         
       });
 
    }
      else {
         //if email field is empty alert user
-        window.alert("Enter your email adress firs!");
+        alertUserAboutSuccess("Enter your email adress firs!");
      }
     }
 
@@ -230,16 +243,18 @@ popupclass.showMailUpdaterDiv();
           firebase.auth().sendPasswordResetEmail(forgottenEmail).then(function(){
 
             //email send successfully
-             window.alert("Message sent to email:" + forgottenEmail);
+            alertUserAboutSuccess("Message sent to email:" + forgottenEmail);
           })
          .catch(function(error) {
          //error variables 
          var errorCode = error.code;
          var errorMessage = error.message;
 
+          //alert user about error
+          alertUserAboutSuccess(errorMessage);
+
          //error logs to administrator
          console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
       });
 
        }//if-end
@@ -260,31 +275,38 @@ popupclass.showMailUpdaterDiv();
        user.sendEmailVerification().then(function(){
 
          //account verification sent
-            window.alert("Account verification sent!");
+         alertUserAboutSuccess("Account verification sent!");
        })
        .catch(function(error) {
         //error variables 
         var errorCode = error.code;
         var errorMessage = error.message;
 
+        //alert user about error
+        alertUserAboutSuccess(errorMessage);
+
         //error logs to administrator
         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-        window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
        })
     }
 
     //delete account
     function deleteAccount() {
        firebase.auth().currentUser.delete().then(function(){
-          window.alert("Account successfuly deleted.");
-       }).catch(function (error){
+
+         //deleted successfully
+         alertUserAboutSuccess("Account successfuly deleted.");
+       })
+       .catch(function (error){
         //error variables 
         var errorCode = error.code;
         var errorMessage = error.message;
 
+        //alert user about error
+        alertUserAboutSuccess(errorMessage);
+
         //error logs to administrator
         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-        window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
        });
     }
 
@@ -299,14 +321,18 @@ popupclass.showMailUpdaterDiv();
        user.updateEmail(newEmail.value).then(function () {
 
          //mail updated successfully
-          alert("Mail updated successfully!");
+         alertUserAboutSuccess("Mail updated successfully!");
           setTimeout(1000,window.location.reload());
        })
        .catch(function(error){
          var errorCode = error.code;
          var errorMessage = error.message;
-         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+
+         //alert user about error
+         alertUserAboutSuccess(errorMessage);
+         
+         //alert admionistartor about error
+         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
        });
     }
 
@@ -345,8 +371,10 @@ popupclass.showMailUpdaterDiv();
 
     }//for-end
     else {
+      firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').put('./media/profileimg.png');
+
        //if user is not logged, deny user to post profile image
-       alert("You must log in to post profile image:");
+       alertUserAboutSuccess("You must log in to post profile image:");
     }//else-end
    }
 
@@ -407,15 +435,15 @@ popupclass.showMailUpdaterDiv();
       var username = user.email, didsplayname = username.slice(0, -10);
       var fullname = didsplayname.toString(),context;
    
-   //replace following characters for database entitete name
-    if(fullname.includes(".")) {
-       context = fullname.replace(".","");
-    }else  if(fullname.includes("#")) {
-      context = fullname.replace("#","");
+  //replace characters in username to get database reference
+   if(fullname.includes(".")) {
+      context = fullname.replace(/\./g,' ');
+   }else  if(fullname.includes("#")) {
+      context = fullname.replace(/\#/g,' ');
    }else if(fullname.includes("[")) {
-      context = fullname.replace("]","");
-   }else if(fullname.includes("$")) {
-      context = fullname.replace("$","");
+      context = fullname.replace(/\[/g,' ');
+   } else if(fullname.includes("$")) {
+      context = fullname.replace(/\$/g,' ');
    }else {
       context = fullname;
    }
@@ -629,10 +657,27 @@ function deleteThisPost(name,size,type,date,time){
       pageReloader();
    })
    .catch((error)=>{
-      alert(error);
+
+      //alert user about deleting
+      alertUserAboutSuccess(error);
    })
 })
  }
+
+ //alert user
+ function alertUserAboutSuccess(message) {
+   document.getElementById('alert-popup').style.display = 'flex';
+   document.getElementById('text-message-alert').innerText = message;
+   document.getElementById('new-overlay').style.display = 'flex';
+}
+
+//close alert popup
+function closeALert() {
+   document.getElementById('alert-popup').style.display = 'none';
+   document.getElementById('text-message-alert').innerText = "";
+   document.getElementById('new-overlay').style.display = 'none';
+}
+
 
         //show info about post
         function infoData(name,size,type,date,time){
@@ -725,7 +770,9 @@ function uploadFileToFirebase(e){
 }
 //user is not logged in
            else{
-              alert("You must log in!");
+
+            //alert user
+            alertUserAboutSuccess("You must log in!");
            }
    }
 
@@ -748,7 +795,11 @@ function uploadFileToFirebase(e){
      .then(mesage => {
 
       //alert user if mail is not sent and reload page
-        alert(mesage);
+      if(mesage === "Ok" || mesage === "OK" || mesage === "ok") {
+      alertUserAboutSuccess("Mail sent!");
+    }else{
+      alertUserAboutSuccess(mesage);
+    }
          window.location.reload();
       }
      )
@@ -800,7 +851,9 @@ function uploadFileToFirebase(e){
 
             //in case of en error
            console.log(error);
-           alert(error);
+
+           //alert user about error
+           alertUserAboutSuccess(mesage);(error);
 
            return null;
          }
@@ -850,7 +903,9 @@ function uploadFileToFirebase(e){
                   window.location.href = "upload.html";
                }
                 else {
-                   alert("You must log in!");
+
+                  //alert users
+                  alertUserAboutSuccess(mesage);("You must log in!");
                 }
                   break;
                   case "4":
