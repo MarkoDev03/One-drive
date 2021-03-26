@@ -1,25 +1,14 @@
+//header id for evry page
 var contactHeader = document.querySelector('.contact-header');
+
+//files and posts arrays
 let files = {};
 var posts = [];
 
- console.log(navigator.userAgent)
- if( navigator.userAgent.match(/Android/i)
- || navigator.userAgent.match(/webOS/i)
- || navigator.userAgent.match(/iPhone/i)
- || navigator.userAgent.match(/iPad/i)
- || navigator.userAgent.match(/iPod/i)
- || navigator.userAgent.match(/BlackBerry/i)
- || navigator.userAgent.match(/Windows Phone/i)){
-console.warn("You're using Mobile Device!!");} else console.warn("no dy");
-
-var ua = new UAParser();
+   //get information about browser, device, cpu, versions, os
+   var ua = new UAParser();
 	var result = ua.getResult();
 	console.log(result);
-
-
-	console.log(result.browser);
-	//console.log(result.device);
-	console.log(result.os);
 
      //get data from json file for options in header
      fetch('data.json',{method:"GET"})
@@ -27,6 +16,7 @@ var ua = new UAParser();
      .then(data => window.onload = fncHeader(data))
      .catch(error => console.error(error));
 
+     //class that defines all popups in the application
      class APPLICATION_POPUP{
 
       //show information popup
@@ -56,29 +46,28 @@ var ua = new UAParser();
 
      }
 
-     //show application content to user
+     //class that displays all popups in div on all pages
      class APPLICATION_PAGE_CONTENT{
 
       //display popups in index page
        showPopUpLocationOnIndex() {
           document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div>`;
        }
-  
-
 
      }
 
+//objects for classes for popups and class which displays all popups in divs on all pages
 const popupclass = new APPLICATION_POPUP();
 const contentclass = new APPLICATION_PAGE_CONTENT();
 
-contentclass.showPopUpLocationOnIndex();
+contentclass.showPopUpLocationOnIndex();//show div on all pages for popups
 popupclass.showDeletePopUp();
 popupclass.showInformationPopUp();
 popupclass.showPreviewPopUp();
 popupclass.showLogOutPopUp();
 popupclass.showMailUpdaterDiv();
 
-     //show header options on index page
+     //show header options on evry html page
      function fncHeader(data) {
         var item = data.header;
        for(var i = 0; i < item.length; i++) {
@@ -102,11 +91,12 @@ popupclass.showMailUpdaterDiv();
      }
     }
 
-    //open page in header by using id
+    //open page in header by using page id from session storage
     function openPageInHeader(pageId){
       sessionStorage.setItem("pageIdInHeader",pageId);
       var get = sessionStorage.getItem("pageIdInHeader");
 
+      //check clicked button id and open right page for its id
      switch(get) {
         case "1":
          window.location.href= "contact-us.html";;
@@ -125,7 +115,646 @@ popupclass.showMailUpdaterDiv();
      }
     }
 
+    //popup for logout location 
     var logoutPopUpRequest = document.getElementById('log-out-mail');
+
+    //INSTALL FIREBASE SERVER
+    var firebaseConfig = {
+      apiKey: "AIzaSyBInVpEsEvXzZtYDLy7qNA4AOIaS-5mjb8",
+      authDomain: "saveprojects-e2b7f.firebaseapp.com",
+      projectId: "saveprojects-e2b7f",
+      storageBucket: "saveprojects-e2b7f.appspot.com",
+      messagingSenderId: "1068677321956",
+      appId: "1:1068677321956:web:97a4d0b9ddeb63520588f1",
+      measurementId: "G-HXW1NYY74D"
+    };
+
+    // Initialize Firebase to saveprojects
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+   
+  //create account
+    function createAccount(){
+
+      //account parameters required
+        let email = document.getElementById('e-mail-input');
+        let password = document.getElementById('password-input');
+
+      //create account to firebase storage
+       auth.createUserWithEmailAndPassword(email.value, password.value).then((userCredential) => {         
+        window.location.href = "settings.html";
+       })
+       .catch(function (error){
+         //error variables 
+         var errorCode = error.code;
+         var errorMessage = error.message;
+
+         //error logs to administrator
+         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       });
+
+       //alert user about successfully created account
+       alert("Your account is created!");
+      }
+
+   //log in
+   function logIn(){		
+
+      //account parameters that are required for logging in
+		var emailIN = document.getElementById("email");
+		var passwordIN = document.getElementById("password");
+      
+      //log in to existing account on firebase using email and password
+		firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value).then(function() {iconEvent(4);})
+		.catch(function (error){
+       //error variables 
+       var errorCode = error.code;
+       var errorMessage = error.message;
+
+       //error logs to administrator
+       console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+      });
+	}
+ 
+   //log out 
+    function logOut() {    
+		auth.signOut();
+
+      //redirect user to login page 
+		alert("Signed Out");
+      window.location.href = 'log-in.html';
+    }
+
+    //reset password using email verification
+    function resetPassword() {
+        var user = firebase.auth().currentUser;
+
+        //user is online
+        if(user) {
+
+      //send gmail to user to reset password   
+      firebase.auth().sendPasswordResetEmail(user.email).then(function() {
+
+         //message sent successfully
+         window.alert("Message sent to email: " +  user.email );
+      })
+      .catch(function(error) {
+         //error variables 
+         var errorCode = error.code;
+         var errorMessage = error.message;
+
+         //error logs to administrator
+         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+      });
+
+   }
+     else {
+        //if email field is empty alert user
+        window.alert("Enter your email adress firs!");
+     }
+    }
+
+    //user cannot remember the password
+    function resetUserPasswordLogging() {
+
+      //forgotten user email
+       var forgottenEmail = document.getElementById('email').value;
+
+       //check does email field is empty
+       if(forgottenEmail != null) {
+
+         //send email to user to reset password
+          firebase.auth().sendPasswordResetEmail(forgottenEmail).then(function(){
+
+            //email send successfully
+             window.alert("Message sent to email:" + forgottenEmail);
+          })
+         .catch(function(error) {
+         //error variables 
+         var errorCode = error.code;
+         var errorMessage = error.message;
+
+         //error logs to administrator
+         console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+      });
+
+       }//if-end
+       else {
+
+          //if input field is empty
+          alert("Enter your email!");
+       }
+    }
+
+    //verify account
+    function verifyAccount() {
+
+      //parameters for account verification
+       var user = firebase.auth().currentUser;
+
+       //verify account using firebase
+       user.sendEmailVerification().then(function(){
+
+         //account verification sent
+            window.alert("Account verification sent!");
+       })
+       .catch(function(error) {
+        //error variables 
+        var errorCode = error.code;
+        var errorMessage = error.message;
+
+        //error logs to administrator
+        console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+        window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       })
+    }
+
+    //delete account
+    function deleteAccount() {
+       firebase.auth().currentUser.delete().then(function(){
+          window.alert("Account successfuly deleted.");
+       }).catch(function (error){
+        //error variables 
+        var errorCode = error.code;
+        var errorMessage = error.message;
+
+        //error logs to administrator
+        console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+        window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       });
+    }
+
+    //upadte account email
+    function updateMail() {
+
+      //mail upadate parameters
+       var user = firebase.auth().currentUser;
+       var newEmail = document.getElementById('new-mail-set');
+       
+       //update email
+       user.updateEmail(newEmail.value).then(function () {
+
+         //mail updated successfully
+          alert("Mail updated successfully!");
+          setTimeout(1000,window.location.reload());
+       })
+       .catch(function(error){
+         var errorCode = error.code;
+         var errorMessage = error.message;
+         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
+       });
+    }
+
+    //logged user uploads profile image
+    function uploadImageUser(e){
+       var user = firebase.auth().currentUser;   
+
+       //if user is online
+       if(user){
+
+       // get file from user   
+       var filess = e.target.files;
+
+       //save new profileimage to firebase server storage
+       for (const filea of filess)//in case of several files
+        {
+          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
+            .put(filea).on("state_changed",snapshot=> { 
+               
+               //show uploading progress to user statement
+
+               //image is not uploaded more then 0% and progress bar would not work for user
+               if((snapshot.bytesTransferred / snapshot.totalBytes) * 100 === "0"){
+                  document.getElementById('load-animations').style.display = "none";                  
+                 }
+                 else{
+                  //user is uploading profile image and data is showing on page
+                  document.getElementById('load-animations').style.display = 'flex';
+                  document.querySelector('.progressBar').value =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  document.getElementById('percentage').innerText = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";   
+                 }//else-end
+
+            });//firebase-end
+
+       }//if-end   
+
+    }//for-end
+    else {
+       //if user is not logged, deny user to post profile image
+       alert("You must log in to post profile image:");
+    }//else-end
+   }
+
+   //user is logged to firebase in an existing account
+   firebase.auth().onAuthStateChanged(function(user) {
+
+      //user is online
+      if (user) {
+
+         //display user's profile 
+         var username = user.email, didsplayname = username.slice(0, -10);                                           
+         var storage = firebase.storage(),storageRef = storage.ref();
+
+         //list all files from firebase storage
+         storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
+            result.items.forEach(function(imageRef){
+                 
+                 //get metadata foreach file
+                 imageRef.getMetadata().then(s=>{
+                    
+                    //get file size, file type, when file is created and user id
+                    var fileSizeProperty = (s.size/1000000).toFixed(2);     
+                    var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
+                    time = (s.timeCreated).substring(11),newCurrnetTime = time.slice(0,-8),
+                    useriID = user.uid;   
+                                     
+        //get user's profile image from firebase storage
+          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
+                      var iiName = imageRef.name.toString();    
+
+  //save file, premesti ovo na post kad se klikne i prosled mu parametre
+  var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
+
+     //get users ipv4 address and log it to console
+     var xml = new XMLHttpRequest();
+     xml.open("GET","https://api.ipify.org");
+     xml.send();
+     xml.addEventListener('loadend',getIp);      
+
+   function getIp(e) {
+       userIP(xml.responseText)
+   }
+
+   function userIP(ipv4) {console.log(ipv4)}
+    
+                 //reference to database server
+                 var storageSveReference = user.uid+fileNameStorage,i=0;
+                   
+                 //send following data for post to UI function to client side
+                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference);                        
+               });
+             })
+            .catch(function(er){console.log(er)})
+         });
+      });
+
+      //replace characters to define database server name and username
+      var username = user.email, didsplayname = username.slice(0, -10);
+      var fullname = didsplayname.toString(),context;
+   
+   //replace following characters for database entitete name
+    if(fullname.includes(".")) {
+       context = fullname.replace(".","");
+    }else  if(fullname.includes("#")) {
+      context = fullname.replace("#","");
+   }else if(fullname.includes("[")) {
+      context = fullname.replace("]","");
+   }else if(fullname.includes("$")) {
+      context = fullname.replace("$","");
+   }else {
+      context = fullname;
+   }
+
+      //if user is logged in auto-fill mail sender address
+      var emailFom = document.getElementById('mail-input');
+      emailFom.value = user.email;
+      } else {   
+         //if user is not logged in 
+         document.getElementById('usernamename').innerHTML = `<p>username</p>`;
+         document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
+    }
+});
+
+    //show users data/ from storage on page
+    function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference) {
+               
+      //get profile image of user
+      images.getDownloadURL().then(function(URL) {               
+               let HTML = ``;
+                 
+            //display different content for different file type   
+            if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
+               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
+            }else if (fileType === "video/mp4") {
+               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>    <div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
+            }else if (fileType === "application/octet-stream"){
+               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+            }else {
+               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
+            }
+            
+            //fetch saved posts from database server
+            fetchSvedPosts(context,URL,name,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage);
+               
+            //display all posts to client side
+            document.getElementById('bodyID').innerHTML += HTML;
+         });
+    }
+
+    //show preview of image
+  function preview(locationOfImage,type) {
+   var div = document.getElementById('preview-div');var src = locationOfImage;
+   var txtMessage = document.getElementById('text-message');var previwPopUp = document.getElementById('previe-popup');
+   var previewOvewrlay = document.getElementById('new-overlay');div.style.display ='flex'; 
+
+   document.body.style.overflowY = 'hidden';//block scrolling
+
+   //show different popup for different file type to client
+   if(type === "image/png" || type === "image/jpeg" || type === "image/jpeg"){  
+      div.innerHTML = `<img src="${src}" alt="" class="preview-image">`;previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';txtMessage.style.display = 'none';
+   }else if(type === "video/mp4") {    
+      div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-image"></video>`;previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';txtMessage.style.display = 'none';
+   }else if(type === "audio/wav" || type === "audio/mp3") {
+      div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-audio" id="audio"></video>`;previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';txtMessage.style.display = 'none';
+   }else{
+      txtMessage.style.display = 'flex';txtMessage.innerText =  "Cannot preview the "  + type + " file";previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';image.classList.remove('preview-image');
+   }
+
+}
+  
+//when page is loaded get all saved posts from database storage
+function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage) {
+   var cont;
+         
+   //replace characters in username to get database reference
+   if(filename.includes(".")) {
+            cont = filename.replace(/\./g,' ');
+         }else  if(filename.includes("#")) {
+            cont = filename.replace(/\#/g,' ');
+        }else if(filename.includes("[")) {
+         cont = filename.replace(/\[/g,' ');
+        }else if(filename.includes("$")) {
+         cont = filename.replace(/\$/g,' ');
+        }else {
+         cont = filename;
+        }
+
+        //get files from database
+   firebase.database().ref("users/" + context + "/" + cont + "/").once('value', (snapshot) => {
+     
+      //log all posts
+      snapshot.forEach(function(childSnapshot) {
+                       console.log(childSnapshot.val())
+
+               //set new bookmark for saved posrs
+               document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
+               onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
+     });
+   });
+
+}
+
+     //close image preview
+     function closeImagePreview(){
+      document.body.style.overflowY = 'visible';
+      var div = document.getElementById('preview-div');
+      div.innerHTML = ``;
+          document.getElementById('previe-popup').style.display = 'none';
+           document.getElementById('new-overlay').style.display = 'none';
+           div.style.display = 'none';
+           document.getElementById('audio').pause();      
+     }
+
+  var savedPosts = [];
+
+  //remove post from saved post storage
+function removeSvedPost(filename, databasereference,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage){
+   var cont;
+   
+   //replace chacraters in name to get database reference
+   if(filename.includes(".")) {
+      cont = filename.replace(/\./g,' ');
+   }else  if(filename.includes("#")) {
+      cont = filename.replace(/\#/g,' ');
+  }else if(filename.includes("[")) {
+   cont = filename.replace(/\[/g,' ');
+  }else if(filename.includes("$")) {
+   cont = filename.replace(/\$/g,' ');
+  }else {
+   cont = filename;
+  }
+
+  //remove post from database
+   firebase.database().ref("users/" + databasereference +"/"  + cont).remove();
+
+   //set previous icon for bookmark
+   document.getElementById(filename).innerHTML = `<i class="far fa-bookmark" onclick="savePostToStorage('${databasereference}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`; 
+
+}
+
+//save post to storage
+function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,datecreated,timecreated,username,storageid,profileimage) {
+     
+   //push data to array
+   savedPosts.push(
+         {
+            post_id:storageid,
+            post_url: fileurl,
+            username:username,
+            file_name:filename,
+            file_size:filesize,
+            file_type:filetype,
+            date_created:datecreated,
+            time_created:timecreated,
+            profile_image:profileimage
+         }
+      );
+
+         var cont;
+
+          //replace characters to enable database reference
+         if(filename.includes(".")) {
+              cont = filename.replace(/\./g,' ');
+         }else  if(filename.includes("#")) {
+              cont = filename.replace(/\#/g,' ');
+         }else if(filename.includes("[")) {
+              cont = filename.replace(/\[/g,' ');
+         }else if(filename.includes("$")) {
+              cont = filename.replace(/\$/g,' ');
+         }else {
+                cont = filename;
+        }
+
+        //set remove post icon if post is saved
+        document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark"
+        onclick="removeSvedPost('${cont}','${databasereference}','${fileurl}','${filename}','${filesize}','${filetype}','${datecreated}','${timecreated}','${username}','${storageid}','${profileimage}')"></i>`;
+          
+        //set attributes to firebase server storage
+        firebase.database().ref("users/" + databasereference + "/" + cont + "/").set({    
+            post:{post_id:storageid,
+            post_url: fileurl,
+            username:username,
+            file_name:filename,
+            file_size:filesize,
+            file_type:filetype,
+            date_created:datecreated,
+            time_created:timecreated,
+            profile_image:profileimage}          
+          })
+
+          //log saved posts from database
+          firebase.database().ref("users/" + databasereference + "/" + cont ).once('value', (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                   console.log(childSnapshot.val());              
+           });
+         });
+}
+
+    //delete file from firebase storage
+function deleteThisPost(name,size,type,date,time){
+   var user = firebase.auth().currentUser;
+   
+   //disable scrolling
+   document.body.style.overflowY = 'hidden';
+      document.getElementById('st-dis').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+     
+     //delete popup content 
+   document.getElementById('delete-txt').innerHTML = `
+   <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div><div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
+  
+  //onclick function for post deleting
+   document.getElementById('delete').addEventListener('click',() =>{
+      
+      //delete post from ordered storage location
+      firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
+         document.getElementById('st-dis').style.display = 'none';document.getElementById('new-overlay').style.display = 'none';
+
+      //refresh page   
+      pageReloader();
+   })
+   .catch((error)=>{
+      alert(error);
+   })
+})
+ }
+
+        //show info about post
+        function infoData(name,size,type,date,time){
+
+         //show elements
+           document.getElementById('info-popup').style.display = 'flex';document.getElementById('new-overlay').style.display = 'flex';
+           document.getElementById('info-mail').style.display = 'flex';document.getElementById('data-info').style.display = 'flex';
+        
+        //hide post name if it is longer then 25 and add ...   
+       if (name.length > 25) {
+             name = name.substr(0,25) + '...';
+      }
+
+         //html for popup
+         document.getElementById('data-info').innerHTML = `<div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div><div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
+         document.getElementById('data-info').style.display = 'block';document.getElementById('data-info').style.fontSize = '15px'
+        
+        //disable scrolling while popup is active
+         document.body.style.overflowY = 'hidden';
+        } 
+
+        //Close data info
+        function closeDataInfo(){
+
+         //hide elements
+         document.getElementById('info-popup').style.display = 'none';document.getElementById('new-overlay').style.display = 'none';
+         document.getElementById('info-mail').style.display = 'none';document.getElementById('data-info').style.display = 'none';
+
+         //enable scrolling
+         document.body.style.overflowY = 'visible';
+        }
+
+        //logged user uploads files in storage
+function uploadFileToFirebase(e){
+   document.getElementById('postcontent').innerHTML = ``;
+  
+   var user = firebase.auth().currentUser;      
+        
+   //user is online
+   if(user){
+
+      //allow multiple files uploading
+      for(let i=0;i<e.target.files.length;i++){
+            let file = e.target.files[i];
+            
+         //upload file to fireabse server using put function
+        firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
+      
+         //show uploading progress to client if it is bigger then 0%
+         if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
+         document.getElementById('uploading-proces').style.display="none";
+      }else{
+
+         //show uploading progress to client
+         document.getElementById('uploading-proces').style.display="flex";
+
+         //count how many bytes are transfered
+         document.getElementById('uploading-proces-value').value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+         console.log(snapshot.totalBytes);
+         
+         //show percentage to client
+         document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
+      }
+      console.warn(file);
+
+      //get current uploading file data and show it to client using metadata
+      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getMetadata().then(snapshot => {;
+         var fileType = snapshot.contentType,name = snapshot.name,fileSizeProperty=2,timeCreated=1,newCurrnetTime=2,profileimage=null,didsplayname=null;
+     
+       //get download url for file picture  
+      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getDownloadURL().then(imageURLdownload =>{
+         
+         //check which type is file and show image for every certan file type
+         if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="${imageURLdownload}" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;      
+         }else if (fileType === "video/mp4") {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}"><video src="${imageURLdownload}" autoplay loop muted width="100%" height="auto"  class="radiustht"></video><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;               
+         }else if (fileType === "application/octet-stream"){
+             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;            
+         }else {
+             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;" class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;    
+         }     
+         
+            //display current uploading file/s to client 
+            document.getElementById('postcontent').innerHTML += HTML;
+        })  
+      }) 
+   })
+}
+}
+//user is not logged in
+           else{
+              alert("You must log in!");
+           }
+   }
+
+      //send email to mailtrap
+      function sendMail() {
+
+         //fetch user's ip address
+         fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(IPV4=>     
+         
+         //mail function using smtp protocol with smtp.js and mailtrap
+         Email.send({
+            Host:"smtp.mailtrap.io",
+            Username:"913890b8ed1747",
+            Password:"7f91f262bcdb72",          
+            To:"mmarko.perovici3@gmail.com",
+            From:document.getElementById('mail-input').value,
+            Subject:document.getElementById("subject-input").value,
+            Body:"From:  " + document.getElementById('mail-input').value + "<br><br>" + "Message:  " + document.getElementById("message-input").value + "<br><br>" + "IP: " + IPV4.ip +" ",
+     })
+     .then(mesage => {
+
+      //alert user if mail is not sent and reload page
+        alert(mesage);
+         window.location.reload();
+      }
+     )
+   )
+}
+
     //close log out pop up
     function closeLogOutPopUp() {
       logoutPopUpRequest.style.display = 'none';
@@ -142,750 +771,46 @@ popupclass.showMailUpdaterDiv();
     //hide mail changer
     function cancleUpdateMail() {
       document.querySelector('.set-displ').style.display = 'none';
-      document.querySelector('.overlay-pop-up').style.display = 'none';
-      document.getElementById('update-ml').style.display = 'none';
+      document.querySelector('.overlay-pop-up').style.display = 'none';document.getElementById('update-ml').style.display = 'none';
+      
+      //enable scrolling
       document.body.style.overflowY = 'visible';
     }
-
-    //create account
-    var firebaseConfig = {
-      apiKey: "AIzaSyBInVpEsEvXzZtYDLy7qNA4AOIaS-5mjb8",
-      authDomain: "saveprojects-e2b7f.firebaseapp.com",
-      projectId: "saveprojects-e2b7f",
-      storageBucket: "saveprojects-e2b7f.appspot.com",
-      messagingSenderId: "1068677321956",
-      appId: "1:1068677321956:web:97a4d0b9ddeb63520588f1",
-      measurementId: "G-HXW1NYY74D"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-   
-  //create account
-    function createAccount(){
-        let email = document.getElementById('e-mail-input');
-        let password = document.getElementById('password-input');
-        let username = document.getElementById('e-username-input');
-       auth.createUserWithEmailAndPassword(email.value, password.value).then((userCredential) => {         
-         var user = userCredential.user;
-        window.location.href = "settings.html";
-       })
-       .catch(function (error){
-         var errorCode = error.code;
-         var errorMessage = error.message;
-         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-       });
- alert("Your account is created!");
-      }
-
-   //log in
-   function logIn(){		
-		var emailIN = document.getElementById("email");
-		var passwordIN = document.getElementById("password");		
-		const status = firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value);
-      status.then(function() {
-         iconEvent(4);
-         
-
-      })
-		status.catch(function (error){
-         var errorCode = error.code;
-         var errorMessage = error.message;
-         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-      });
-	}
- 
-   //log out
-    function logOut() {    
-		auth.signOut();
-		alert("Signed Out");
-      window.location.href = 'log-in.html';
-    }
-
-    //upload image
-    function uploadImage(e){
-     console.log(e);
-      var files = e.target.files;
-       for (const file of files) {
-          firebase
-        .storage()
-          .ref("images")
-           .child(file.name)
-            .put(file);
-            
-       }
-    }
-
-    //reset password email verification
-    function resetPassword() {
-        var user = firebase.auth().currentUser;
-        if(user) {
-      firebase.auth().sendPasswordResetEmail(user.email).then(function() {
-         window.alert("Message sent to email: " +  user.email );
-      }).catch(function(error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-            window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-      });
-   }
-     else {
-        window.alert("Enter your email adress firs!");
-     }
-    }
-
-    //user cannot remember the password
-    function resetUserPasswordLogging() {
-       var forgottenEmail = document.getElementById('email').value;
-       if(forgottenEmail != null){
-          firebase.auth().sendPasswordResetEmail(forgottenEmail).then(function(){
-             window.alert("Message sent to email:" + forgottenEmail);
-          }).catch(function(error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-            window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-      });
-       }
-    }
-    //verify account
-    function verifyAccount() {
-       var user = firebase.auth().currentUser;
-       user.sendEmailVerification().then(function(){
-            window.alert("Account verification sent!");
-       }).catch(function(error) {
-         var errorCode = error.code;
-         var errorMessage = error.message;
-         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-       })
-    }
-
-    //delete account
-    function deleteAccount() {
-       firebase.auth().currentUser.delete().then(function(){
-          window.alert("Account successfuly deleted.");
-       }).catch(function (error){
-         var errorCode = error.code;
-         var errorMessage = error.message;
-         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-       });
-    }
-
-    //upadte account email
-    function updateMail() {
-       var user = firebase.auth().currentUser;
-       var newEmail = document.getElementById('new-mail-set');
-       user.updateEmail(newEmail.value).then(function () {
-          alert("Mail updated successfully!");
-          setTimeout(1000,window.location.reload());
-       }).catch(function(error){
-         var errorCode = error.code;
-         var errorMessage = error.message;
-         console.log("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-         window.alert("CODE:" + errorCode + "MESSAGE:" + errorMessage);
-       });
-    }
-
-
-    //logged user uploads profile image
-    function uploadImageUser(e){
-       var user = firebase.auth().currentUser;    
-       if(user){
-       var filess = e.target.files;
-       for (const filea of filess) {
-          firebase
-        .storage()
-          .ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg')
-            .put(filea).on("state_changed",snapshot=> {            
-               if((snapshot.bytesTransferred / snapshot.totalBytes) * 100 === "0"){
-                  document.getElementById('load-animations').style.display = "none";                  
-                 }else{
-                  document.getElementById('load-animations').style.display = 'flex';
-               document.querySelector('.progressBar').value =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-               document.getElementById('percentage').innerText= ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";   
-                 }  
-            });                    
-       }
-       
-    }else{
-       alert("You must log in to post profile image:");
-    }
-   }
-
-   //user is logged to firebase
-   firebase.auth().onAuthStateChanged(function(user) {
-
-      if (user) {
-         
-           
-
-         //display user's profile image
-         firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-            var profileimage =imgurl;
-                        });  
-                        var username = user.email, didsplayname = username.slice(0, -10);                                           
-                        //display all storage files
-                        var storage = firebase.storage(),storageRef = storage.ref();
-                        var i = 0;
-         storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
-            result.items.forEach(function(imageRef){
-                 console.log(imageRef.name.toString()); 
-                 imageRef.getMetadata().then(s=>{
-                    console.log(s.size/1000000);
-                    var fileSizeProperty = (s.size/1000000).toFixed(2);     
-                    var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
-                    time = (s.timeCreated).substring(11),newCurrnetTime = time.slice(0,-8),
-                    useriID = user.uid;   
-                                     
-                i++;
-          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
-  var iiName = imageRef.name.toString();    
-
-  //save file, premesti ovo na post kad se klikne i prosled mu parametre
-  var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
-
-//   var xml = new XMLHttpRequest();
-//   xml.open("GET","https://api.ipify.org");
-//   xml.send();
-//   xml.addEventListener('loadend',getIp);      
-
-//   function getIp(e) {
-//      userIP(xml.responseText)
-//   }
-//   function userIP(ipv4) {
-    
-//      firebase.database().ref("users/" + context).set({
-//         ipv4:ipv4
-        
-     
-//      })
-//   }
-
-
-  var storageSveReference = user.uid+fileNameStorage;
-
-                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference);
-              
-                
-               
-               });
-               }).catch(function(er){console.log(er)})
-         });
-      });
-
-      var username = user.email, didsplayname = username.slice(0, -10);
-      var fullname = didsplayname.toString(),context;
-      
-   
-    if(fullname.includes(".")) {
-       context = fullname.replace(".","");
-    }else  if(fullname.includes("#")) {
-      context = fullname.replace("#","");
-   }else if(fullname.includes("[")) {
-      context = fullname.replace("]","");
-   }else if(fullname.includes("$")) {
-      context = fullname.replace("$","");
-   }else {
-      context = fullname;
-   }
-
- 
-      var emailFom = document.getElementById('mail-input');
-      emailFom.value = user.email;
-      
-
-      } else {
-         
-         document.getElementById('usernamename').innerHTML = `<p>username</p>`;
-         document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
-
-     
-         
-
-
-      }
-    });
-    
-console.log(posts);
-
-    //show users data/ from storage on page
-    function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference) {
-               images.getDownloadURL().then(function(URL) {               
-               let HTML = ``;
-                 
-            if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
-             <div id="${name}">
-             <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>
-             </div>
-
-               </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
-            }else if (fileType === "video/mp4") {
-             
-           
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               <video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="post-options">
-               <div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a>
-               <i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
-               
-               <div id="${name}">
-               <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>
-               </div>
-               
-               </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i>
-               </div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
-           
-           
-           
-               
-           
-           
-            }else if (fileType === "application/octet-stream"){
-                HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-               <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
-               <div id="${name}">
-               <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>
-               </div>
-               </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
-            }else {
-                 HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div>
-                <i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i>
-              
-                <div id="${name}">
-                <i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>
-                </div>
-
-                </div><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
-            }
-            fetchSvedPosts(context,URL,name,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage);
-               document.getElementById('bodyID').innerHTML += HTML;
-               });
-    }
-
-    //show preview of image
-  function preview(locationOfImage,type) {
-   var div = document.getElementById('preview-div');
-   var src = locationOfImage;
-   div.style.display ='flex'; 
-   document.body.style.overflowY = 'hidden';
-   if(type === "image/png" || type === "image/jpeg" || type === "image/jpeg"){  
-      div.innerHTML = `<img src="${src}" alt="" class="preview-image">`;
-      document.getElementById('previe-popup').style.display = 'flex';
-      document.getElementById('new-overlay').style.display = 'flex';
-      document.getElementById('text-message').style.display = 'none';
-   }else if(type === "video/mp4") {    
-      div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-image"></video>`;
-      document.getElementById('previe-popup').style.display = 'flex';
-      document.getElementById('new-overlay').style.display = 'flex';
-      document.getElementById('text-message').style.display = 'none';
-   }else if(type === "audio/wav" || type === "audio/mp3") {
-      div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-audio" id="audio"></video>`;
-      document.getElementById('previe-popup').style.display = 'flex';
-      document.getElementById('new-overlay').style.display = 'flex';
-      document.getElementById('text-message').style.display = 'none';
-   }else{
-      document.getElementById('text-message').style.display = 'flex';
-     document.getElementById('text-message').innerText =  "Cannot preview the "  + type + " file";
-      document.getElementById('previe-popup').style.display = 'flex';
-      document.getElementById('new-overlay').style.display = 'flex';
-      image.classList.remove('preview-image');
-   }
-}
-  
-['a', 'b', 'c'].forEach(function callback(v) {
-   console.log(v);
- });
- let colors = ['red', 'blue', 'green'];
-// idx and sourceArr optional; sourceArr == colors
-colors.forEach(function(color, idx, sourceArr) {
-	console.log(color, idx, sourceArr)
-});
-
-function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage) {
-   var i = 0;
-   // firebase.database().ref("users/" + context + "/savedPosts/" ).once('value', (snapshot) => {
-     
-   //    snapshot.forEach(function(childSnapshot,idx,a) {
-   //           if(childSnapshot.val().file_name === iiName) {
-   //              console.log(idx + "ssss" + childSnapshot.val().file_name);
-   //             document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
-   //             onclick="removeSvedPost('${context}','${childSnapshot}','${childSnapshot.val().file_name}')"></i>`;
-            
-   //           }
-   //   });
-   // });
-
-   var cont;
-         if(filename.includes(".")) {
-            cont = filename.replace(/\./g,' ');
-         }else  if(filename.includes("#")) {
-            cont = filename.replace(/\#/g,' ');
-        }else if(filename.includes("[")) {
-         cont = filename.replace(/\[/g,' ');
-        }else if(filename.includes("$")) {
-         cont = filename.replace(/\$/g,' ');
-        }else {
-         cont = filename;
-        }
-
-   firebase.database().ref("users/" + context + "/" + cont + "/").once('value', (snapshot) => {
-     
-      snapshot.forEach(function(childSnapshot) {
-             //if(childSnapshot.val().file_name === filename) {
-             
-               // for(i=0;  i < childSnapshot.length; i++){
-               //    console.log(childSnapshot[i]);//<---returns list of unique URLS
-                
-               //  }
-console.log(childSnapshot.val())
-               document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
-               onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
-            
-            // }
-     });
-   });
-
-}
-     //close image preview
-     function closeImagePreview(){
-      document.body.style.overflowY = 'visible';
-      var div = document.getElementById('preview-div');
-      div.innerHTML = ``;
-          document.getElementById('previe-popup').style.display = 'none';
-           document.getElementById('new-overlay').style.display = 'none';
-           div.style.display = 'none';
-           document.getElementById('audio').pause();      
-     }
-
-  var savedPosts = [];
-
-function removeSvedPost(filename, databasereference,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage){
-   var cont;
-   if(filename.includes(".")) {
-      cont = filename.replace(/\./g,' ');
-   }else  if(filename.includes("#")) {
-      cont = filename.replace(/\#/g,' ');
-  }else if(filename.includes("[")) {
-   cont = filename.replace(/\[/g,' ');
-  }else if(filename.includes("$")) {
-   cont = filename.replace(/\$/g,' ');
-  }else {
-   cont = filename;
-  }
-
-   firebase.database().ref("users/" + databasereference +"/"  + cont).remove();
-   document.getElementById(filename).innerHTML = `<i class="far fa-bookmark" onclick="savePostToStorage('${databasereference}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
-    
-
-}
-
-//save post to storage
-function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,datecreated,timecreated,username,storageid,profileimage) {
-     
-  
-   savedPosts.push(
-         {
-            post_id:storageid,
-            post_url: fileurl,
-            username:username,
-            file_name:filename,
-            file_size:filesize,
-            file_type:filetype,
-            date_created:datecreated,
-            time_created:timecreated,
-            profile_image:profileimage
-         }
-         );
-var cont;
-         if(filename.includes(".")) {
-            cont = filename.replace(/\./g,' ');
-         }else  if(filename.includes("#")) {
-            cont = filename.replace(/\#/g,' ');
-        }else if(filename.includes("[")) {
-         cont = filename.replace(/\[/g,' ');
-        }else if(filename.includes("$")) {
-         cont = filename.replace(/\$/g,' ');
-        }else {
-         cont = filename;
-        }
-
-        document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark"
-        onclick="removeSvedPost('${cont}','${databasereference}','${fileurl}','${filename}','${filesize}','${filetype}','${datecreated}','${timecreated}','${username}','${storageid}','${profileimage}')"
-        
-        ></i>`;
-          firebase.database().ref("users/" + databasereference + "/" + cont + "/").set({
-           
-            post:{post_id:storageid,
-            post_url: fileurl,
-            username:username,
-            file_name:filename,
-            file_size:filesize,
-            file_type:filetype,
-            date_created:datecreated,
-            time_created:timecreated,
-            profile_image:profileimage}
-            
-          })
-
-          fileName(cont,databasereference);
-      
-          firebase.database().ref("users/" + databasereference + "/" + cont ).once('value', (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                   console.log(childSnapshot.val());
-                   
-           });
-         });
-
-   //  firebase.database().ref("users/" + databasereference ).once('value', (snapshot) => {
-   //    snapshot.forEach((childSnapshot) => {
-   //    document.getElementById('pw').innerHTML = 
-   //    `<div>
-   //    <hr>
-   //    <p>${childSnapshot.val().file_name}
-   //    `;
-   //    });
-   //  });
-    var user = firebase.auth().currentUser;
-
-   //    var cont;
-   //    if(filename.includes(".")) {
-   //       cont = filename.replace(/\./g,' ');
-   //    }else  if(filename.includes("#")) {
-   //       cont = filename.replace(/\#/g,' ');
-   //   }else if(filename.includes("[")) {
-   //    cont = filename.replace(/\[/g,' ');
-   //   }else if(filename.includes("$")) {
-   //    cont = filename.replace(/\$/g,' ');
-   //   }else {
-   //    cont = filename;
-   //   }
-
-   //    var i = user.email.replace(/\./g,' ');
-
-      // firebase.database().ref("users/" + i + '/' +cont).set({
-      //    savedPosts
-      //  })
-}
-function fileName(name,data) {
-   
-
-   firebase.database().ref("users/" + name + "/"+data ).once('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-             console.log(childSnapshot.val());
-             
-     });
-   });
-}
-function dataUrl(data) {return data.toString()}
-function listit() {
-   
-try{
-   var user = firebase.auth().currentUser;
-   if(user) {
-   var username = user.email, didsplayname = username.slice(0, -10);
-      var fullname = didsplayname.toString(),context;
-  
-   
-    if(fullname.includes(".")) {
-       context = fullname.replace(".","");
-    }else  if(fullname.includes("#")) {
-      context = fullname.replace("#","");
-   }else if(fullname.includes("[")) {
-      context = fullname.replace("]","");
-   }else if(fullname.includes("$")) {
-      context = fullname.replace("$","");
-   }else {
-      context = fullname;
-   }
-   firebase.database().ref("users/" + context  + "/").once('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-             console.log(childSnapshot.val());
-             
-     });
-   });
-   
-   
-}
-}
-catch(error) {console.warn(error);}
-}
-window.onload = listit();
-
-function shoro() {
-   var user = firebase.auth().currentUser;
- if(user){
-   var username = user.email, didsplayname = username.slice(0, -10);
-      var fullname = didsplayname.toString(),context;
-  
-   
-    if(fullname.includes(".")) {
-       context = fullname.replace(".","");
-    }else  if(fullname.includes("#")) {
-      context = fullname.replace("#","");
-   }else if(fullname.includes("[")) {
-      context = fullname.replace("]","");
-   }else if(fullname.includes("$")) {
-      context = fullname.replace("$","");
-   }else {
-      context = fullname;
-   }
-   
-   firebase.database().ref("users/" + context + "/" + cont + "/").once('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-             console.log(childSnapshot.val().file_name);
-             document.getElementById('pw').innerHTML += `<p>${childSnapshot.val().file_name}</p>`;
-     });
-   });}
- 
-  
-}
-
-
-    //delete file from firebase storage
-function deleteThisPost(name,size,type,date,time){
-   var user = firebase.auth().currentUser;
-   document.body.style.overflowY = 'hidden';
-      document.getElementById('st-dis').style.display = 'flex';
-      document.getElementById('new-overlay').style.display = 'flex';
-   document.getElementById('delete-txt').innerHTML = `
-   <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
-   <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
-   document.getElementById('delete').addEventListener('click',() =>{
-       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
-         document.getElementById('st-dis').style.display = 'none';
-         document.getElementById('new-overlay').style.display = 'none';
-      pageReloader();
-   }).catch((error)=>{
-      alert(error);
-   })
-   })
- }
-
-        //show info about post
-        function infoData(name,size,type,date,time){
-           document.getElementById('info-popup').style.display = 'flex';
-           document.getElementById('new-overlay').style.display = 'flex';
-           document.getElementById('info-mail').style.display = 'flex';
-           document.getElementById('data-info').style.display = 'flex';
-        
-       if (name.length > 25) {
-       name = name.substr(0,25) + '...';
-      }
-
-         document.getElementById('data-info').innerHTML = `
-         <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div>
-         <div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
-         document.getElementById('data-info').style.display = 'block';
-         document.getElementById('data-info').style.fontSize = '15px'
-         document.body.style.overflowY = 'hidden';
-        } 
-
-        //Close data info
-        function closeDataInfo(){
-         document.getElementById('info-popup').style.display = 'none';
-         document.getElementById('new-overlay').style.display = 'none';
-         document.getElementById('info-mail').style.display = 'none';
-         document.getElementById('data-info').style.display = 'none';
-         document.body.style.overflowY = 'visible';
-        }
-
-        //logged user uploads files in storage
-function uploadFileToFirebase(e){
-   document.getElementById('postcontent').innerHTML = ``;
-   var user = firebase.auth().currentUser;      
-        if(user){
-            for(let i=0;i<e.target.files.length;i++){
-            let file = e.target.files[i];
-            
-        firebase.storage()
-   .ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
-      if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
-         document.getElementById('uploading-proces').style.display="none";
-      }else{
-         document.getElementById('uploading-proces').style.display="flex";
-         document.getElementById('uploading-proces-value').value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-         console.log(snapshot.totalBytes);
-         document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
-      }
-      console.warn(file);
-      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getMetadata().then(snapshot => {;
-         var fileType = snapshot.contentType,name = snapshot.name,fileSizeProperty=2,timeCreated=1,newCurrnetTime=2,profileimage=null,didsplayname=null;
-     
-      firebase.storage()
-      .ref("users/" + user.uid +'/data/'+ file.name).getDownloadURL().then(imageURLdownload =>{
-         
-         if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
-            HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="${imageURLdownload}" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;      
-         }else if (fileType === "video/mp4") {
-            HTML=`<article class="storage-article" id="${fileSizeProperty}"><video src="${imageURLdownload}" autoplay loop muted width="100%" height="auto"  class="radiustht"></video><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;               
-         }else if (fileType === "application/octet-stream"){
-             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;            
-         }else {
-             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;" class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;    
-         }
-             
-            document.getElementById('postcontent').innerHTML += HTML;
-        })  
-      }) 
-   })
-             }
-           }
-           else{
-              alert("You must log in!");
-           }
-   }
-
-      //send email
-      function sendMail() {
-         fetch('https://api.ipify.org/?format=json').then(response => response.json()).then(IPV4=>     
-         Email.send({
-            Host:"smtp.mailtrap.io",
-            Username:"913890b8ed1747",
-            Password:"7f91f262bcdb72",          
-            To:"mmarko.perovici3@gmail.com",
-            From:document.getElementById('mail-input').value,
-            Subject:document.getElementById("subject-input").value,
-            Body:"From:  " + document.getElementById('mail-input').value + "<br><br>" + "Message:  " + document.getElementById("message-input").value + "<br><br>" + "IP: " + IPV4.ip +" ",
-     }).then(mesage => {alert(mesage); window.location.reload();}
-     )
-     )
-   }
 
    //sub-class 
    class DataProvider{
+
+      //get icons for footer from json file data.json
       async getFooter() {
          try {
             let data = await fetch('data.json');
             let items = await data.json();
             let icons = items.footer;
+
+            //map icons
             icons = icons.map(item => {
                let icon = item.icon, iconEvenet = item.event;
                return {icon, iconEvenet};
             });
+
             return icons;
          }
          catch(error)
          {
+
+            //in case of en error
            console.log(error);
            alert(error);
+
            return null;
-         }
-         finally{
-            console.log("Loaded");
          }
       }
    }
 
    //class for userinterface
    class UserInterface{
+
+      //display icons for footer on evry page
       displayFooter(icons) {
          let result = '';
          icons.forEach(icon => {
@@ -897,14 +822,21 @@ function uploadFileToFirebase(e){
 
    //dom content listener
    document.addEventListener('DOMContentLoaded',(event) => {
+
       const DATA = new DataProvider();
       const GUI  = new UserInterface();
+
+      //callback functions from classes
       DATA.getFooter().then(item => GUI.displayFooter(item));
    });
 
    //open pages from footer
    function iconEvent(ID) {
+
+      //get button/page id and set it to session storage
       sessionStorage.setItem("optionPageID",ID);
+
+      //check the id of button and redirect user to certan page
       switch(sessionStorage.getItem("optionPageID")){
          case "1":
             window.location.href = "index.html";
@@ -957,5 +889,3 @@ function uploadFileToFirebase(e){
       iconEvent(1);
       document.getElementById('postcontent').innerHTML = '';
    }
-
-  

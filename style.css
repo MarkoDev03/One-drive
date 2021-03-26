@@ -775,3 +775,12 @@ justify-content: flex-start;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
+
+.fa-bookmark:active,.fa-bookmark:active{
+    animation: save 885ms ;
+}
+
+@keyframes save{
+    0%{opacity: 0;}
+    100%{opacity: 1;color: gray;}
+}
