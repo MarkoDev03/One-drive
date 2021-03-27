@@ -22,6 +22,7 @@ body{
     background-color: var(--bg-color);
     padding-top: 4px;
     padding-bottom: 4px;
+    z-index: 1;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -118,6 +119,15 @@ body{
         transform: scale(1);
     }
 }
+
+
+@keyframes zoomout {
+    from {transform:scale(1)}
+    to {transform:scale(0);display: none;}
+  }
+.reverse{
+animation: zoomout .5s ;
+}
 .contact-headline{
     display: block;
     text-align: center;
@@ -203,6 +213,7 @@ body{
 .hed-line p,.fa-envelope{
     margin-left: 50px;
     text-transform: none;
+
 }
 .fa-envelope{
     margin-top: 100px;
@@ -238,6 +249,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     padding-bottom: 8px;
     width: 100%;
     box-shadow: 0px 0px 0px 1px rgb(146, 146, 146);
+    
 }
 .f-icon{
     font-size: 25px;
@@ -626,6 +638,8 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+
 }
 .user-header-info{
     display: flex;
@@ -644,18 +658,12 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     margin-left: 7px;
 }
 .fa-ellipsis-v,.fa-download,.fa-trash-alt,.fa-bookmark,.fa-eye{
-    font-size: 23px;
+    font-size: 27px;
     color: black;
     margin-right: 10px;
 }
 .fa-eye{
     margin-right: 0px;
-}
-
-.image-of-user-storage{
-
-
-
 }
 .left-options{
     display: flex;
@@ -703,13 +711,13 @@ justify-content: flex-start;
     display: none;
 }
 .txt-fnt{
-    font-size: 30px;
+    font-size: 29px;
     margin-bottom: 0px;
     margin-top: 0px;
     margin-right: 10px;
 }
 .new-fnt{
-    font-size: 30px;
+    font-size: 29px;
     margin-left: 10px;
 }
 
@@ -784,3 +792,69 @@ justify-content: flex-start;
     0%{opacity: 0;}
     100%{opacity: 1;color: gray;}
 }
+
+
+.active-popop{
+   color: transparent;
+    animation: appear 1s ease-in-out;
+    pointer-events: none;
+    display: flex;
+    width: 100%;
+    position: absolute;
+    justify-content: space-around;
+    align-items: center;
+    height: 40px;
+    background: linear-gradient(to right, hsl(249, 81%, 85%), #ffffff); 
+    color: navy;
+}
+.active-popop h3{font-size: small;}
+.not-active{
+   display: none;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+}
+
+@keyframes appear {
+    
+    from
+    {
+        display: flex; width: 100%; 
+        bottom: 0px;   
+        opacity: 1;
+    }
+    to{
+           
+        bottom: 130px;   
+        opacity: 0;
+        }
+}
+.show-user-saved{
+    display: flex;
+    flex-direction: column;   
+     position: relative;
+}
+
+.saved-image{
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    animation: appear-image 1s ease-in-out;
+}
+@keyframes appear-image {
+    
+    from
+    {
+        display: none;   
+    }
+    to{
+        display: flex;         
+    }
+}
+#delete,#logoutbtn,#mail-update-btn{background-color: red;}
+#delete:hover,#logoutbtn:hover,#mail-update-btn:hover{
+    background-color: darkred;
+}
+/* .flex-down:hover{
+    background:  rgba(221, 220, 220, 0.8); 
+} */
