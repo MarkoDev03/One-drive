@@ -1,9 +1,10 @@
-//header id for evry page
+//header id for evry page--------------------------------------------
 var contactHeader = document.querySelector('.contact-header');
 
 //files and posts arrays
 let files = {};
 var posts = [];
+
 
    //get information about browser, device, cpu, versions, os
    var ua = new UAParser();
@@ -44,8 +45,14 @@ var posts = [];
          document.getElementById('update-ml').innerHTML = `<div class=" set-class popup" id="ch-mail"><button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New password" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" id="mail-update-btn">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
       }
 
+      //alert user about success
       showAlertUser() {
          document.getElementById('alert-popup').innerHTML = `<div class="set-class popup" id="ch-mail"><button class="setting-button" style="padding:0px" id="text-message-alert"></button><div class="set-display-flex" id="desc-alert"></div><div class="flex-button"> <button class="new-mail" onclick="closeALert()">CLOSE</button></div></div>`;
+      }
+
+      //loading animation popup
+      loadingAnimationPopUp() {
+         document.getElementById('loading-popup').innerHTML = `<div class="set-class popup new-load" id="ch-mail"><div id="loadscreen"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></div>`;
       }
 
      }
@@ -55,7 +62,7 @@ var posts = [];
 
       //display popups in index page
        showPopUpLocationOnIndex() {
-          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div><div class="set-displ" id="alert-popup" style="padding: 10px;"></div>`;
+          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div><div class="set-displ" id="alert-popup" style="padding: 10px;"></div><div class="set-displ" id="loading-popup" style="padding: 10px;"></div>`;
        }
 
      }
@@ -71,6 +78,7 @@ popupclass.showPreviewPopUp();
 popupclass.showLogOutPopUp();
 popupclass.showMailUpdaterDiv();
 popupclass.showAlertUser();
+popupclass.loadingAnimationPopUp();
 
      //show header options on evry html page
      function fncHeader(data) {
@@ -90,7 +98,10 @@ popupclass.showAlertUser();
          window.location.href= "contact-us.html";;
               break;
          case "2":
-            window.location.href= "log-in.html";   
+            window.location.href= "log-in.html";  
+            break;
+         case "7":
+               window.location.href= "inbox.html";;
          default:
                  return null;     
      }
@@ -104,7 +115,7 @@ popupclass.showAlertUser();
       //check clicked button id and open right page for its id
      switch(get) {
         case "1":
-         window.location.href= "contact-us.html";;
+         window.location.href= "inbox.html";;
               break;
          case "2":
             var user = firebase.auth().currentUser;
@@ -112,11 +123,11 @@ popupclass.showAlertUser();
                logoutPopUpRequest.style.display = 'flex';
                logoutPopUpRequest.classList.remove('reverse');
                document.getElementById('new-overlay').style.display = 'flex';
-               document.getElementById('new-overlay').classList.remove('reverse');
+               document.getElementById('new-overlay').classList.remove('overlay-opacity');
             }
             else {
                window.location.href= "log-in.html"; 
-            }  
+            }             
          default:
                  return null;     
      }
@@ -139,7 +150,11 @@ popupclass.showAlertUser();
     // Initialize Firebase to saveprojects
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-   
+    var user = firebase.auth().currentUser;
+   if(user){
+    var x =    firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){return url});
+    
+  console.error(x.toString());}
   //create account
     function createAccount(){
 
@@ -174,6 +189,8 @@ popupclass.showAlertUser();
 		var emailIN = document.getElementById("email");
 		var passwordIN = document.getElementById("password");
       
+      document.getElementById('password').classList.remove('wrong-password');
+
       //log in to existing account on firebase using email and password
 		firebase.auth().signInWithEmailAndPassword(emailIN.value, passwordIN.value).then(function() {iconEvent(4);})
 		.catch(function (error){
@@ -182,7 +199,13 @@ popupclass.showAlertUser();
        var errorMessage = error.message;
 
       //error message
-       alertUserAboutSuccess(errorMessage);
+     alertUserAboutSuccess(errorMessage);
+      document.getElementById('password').style.borderBottomColor = 'red';
+
+      var styleCSS= document.createElement('style');
+      styleCSS.innerText = 'input[type="password"]::placeholder {color: red;}';
+      document.body.appendChild(styleCSS);
+     
 
        //error logs to administrator
        console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
@@ -380,11 +403,114 @@ popupclass.showAlertUser();
     }//else-end
    }
 
+    //logged user uploads files in storage
+function uploadFileToFirebase(e){
+   document.getElementById('postcontent').innerHTML = ``;
+  
+   var user = firebase.auth().currentUser;      
+        
+   //user is online
+   if(user){
+
+      //allow multiple files uploading
+      for(let i=0;i<e.target.files.length;i++){
+            let file = e.target.files[i];
+            
+         //upload file to fireabse server using put function
+        firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
+      
+         //show uploading progress to client if it is bigger then 0%
+         if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
+         document.getElementById('uploading-proces').style.display="none";
+      }else{
+
+         //show uploading progress to client
+         document.getElementById('uploading-proces').style.display="flex";
+
+         //count how many bytes are transfered
+         document.getElementById('uploading-proces-value').value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+         console.log(snapshot.totalBytes);
+         
+         //show percentage to client
+         document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
+     }
+   })
+}
+
+for(let i=0;i<e.target.files.length;i++){
+   let file = e.target.files[i];
+   let HTML=``;
+  
+   //image url
+     var imageURLdownload  = window.URL.createObjectURL(file);
+   
+   var fileType = file.type,fileSizeProperty = (file.size/1000000).toFixed(2),name = file.name;
+
+   if(name.length > 25) {
+      name = name.slice(0,-14);
+   }
+   if(fileType.length > 25) {
+      fileType = fileType.slice(0,-22);
+   }
+
+   if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
+      HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="${imageURLdownload}" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;      
+   }else if (fileType === "video/mp4") {
+      HTML=`<article class="storage-article" id="${fileSizeProperty}"><video src="${imageURLdownload}" autoplay loop muted width="100%" height="auto"  class="radiustht"></video><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;               
+   }else if (fileType === "application/octet-stream"){
+       HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;            
+   }else {
+       HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;" class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;    
+   } 
+       document.getElementById('postcontent').innerHTML += HTML;
+}
+
+}
+//user is not logged in
+           else{
+
+            //alert user
+            alertUserAboutSuccess("You must log in!");
+           }
+   }
+
+var profleImageUrl;
    //user is logged to firebase in an existing account
    firebase.auth().onAuthStateChanged(function(user) {
 
       //user is online
       if (user) {
+
+         //show messages
+         firebase.database().ref("messages").on('child_added',function(snapshot){
+            var html = '',htmluser='';
+           var user = firebase.auth().currentUser;
+   
+            if(snapshot.val().sender === user.email.slice(0, -10)) {
+                 html += `
+                 <div class="my-message">
+    <div class="message-and-image">      
+        <p class="user-message">${snapshot.val().message}</p>
+    </div>
+</div>`;
+                 
+            
+              }else{
+               html += `
+               
+               
+               <div class="message-box">
+               <p class="username-in-chat">${snapshot.val().sender}</p>
+               <div class="message-and-image">
+                   <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
+                   <p class="user-message">${snapshot.val().message}</p>
+               </div>
+           </div>`;
+              }
+            document.getElementById('chat-box').innerHTML += html;
+            
+            $('#chat-box').scrollTop(1000000);
+        })
 
          //display user's profile 
          var username = user.email, didsplayname = username.slice(0, -10);                                           
@@ -392,6 +518,8 @@ popupclass.showAlertUser();
 
          //list all files from firebase storage
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
+          
+            var arrayLength = result.items.length;
             result.items.forEach(function(imageRef){
                  
                  //get metadata foreach file
@@ -402,11 +530,12 @@ popupclass.showAlertUser();
                     var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
                     time = (s.timeCreated).substring(11),newCurrnetTime = time.slice(0,-8),
                     useriID = user.uid;   
-                                     
+      
         //get user's profile image from firebase storage
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
                       var iiName = imageRef.name.toString();    
-
+                      profleImageUrl = imgurl;
+                    console.error(imgurl);
   //save file, premesti ovo na post kad se klikne i prosled mu parametre
   var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
 
@@ -426,8 +555,10 @@ popupclass.showAlertUser();
                  var storageSveReference = user.uid+fileNameStorage,i=0;
                    
                  //send following data for post to UI function to client side
-                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference);                        
+                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength);                        
+               
                });
+               
              })
             .catch(function(er){console.log(er)})
          });
@@ -453,23 +584,27 @@ popupclass.showAlertUser();
       //if user is logged in auto-fill mail sender address
       var emailFom = document.getElementById('mail-input');
       emailFom.value = user.email;
+
+
       } else {   
          //if user is not logged in 
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
          document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
     }
 });
+AOS.init();
 
     //show users data/ from storage on page
-    function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference) {
-               
+    function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength) {
+      
+     
       //get profile image of user
       images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
-                 
+            
             //display different content for different file type   
             if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
                
                <div class="show-user-saved">
                <img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;">
@@ -486,7 +621,7 @@ popupclass.showAlertUser();
                
                </article>`;      
             }else if (fileType === "video/mp4") {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
                
                <div class="show-user-saved">
                <video src="${URL}" autoplay loop muted width="100%" height="auto"></video>
@@ -496,7 +631,7 @@ popupclass.showAlertUser();
                
                <div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>    <div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
             }else if (fileType === "application/octet-stream"){
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
                <div class="show-user-saved">
                <img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;">
                <div class="not-active" id="${fileType}${name}">  
@@ -504,7 +639,7 @@ popupclass.showAlertUser();
                </div>
                <div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
             }else {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
                <div class="show-user-saved">
                <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;">
                <div class="not-active" id="${fileType}${name}">  
@@ -515,19 +650,40 @@ popupclass.showAlertUser();
             
             //fetch saved posts from database server
             fetchSvedPosts(context,URL,name,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage);
-               
+            
             //display all posts to client side
             document.getElementById('bodyID').innerHTML += HTML;
+
+            if(document.getElementById('bodyID').children.length === arrayLength) {
+               document.getElementById('loading-popup').style.display = 'none';
+               document.getElementById('loadscreen').style.display = 'none';
+               document.getElementById('new-overlay').style.display = 'none';
+               document.getElementById('bodyID').style.display = 'grid';
+            }else{
+      document.getElementById('loading-popup').style.display = 'flex';
+      document.getElementById('loadscreen').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+      document.getElementById('bodyID').style.display = 'none';
+            }
          });
     }
 
+
+   //loading animation 
+   function loadingAnimationPopUp() {
+      document.getElementById('loading-popup').style.display = 'flex';
+      document.getElementById('loadscreen').style.display = 'flex';
+      document.getElementById('new-overlay').style.display = 'flex';
+   }
+
+  
     //show preview of image
   function preview(locationOfImage,type) {
     
    //remove reverse class
    document.getElementById('preview-div').classList.remove('reverse');
    document.getElementById('previe-popup').classList.remove('reverse');
-   document.getElementById('new-overlay').classList.remove('reverse');
+   document.getElementById('new-overlay').classList.remove('overlay-opacity');
 
    var div = document.getElementById('preview-div');var src = locationOfImage;
    var txtMessage = document.getElementById('text-message');var previwPopUp = document.getElementById('previe-popup');
@@ -585,18 +741,18 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
 
       document.body.style.overflowY = 'visible';
       var div = document.getElementById('preview-div');
-      div.innerHTML = ``;
+      
 
       //add reverse class
       document.getElementById('preview-div').classList.add('reverse');
       document.getElementById('previe-popup').classList.add('reverse');
-      document.getElementById('new-overlay').classList.add('reverse');
+      document.getElementById('new-overlay').classList.add('overlay-opacity');
 
       //clear div
          setTimeout(() => {
             document.getElementById('previe-popup').style.display = 'none';
            document.getElementById('new-overlay').style.display = 'none';
-           div.style.display = 'none';
+           div.style.display = 'none';div.innerHTML = ``;
          }, 500);
 
          //pause video/audio and close it
@@ -647,9 +803,8 @@ function removeSvedPost(filename, databasereference,URL,filename,fileSizePropert
   //remove post from database
    firebase.database().ref("users/" + databasereference +"/"  + cont).remove();
 
-   //set previous icon for bookmark
+      //set previous icon for bookmark
    document.getElementById(filename).innerHTML = `<i class="far fa-bookmark" onclick="savePostToStorage('${databasereference}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`; 
-
 }
 
 //save post to storage
@@ -657,6 +812,8 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
    
       var pointClass = document.getElementById(filetype+filename);
     
+    
+
       setTimeout(() => {
       pointClass.classList.add('not-active');
       pointClass.classList.remove('active-popop'); 
@@ -706,9 +863,11 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
         }
 
         //set remove post icon if post is saved
-        document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark"
+        document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark" id="${fileurl}"
         onclick="removeSvedPost('${cont}','${databasereference}','${fileurl}','${filename}','${filesize}','${filetype}','${datecreated}','${timecreated}','${username}','${storageid}','${profileimage}')"></i>`;
           
+      document.getElementById(filename).classList.add('save-animations');
+
         //set attributes to firebase server storage
         firebase.database().ref("users/" + databasereference + "/" + cont + "/").set({    
             post:{post_id:storageid,
@@ -740,18 +899,36 @@ function deleteThisPost(name,size,type,date,time){
       document.getElementById('new-overlay').style.display = 'flex';
      
       document.getElementById('st-dis').classList.remove('reverse');
-      document.getElementById('new-overlay').classList.remove('reverse');
+      document.getElementById('new-overlay').classList.remove('overlay-opacity');
+     
+     var displayname,postType;
+
+     if(name.length > 25) {
+      displayname = name.slice(0,29);
+      }else{
+         displayname =name;
+      }
+
+      if(type.length > 25) {
+         postType = type.slice(0,29);
+         }else{
+            postType =type;
+         }
 
      //delete popup content 
    document.getElementById('delete-txt').innerHTML = `
-   <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div><div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
+   <div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${displayname}</b></span></div><div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${postType}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
   
   //onclick function for post deleting
    document.getElementById('delete').addEventListener('click',() =>{
       
       //delete post from ordered storage location
       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
-         document.getElementById('st-dis').style.display = 'none';document.getElementById('new-overlay').style.display = 'none';
+         document.getElementById('st-dis').style.display = 'none';
+
+       
+            document.getElementById('new-overlay').style.display = 'none';
+         
 
       //refresh page   
       pageReloader();
@@ -784,7 +961,7 @@ function closeALert() {
  }, 500);
 
  document.getElementById('alert-popup').classList.add('reverse');
- document.getElementById('new-overlay').classList.add('reverse');
+ document.getElementById('new-overlay').classList.add('overlay-opacity');
 }
 
 
@@ -798,14 +975,23 @@ function closeALert() {
            document.getElementById('data-info').style.display = 'flex';
 
            document.getElementById('info-popup').classList.remove('reverse');
-           document.getElementById('new-overlay').classList.remove('reverse');
+           document.getElementById('new-overlay').classList.remove('overlay-opacity');
            document.getElementById('info-mail').classList.remove('reverse');
            document.getElementById('data-info').classList.remove('reverse');
         
         //hide post name if it is longer then 25 and add ...   
-       if (name.length > 25) {
-             name = name.substr(0,25) + '...';
-      }
+
+        if(name.length > 25) {
+           name = name.slice(0,29);
+        }else{
+           name =name;
+        }
+
+        if(type.length > 25) {
+         type = type.slice(0,29);
+       }else{
+         type =type;
+       }
 
          //html for popup
          document.getElementById('data-info').innerHTML = `<div class="flx-metadata"><span>Name:</span><span><b class="new-color-3">${name}</b></span></div><div class="flx-metadata"><span>Size:</span><span><b class="new-color-3">${size} MB</b></span></div><div class="flx-metadata"><span>Type:</span><span><b class="new-color-3">${type}</b></span></div><div class="flx-metadata"><span>Posted:</span><span><b class="new-color-3">${date} at ${time}</b></span></div>`;
@@ -827,79 +1013,13 @@ function closeALert() {
         }, 500);
         
         document.getElementById('info-popup').classList.add('reverse');
-        document.getElementById('new-overlay').classList.add('reverse');
+        document.getElementById('new-overlay').classList.add('overlay-opacity');
         document.getElementById('info-mail').classList.add('reverse');
         document.getElementById('data-info').classList.add('reverse');
 
          //enable scrolling
          document.body.style.overflowY = 'visible';
         }
-
-        //logged user uploads files in storage
-function uploadFileToFirebase(e){
-   document.getElementById('postcontent').innerHTML = ``;
-  
-   var user = firebase.auth().currentUser;      
-        
-   //user is online
-   if(user){
-
-      //allow multiple files uploading
-      for(let i=0;i<e.target.files.length;i++){
-            let file = e.target.files[i];
-            
-         //upload file to fireabse server using put function
-        firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
-      
-         //show uploading progress to client if it is bigger then 0%
-         if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
-         document.getElementById('uploading-proces').style.display="none";
-      }else{
-
-         //show uploading progress to client
-         document.getElementById('uploading-proces').style.display="flex";
-
-         //count how many bytes are transfered
-         document.getElementById('uploading-proces-value').value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-         console.log(snapshot.totalBytes);
-         
-         //show percentage to client
-         document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
-      }
-      console.warn(file);
-
-      //get current uploading file data and show it to client using metadata
-      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getMetadata().then(snapshot => {;
-         var fileType = snapshot.contentType,name = snapshot.name,fileSizeProperty=2,timeCreated=1,newCurrnetTime=2,profileimage=null,didsplayname=null;
-     
-       //get download url for file picture  
-      firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).getDownloadURL().then(imageURLdownload =>{
-         
-         //check which type is file and show image for every certan file type
-         if(fileType === "image/png" || fileType === "image/jpg" || fileType === "image/jpeg") {
-            HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="${imageURLdownload}" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;      
-         }else if (fileType === "video/mp4") {
-            HTML=`<article class="storage-article" id="${fileSizeProperty}"><video src="${imageURLdownload}" autoplay loop muted width="100%" height="auto"  class="radiustht"></video><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;               
-         }else if (fileType === "application/octet-stream"){
-             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"  class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;            
-         }else {
-             HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;" class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;    
-         }     
-         
-            //display current uploading file/s to client 
-            document.getElementById('postcontent').innerHTML += HTML;
-        })  
-      }) 
-   })
-}
-}
-//user is not logged in
-           else{
-
-            //alert user
-            alertUserAboutSuccess("You must log in!");
-           }
-   }
 
       //send email to mailtrap
       function sendMail() {
@@ -941,7 +1061,7 @@ function uploadFileToFirebase(e){
       }, 500);
 
       logoutPopUpRequest.classList.add('reverse');
-      document.getElementById('new-overlay').classList.add('reverse');
+      document.getElementById('new-overlay').classList.add('overlay-opacity');
     }
         
     //show mail changer
@@ -953,7 +1073,7 @@ function uploadFileToFirebase(e){
        //remove class
        document.querySelector('.set-displ').classList.remove('reverse');
        document.getElementById('update-ml').classList.remove('reverse');
-       document.querySelector('.overlay-pop-up').classList.remove('reverse');
+       document.querySelector('.overlay-pop-up').classList.remove('overlay-opacity');
     }
 
     //hide mail changer
@@ -966,18 +1086,18 @@ function uploadFileToFirebase(e){
       }, 500);
       
       document.querySelector('.set-displ').classList.add('reverse');
-      document.querySelector('.overlay-pop-up').classList.add('reverse');
+      document.querySelector('.overlay-pop-up').classList.add('overlay-opacity');
       document.getElementById('update-ml').classList.add('reverse');
 
       //enable scrolling
       document.body.style.overflowY = 'visible';
     }
-
+    var iconArray = [];
    //sub-class 
-   class DataProvider{
+   
 
       //get icons for footer from json file data.json
-      async getFooter() {
+      async function getFooter() {
          try {
             let data = await fetch('data.json');
             let items = await data.json();
@@ -989,7 +1109,30 @@ function uploadFileToFirebase(e){
                return {icon, iconEvenet};
             });
 
+            //
+         iconArray.push(icons);
+
+         //draw content for footer
+         for(var i=0;i<icons.length;i++){
+               document.querySelector('.footer').innerHTML += `<i class="${icons[i].icon}" onclick="iconEvent(${icons[i].iconEvenet})" id="${icons[i].iconEvenet}"></i>`;
+         }
+
+         //current page
+        var fileName = location.pathname.split("/").slice(-1)
+        if(fileName[0] ==="index.html"){
+             document.getElementById("1").classList.add('current-page');
+         }else if (fileName[0] === "search.html") {
+            document.getElementById("2").classList.add('current-page');
+         }else if (fileName[0] === "upload.html") {
+            document.getElementById("3").classList.add('current-page');
+         }else if (fileName[0] === "settings.html") {
+            document.getElementById("4").classList.add('current-page');
+         }else if (fileName[0] === "profile.html") {
+            document.getElementById("5").classList.add('current-page');
+         }
+
             return icons;
+            
          }
          catch(error)
          {
@@ -1003,41 +1146,20 @@ function uploadFileToFirebase(e){
            return null;
          }
       }
-   }
-
-   //class for userinterface
-   class UserInterface{
-
-      //display icons for footer on evry page
-      displayFooter(icons) {
-         let result = '';
-         icons.forEach(icon => {
-            result += `<i class="${icon.icon}" onclick="iconEvent(${icon.iconEvenet})"></i>`;
-         });
-         document.querySelector('.footer').innerHTML = result;
-      }
-   }
-
-   //dom content listener
-   document.addEventListener('DOMContentLoaded',(event) => {
-
-      const DATA = new DataProvider();
-      const GUI  = new UserInterface();
-
-      //callback functions from classes
-      DATA.getFooter().then(item => GUI.displayFooter(item));
-   });
-
+   
+      //display footer
+      getFooter();
+   
    //open pages from footer
    function iconEvent(ID) {
 
       //get button/page id and set it to session storage
       sessionStorage.setItem("optionPageID",ID);
-
+      document.getElementById(ID).classList.add('current-page');
       //check the id of button and redirect user to certan page
       switch(sessionStorage.getItem("optionPageID")){
          case "1":
-            window.location.href = "index.html";
+            window.location.href = "index.html";           
             break;
             case "2":
                window.location.href = "search.html";
@@ -1063,7 +1185,8 @@ function uploadFileToFirebase(e){
                            return null;
       }
    }
-    
+
+   
    //dont have account? create one
    function createAccountPageID() {
       window.location.href = 'create-account.html';
@@ -1089,3 +1212,30 @@ function uploadFileToFirebase(e){
       iconEvent(1);
       document.getElementById('postcontent').innerHTML = '';
    }
+
+
+
+
+firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().currentUser;
+if(user) {
+   firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(x =>{
+      //console.log("url:"+imgurl);
+      document.getElementById('sendMessage').addEventListener('click',(e)=>{
+        
+         var username = user.email, didsplayname = username.slice(0, -10);
+         var message = document.getElementById('text-message-user').value;
+ if(message != ""){
+        firebase.database().ref("messages").push().set({
+            "sender":didsplayname,
+            "message":message,
+            "profileimage":x,
+         })
+      }
+      document.getElementById('text-message-user').value = ''
+    })})}})
+
+
+
+  
+
+

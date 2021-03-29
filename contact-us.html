@@ -37,7 +37,9 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
         <div class="form-index form-margin conact-width">
             <input type="text" name="subject" id="subject-input" placeholder="Subject" autocomplete="off" autofocus="off" class="input-box" required>
             <input type="text" name="mail" id="mail-input" placeholder="E-mail" autocomplete="off" autofocus="off" class="input-box" required>
-            <input type="text" name="message" id="message-input" placeholder="Message" autocomplete="off" autofocus="off" class="input-box" required>
+            <!-- <input type="text" name="message" id="message-input" placeholder="Message" autocomplete="off" autofocus="off" class="input-box" required> -->
+            
+            <textarea name="message" id="message-input" cols="1" rows="3" placeholder="Message" autocomplete="off" autofocus="off" class="input-box" required></textarea>
             <button class="submit-button submit-responsive" id="submit" onclick="sendMail()">SEND</button>
         </div>
     </div>
@@ -47,6 +49,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 
 </body>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.19/ua-parser.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="code-behind.js"></script>

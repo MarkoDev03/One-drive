@@ -1,0 +1,28 @@
+{
+    "name":"Saveprojects",
+    "short_name":"Saveprojects",
+    "start_url":".",
+    "background_color":"#333399",
+    "theme_color":"#ffffff",
+    "display":"standalone",
+    "icons":[
+        {
+            "src":"./media/none-pic.png",
+            "sizes":"300x300",
+            "type":"image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src":"./media/none-pic.png",
+            "sizes":"512x512",
+            "type":"image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src":"./media/none-pic.png",
+            "sizes":"300x300",
+            "type":"image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
