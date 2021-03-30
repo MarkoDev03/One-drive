@@ -42,8 +42,11 @@
     <div id="cli"> 
        
     </div>
-     <input type="file" name="" id="sendImage"  multiple>
-     <button onclick="sendToIndex()">sendf</button>
+   
+
+    <label class="chose-file margin-file fas fa-image f-icon"><input type="file"  accept=".png, .jpg, .jpeg" class="myFile hide-file"id="sendImage" multiple/></label>
+    <label class="chose-file margin-file fas fa-video f-icon"><input type="file" accept="video/mp4,video/x-m4v,video/*" class="myFile hide-file"id="sendVideo" multiple/></label>
+
     <i class="far fa-laugh f-icon" onclick="showEmojies()"></i>
  <input type="text" name="" id="text-message-user"  class="input-message-to-client" autocomplete="off" autofocus="off">
    <button id="sendMessage" class="send-message-to-client-button">SEND</button>

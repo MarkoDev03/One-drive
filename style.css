@@ -1232,3 +1232,17 @@ z-index: 1;
     height: auto;
     border-radius: 20px;
 }
+
+.x-circle{
+    width: 30px;
+    height: 30px;
+}
+.fa-image,.fa-video{
+    border: none;
+    outline: none;
+    color: black;
+    font-size: 25px;
+    height: 25px;
+    width: 25px;
+}
+

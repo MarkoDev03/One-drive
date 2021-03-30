@@ -486,7 +486,7 @@ var profleImageUrl;
             var html = '',htmluser='';
            var user = firebase.auth().currentUser;
    
-           if(snapshot.val().image === "/" )
+           if(snapshot.val().image === "/" && snapshot.val().video === "/")
 
 
             if(snapshot.val().sender === user.email.slice(0, -10)) {
@@ -508,7 +508,7 @@ var profleImageUrl;
                </div>
            </div>`;
               }
-              else {
+              else  if(snapshot.val().image !== "/"){
                  ////photo image
                if(snapshot.val().sender === user.email.slice(0, -10)) {
                   html += `
@@ -516,13 +516,9 @@ var profleImageUrl;
      <div class="message-and-image">      
          <img src="${snapshot.val().image}" alt="" class="sent-image">
      </div>
- </div>`;
-                  
-             
+ </div>`;         
                }else{
-                html += `
-                
-                
+                html += `                               
                 <div class="message-box">
                 <p class="username-in-chat">${snapshot.val().sender}</p>
                 <div class="message-and-image">
@@ -530,11 +526,30 @@ var profleImageUrl;
                     <img src="${snapshot.val().image}" alt=""   class="sent-image">
                 </div>
             </div>`;
-              }
+              } 
+            }else  if(snapshot.val().video !== "/"){
+
+               if(snapshot.val().sender === user.email.slice(0, -10)) {
+                  html += `
+                  <div class="my-message">
+     <div class="message-and-image">      
+     <video src="${snapshot.val().video}" loop muted autoplay class="sent-image"></video>
+     </div>
+ </div>`;         
+               }else{
+                html += `                               
+                <div class="message-box">
+                <p class="username-in-chat">${snapshot.val().sender}</p>
+                <div class="message-and-image">
+                    <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
+                   <video src="${snapshot.val().video}" loop muted  autoplay class="sent-image"></video>
+                </div>
+            </div>`;
+              } 
             }
             document.getElementById('chat-box').innerHTML += html;
-            
-            $('#chat-box').scrollTop(10000000000000000000000000000000000000);
+            var divHeight =  document.getElementById('chat-box').offsetHeight;
+            $('#chat-box').scrollTop(divHeight+100000000000000000000000000000000);
          })
 
          //display user's profile 
@@ -1244,8 +1259,6 @@ fetch('data.json',{method:"GET"})
 .then(response => response.json())
 .then(data => window.onload = showEmojes(data));
 
-
-
 //send messages and emojies
 firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().currentUser;
 
@@ -1258,34 +1271,15 @@ firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().cu
    
         
      if( message !=""){
- 
-  
         firebase.database().ref("messages").push().set({
             "sender":didsplayname,
             "message":message,
             "profileimage":x,
-            "image":"/"
-        
+            "image":"/" ,
+            "video":"/"
         }) 
-    
       } 
       
-      
-      if( message ===""){
-        
-        
-        
-        
-        
-             
-      }
-      /*setTimeout(() => {
-   
-       }, 6000);*/
-
- 
-       
-    
       document.getElementById('text-message-user').value = ''
     })
    
@@ -1294,6 +1288,7 @@ firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().cu
    var username = user.email, didsplayname = username.slice(0, -10);
    var message = document.getElementById('text-message-user').value;
   
+   //send image
    document.getElementById('sendImage').addEventListener('change',(event) =>{
         var user = firebase.auth().currentUser;
       var ne;
@@ -1312,16 +1307,42 @@ firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().cu
         "sender":didsplayname,
         "message":"message",
         "profileimage":x,
-        "image":url
+        "image":url,
+        "video":"/"
     }) })}, 7000);
         
-     });
+     });//stop sending
+
+
+
+     document.getElementById('sendVideo').addEventListener('change',(event) =>{
+      var user = firebase.auth().currentUser;
+    var ne;
+   for(var i=0;i<event.target.files.length;i++){
+         let file = event.target.files[i];
+ne = file.name;
+         firebase.storage().ref("videos/"+ file.name).put(file);              
+   }
+
+      setTimeout(() => {
+       
+
+    firebase.storage().ref("videos/"+ne).getDownloadURL().then(function(videoURL){
+   
+     firebase.database().ref("messages").push().set({
+      "sender":didsplayname,
+      "message":"message",
+      "profileimage":x,
+      "image":"/",
+      "video":videoURL
+  }) })}, 7000);
+      
+   });
+
+
 
    })
 })
-
-
-
 
     function showEmojes(data){
        var ardArray = data.emojes;
@@ -1331,18 +1352,6 @@ firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().cu
     }
 
 function setIcon(icon) {document.getElementById('text-message-user').value+=icon}
-
-
-
-/*document.getElementById('sendImage').addEventListener('change',(e) =>{
-   for(let i=0;i<e.target.files.length;i++){
-      let file = e.target.files[i];
-      
-     
-      //image url
-        var url  = window.URL.createObjectURL(file);
-
-firebase.storage().ref("messaging/" +file.name).put(file);*/
 
 function showEmojies() {
    document.getElementById('emojis').style.display = 'flex';
