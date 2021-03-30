@@ -486,6 +486,9 @@ var profleImageUrl;
             var html = '',htmluser='';
            var user = firebase.auth().currentUser;
    
+           if(snapshot.val().image === "/" )
+
+
             if(snapshot.val().sender === user.email.slice(0, -10)) {
                  html += `
                  <div class="my-message">
@@ -493,24 +496,46 @@ var profleImageUrl;
         <p class="user-message">${snapshot.val().message}</p>
     </div>
 </div>`;
-                 
-            
+                       
               }else{
                html += `
-               
-               
+                 
                <div class="message-box">
                <p class="username-in-chat">${snapshot.val().sender}</p>
                <div class="message-and-image">
-                   <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
+               <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
                    <p class="user-message">${snapshot.val().message}</p>
                </div>
            </div>`;
               }
+              else {
+                 ////photo image
+               if(snapshot.val().sender === user.email.slice(0, -10)) {
+                  html += `
+                  <div class="my-message">
+     <div class="message-and-image">      
+         <img src="${snapshot.val().image}" alt="" class="sent-image">
+     </div>
+ </div>`;
+                  
+             
+               }else{
+                html += `
+                
+                
+                <div class="message-box">
+                <p class="username-in-chat">${snapshot.val().sender}</p>
+                <div class="message-and-image">
+                    <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
+                    <img src="${snapshot.val().image}" alt=""   class="sent-image">
+                </div>
+            </div>`;
+              }
+            }
             document.getElementById('chat-box').innerHTML += html;
             
             $('#chat-box').scrollTop(10000000000000000000000000000000000000);
-        })
+         })
 
          //display user's profile 
          var username = user.email, didsplayname = username.slice(0, -10);                                           
@@ -1214,89 +1239,86 @@ function closeALert() {
       document.getElementById('postcontent').innerHTML = '';
    }
 
-//    var emojis = [0x1F600, 0x1F604, 0x1F34A, 0x1F344, 0x1F37F, 0x1F363, 0x1F370, 0x1F355,
-//       0x1F354, 0x1F35F, 0x1F6C0, 0x1F48E, 0x1F5FA, 0x23F0, 0x1F579, 0x1F4DA,
-//       0x1F431, 0x1F42A, 0x1F439, 0x1F424];
-// var ardArray = [];
-// for(var i=0;i<emojis.length;i++){
-//       ardArray.push({
-//          code:emojis[i],
-//          content: String.fromCodePoint(emojis[i]),
-//          id: i,
-//        });}
-//      console.log(ardArray);
-
-
-   // var ardArray = [{content:""}];
-   
-
-
-
-
-
-  /* async function getEmojies() {
-      try {
-         let data = await fetch('data.json');
-         let items = await data.json();
-         let icons = items.ardArray;
-
-         //map icons
-         icons = icons.map(item => {
-            let content = item.content;
-            ardArray.push({"content":item.content});
-            return {content};
-         });
-
-         return icons;
-         
-      }
-      catch(error)
-      {
-
-         //in case of en error
-        console.log(error);
-
-        //alert user about error
-        alertUserAboutSuccess(mesage);(error);
-
-        return null;
-      }
-   }*/
-
-
-//console.log(ardArray);
-
+   //fetch emojies from json file and add them to emoji box
 fetch('data.json',{method:"GET"})
 .then(response => response.json())
-.then(data => window.onload = showEmojes(data))
-.catch(error => console.error(error));
+.then(data => window.onload = showEmojes(data));
 
 
 
-
+//send messages and emojies
 firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().currentUser;
-if(user) {
+
    firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(x =>{
-      
+    
       document.getElementById('sendMessage').addEventListener('click',(e)=>{
        
          var username = user.email, didsplayname = username.slice(0, -10);
          var message = document.getElementById('text-message-user').value;
    
         
- if(message != "" ){
+     if( message !=""){
  
   
         firebase.database().ref("messages").push().set({
             "sender":didsplayname,
             "message":message,
             "profileimage":x,
+            "image":"/"
         
         }) 
     
+      } 
+      
+      
+      if( message ===""){
+        
+        
+        
+        
+        
+             
       }
+      /*setTimeout(() => {
+   
+       }, 6000);*/
+
+ 
+       
+    
       document.getElementById('text-message-user').value = ''
-    })})}})
+    })
+   
+  
+
+   var username = user.email, didsplayname = username.slice(0, -10);
+   var message = document.getElementById('text-message-user').value;
+  
+   document.getElementById('sendImage').addEventListener('change',(event) =>{
+        var user = firebase.auth().currentUser;
+      var ne;
+     for(var i=0;i<event.target.files.length;i++){
+           let file = event.target.files[i];
+  ne = file.name;
+           firebase.storage().ref("messages/"+ file.name).put(file);              
+     }
+
+        setTimeout(() => {
+         
+
+      firebase.storage().ref("messages/"+ne).getDownloadURL().then(function(url){
+     
+       firebase.database().ref("messages").push().set({
+        "sender":didsplayname,
+        "message":"message",
+        "profileimage":x,
+        "image":url
+    }) })}, 7000);
+        
+     });
+
+   })
+})
 
 
 
