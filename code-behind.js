@@ -427,27 +427,16 @@ var idl;
          context = fullname;
       }
 
+      //save data of all users in app
       firebase.database().ref("accounts/" + context).set(
-         {
-              
-                 
+         {            
               username:fullname,
               id:uid,
-              profileimage:url
-            
-            
-              
+              profileimage:url            
          }
       );
 
    }
-  
-   //SHOW ALL USERS
-  /* firebase.database().ref("accounts/").once('value',snap => {
-     snap.forEach(function(snapshot) {
-        console.warn(snapshot.val().username);
-     })
-  })*/
 
     //logged user uploads files in storage
 function uploadFileToFirebase(e){
@@ -602,8 +591,24 @@ var profleImageUrl;
 
 
         
-         })
+         });
 
+         //get all users for story
+         firebase.database().ref("accounts/").once('value',snap => {
+            snap.forEach(function(snapshot) {
+            
+                //show stories
+               document.getElementById('story-wrapper').innerHTML +=`<div class="swiper-slide"><div class="border-frame"><div class="white-frame"><div class="story-image" style="background-image: url(${snapshot.val().profileimage});"></div></div></div><p>${snapshot.val().username}</p></div>`;                     
+            })
+
+//install swiper for stories
+               var swiper = new Swiper('.swiper-container', {
+                  slidesPerView: 3,
+                  spaceBetween: 10, 
+                  loop:false                
+                });
+         });
+     
          //display user's profile 
          var username = user.email, didsplayname = username.slice(0, -10);                                           
          var storage = firebase.storage(),storageRef = storage.ref();
