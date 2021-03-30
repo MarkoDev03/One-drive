@@ -35,7 +35,8 @@
             "icon":"far fa-user-circle f-icon",
             "event":5
         }
-    ]
+    ],
+    "emojes" : [{"content":"💋"},{"content":"🌹"}]
    
     
 }

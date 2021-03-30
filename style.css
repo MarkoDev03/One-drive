@@ -248,7 +248,6 @@ animation: zoomout .5s ;
 
 .body-animation,.index-body{
     background: #ff00cc;  /* fallback for old browsers */
-
 background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
@@ -377,9 +376,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 .delete{
     color: red;
 }
-.top-mrg{
-    margin-top: 0px;
-}
+
 .input-box-new{
     border: none;
     outline: none;
@@ -563,83 +560,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 .nat{
     display: none;
 }
-@media only screen and (max-width:700px) {
 
-    .set-class{
-        width: 90%;
-    }
-    .input-box{
-        width: 100%;
-    }
-    .contact-us{
-        width: 85%;
-        padding: 0px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-top: 20px;
-        padding-bottom: 20px;
-        box-shadow: 0px 0px 0px 1px var(--txt-color);
-    }
-    .register-now{
-        font-size: 14px;
-    }
-    .form-index{
-        width: 80%;
-    }
-    .submit-button{
-        padding: 7px;
-    }
-    .contact-headline{
-        font-size: 25px;
-    }
-    .top-create{
-        margin-top: 30px;
-    }
-    .header-index{
-        height: 30px;
-    }
-    .forma-contact{
-        flex-direction: column; width: 90%;
-    }
-    .form-margin{
-        padding-left: 5px;
-        padding-right:5px;
-    }
-    .hed-line{
-        padding: 10px;
-     width:95.8%;
-     font-size: 25px;
-     height: 200px;
-
-    }
-    .hed-line p{
-        margin-left: 5px;
-    }
-    .fa-envelope{
-        margin-top: 10px;
-    }
-    #message{
-        font-size: 18px;
-        margin-top: -10px;
-    }
-    .submit-responsive{
-        width: 100%;
-        margin-bottom: 20px;
-    }
-    .body-context{
-        margin-top: 0px;
-    }
-    .popup{
-        width: 70%;
-    }
-    .flex-button{
-        margin-right: -27px;
-    }
-    .set-class{
-        margin-top: 10px;
-    }
-    
-}
 #load-animations{
     display: none;
 }
@@ -739,7 +660,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 
 .top-m{
-     margin-top: 50px;
+     margin-top: 80px;
 }
 .sticky-header{
    position: fixed;
@@ -786,10 +707,13 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 }
 #loadscreen{
-    width: 100%;
+    width: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255);
 }
 .preview-image{
     width: 100%;
@@ -1022,22 +946,20 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     width: 100%;
     background:  rgba(255, 255, 255, 0.9);
     color: white;
-    height: 600px;
+    height: calc(100vh - 160px);
     overflow-y: auto;
     padding-bottom: 10px;
     overflow-x: hidden;
+    position: relative;
+    top: 40px;z-index: 1;
    
 }
 .text-box-div{
     width: 550px;
-    height: 650px;
+    height: 100%;
     display: flex;
     flex-direction: column; 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
+   z-index: 1;
 }
 
 .text-field{
@@ -1045,26 +967,25 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     justify-content: space-evenly;
     align-items: center;
     width: 100%;
-    height: 50px;
-    background:  rgba(255, 255, 255, 0.9);
+    height: 7%;
+    background:  rgba(255, 255, 255, 1);
 }
 .input-message-to-client{
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+    border-radius: 30px;
     background-color: transparent;
     border: 1px solid grey;
-    border-right: none;
     height: 26px;
-    width: 70%;
+    width: 50%;
     outline: none;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 20px;
+    padding-left: 10px;
 }
 .send-message-to-client-button{
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-radius: 30px;
     background-color: transparent;
     border: 1px solid grey;
-    border-left: none;
-    height: 30px;
     font-size: 14px;
     padding: 4px;
     width: 100px;
@@ -1073,6 +994,10 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     background: linear-gradient(to right, #333399 0%, #ff00cc 100%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size:18px;
 }
 
 .input-message-to-client:active,.input-message-to-client:focus,.send-message-to-client-button:focus{
@@ -1110,7 +1035,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
-    margin-left: 10px;
+    margin-left: 5px;
     width: fit-content;
     max-width: 260px;
     position: relative;
@@ -1124,15 +1049,177 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 .my-message{
     margin-top: 20px;
    
-    margin-left: 10px;
+    margin-left: auto;
  
     width: 260px;
-    position:relative;
-    left: 49%;
+    margin-right: 5px;
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
     align-content: flex-end;
     text-align: right;
 
+}
+
+.emoji-block{
+    background:  rgba(255, 255, 255, 1);
+    width: 300px;
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: none;
+    border: 1px solid rgb(202, 202, 202);
+    padding-left: 10px;
+    padding-right: 10px;
+    z-index: 99999999999;
+    position: relative;
+    bottom: 402px;
+}
+
+.emoji-block p {
+    font-size: 20px;
+}
+
+.wrapper{
+ width: 550px;
+z-index: 1;
+ margin-left: auto;
+ margin-right: auto;
+ height: calc(100vh - 101px);
+ margin-bottom: 100px;
+}
+
+.show{
+    display: flex;
+}
+
+.header-chat{
+    height: 40px;
+    background-color: red;
+    position: fixed;
+    top: 0px;
+    width: 550px;
+    z-index: 2;
+}
+.a-style{
+    display: flex;
+    position: fixed;
+    bottom:41px;
+}
+@media only screen and (max-width:700px) {
+
+    .set-class{
+        width: 90%;
+    }
+    .input-box{
+        width: 100%;
+    }
+    .contact-us{
+        width: 85%;
+        padding: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        box-shadow: 0px 0px 0px 1px var(--txt-color);
+    }
+    .register-now{
+        font-size: 14px;
+    }
+    .form-index{
+        width: 80%;
+    }
+    .submit-button{
+        padding: 7px;
+    }
+    .contact-headline{
+        font-size: 25px;
+    }
+    .top-create{
+        margin-top: 30px;
+    }
+    .header-index{
+        height: 30px;
+    }
+    .forma-contact{
+        flex-direction: column; width: 90%;
+    }
+    .form-margin{
+        padding-left: 5px;
+        padding-right:5px;
+    }
+    .hed-line{
+        padding: 10px;
+     width:95.8%;
+     font-size: 25px;
+     height: 200px;
+
+    }
+    .hed-line p{
+        margin-left: 5px;
+    }
+    .fa-envelope{
+        margin-top: 0px;
+    }
+    #message{
+        font-size: 18px;
+        margin-top: -10px;
+    }
+    .submit-responsive{
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .body-context{
+        margin-top: 0px;
+    }
+    .popup{
+        width: 70%;
+    }
+    .flex-button{
+        margin-right: -27px;
+    }
+    .set-class{
+        margin-top: 10px;
+    }
+    
+}
+
+@media only screen and (max-width:550px) and (min-width:300px) {
+    .text-box-div{
+        width: 100%;
+ margin-bottom: 50px;
+    }
+    .wrapper{
+        width: 100%;
+       
+
+       }
+       #chat-box{
+           width: 100%; 
+          height: calc(100vh - 150px); 
+          margin-top: 0px;
+   
+          
+       }
+       .x-style{
+           display: none;
+       }
+       .a-style{
+           display: flex;
+           margin-bottom: 0px;
+           z-index: 9;
+       }
+
+       .text-field{
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+        height: 60px;
+        background: rgba(255, 255, 255,1);
+    }
+}
+
+.s-style{
+  display: flex;
+  z-index: 3;
 }

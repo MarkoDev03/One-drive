@@ -52,7 +52,7 @@ var posts = [];
 
       //loading animation popup
       loadingAnimationPopUp() {
-         document.getElementById('loading-popup').innerHTML = `<div class="set-class popup new-load" id="ch-mail"><div id="loadscreen"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></div>`;
+         document.getElementById('loading-popup').innerHTML = `<div class="new-load" id="ch-mail"><div id="loadscreen"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></div>`;
       }
 
      }
@@ -509,7 +509,7 @@ var profleImageUrl;
               }
             document.getElementById('chat-box').innerHTML += html;
             
-            $('#chat-box').scrollTop(1000000);
+            $('#chat-box').scrollTop(10000000000000000000000000000000000000);
         })
 
          //display user's profile 
@@ -536,6 +536,7 @@ var profleImageUrl;
                       var iiName = imageRef.name.toString();    
                       profleImageUrl = imgurl;
                     console.error(imgurl);
+               
   //save file, premesti ovo na post kad se klikne i prosled mu parametre
   var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
 
@@ -1213,20 +1214,64 @@ function closeALert() {
       document.getElementById('postcontent').innerHTML = '';
    }
 
-   var emojis = [0x1F600, 0x1F604, 0x1F34A, 0x1F344, 0x1F37F, 0x1F363, 0x1F370, 0x1F355,
-      0x1F354, 0x1F35F, 0x1F6C0, 0x1F48E, 0x1F5FA, 0x23F0, 0x1F579, 0x1F4DA,
-      0x1F431, 0x1F42A, 0x1F439, 0x1F424];
-var ardArray = [];
-for(var i=0;i<emojis.length;i++){
-      ardArray.push({
-         code:emojis[i],
-         content: String.fromCodePoint(emojis[i]),
-         id: i,
-       });}
-     console.log(ardArray);
+//    var emojis = [0x1F600, 0x1F604, 0x1F34A, 0x1F344, 0x1F37F, 0x1F363, 0x1F370, 0x1F355,
+//       0x1F354, 0x1F35F, 0x1F6C0, 0x1F48E, 0x1F5FA, 0x23F0, 0x1F579, 0x1F4DA,
+//       0x1F431, 0x1F42A, 0x1F439, 0x1F424];
+// var ardArray = [];
+// for(var i=0;i<emojis.length;i++){
+//       ardArray.push({
+//          code:emojis[i],
+//          content: String.fromCodePoint(emojis[i]),
+//          id: i,
+//        });}
+//      console.log(ardArray);
 
 
-    
+   // var ardArray = [{content:""}];
+   
+
+
+
+
+
+  /* async function getEmojies() {
+      try {
+         let data = await fetch('data.json');
+         let items = await data.json();
+         let icons = items.ardArray;
+
+         //map icons
+         icons = icons.map(item => {
+            let content = item.content;
+            ardArray.push({"content":item.content});
+            return {content};
+         });
+
+         return icons;
+         
+      }
+      catch(error)
+      {
+
+         //in case of en error
+        console.log(error);
+
+        //alert user about error
+        alertUserAboutSuccess(mesage);(error);
+
+        return null;
+      }
+   }*/
+
+
+//console.log(ardArray);
+
+fetch('data.json',{method:"GET"})
+.then(response => response.json())
+.then(data => window.onload = showEmojes(data))
+.catch(error => console.error(error));
+
+
 
 
 firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().currentUser;
@@ -1234,17 +1279,21 @@ if(user) {
    firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(x =>{
       
       document.getElementById('sendMessage').addEventListener('click',(e)=>{
-        
+       
          var username = user.email, didsplayname = username.slice(0, -10);
          var message = document.getElementById('text-message-user').value;
- if(message != ""){
- 
    
+        
+ if(message != "" ){
+ 
+  
         firebase.database().ref("messages").push().set({
             "sender":didsplayname,
             "message":message,
             "profileimage":x,
-        })
+        
+        }) 
+    
       }
       document.getElementById('text-message-user').value = ''
     })})}})
@@ -1252,12 +1301,31 @@ if(user) {
 
 
 
-
+    function showEmojes(data){
+       var ardArray = data.emojes;
      for(var i=0;ardArray.length;i++){
-   document.getElementById('emojis').innerHTML += `<p onclick="setIcon(${ardArray[i].code})">${ardArray[i].content}</p>`;
+   document.getElementById('emojis').innerHTML += `<p onclick="setIcon('${ardArray[i].content}')">${ardArray[i].content}</p>`;
 }
+    }
 
-function setIcon(icon) {document.getElementById('text-message-user').value+=String.fromCodePoint(icon)}
+function setIcon(icon) {document.getElementById('text-message-user').value+=icon}
 
 
 
+/*document.getElementById('sendImage').addEventListener('change',(e) =>{
+   for(let i=0;i<e.target.files.length;i++){
+      let file = e.target.files[i];
+      
+     
+      //image url
+        var url  = window.URL.createObjectURL(file);
+
+firebase.storage().ref("messaging/" +file.name).put(file);*/
+
+function showEmojies() {
+   document.getElementById('emojis').style.display = 'flex';
+  
+} document.getElementById('chat-box').addEventListener('click',()=>{
+      document.getElementById('emojis').style.display = 'none';
+   })
+   
