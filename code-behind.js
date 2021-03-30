@@ -161,11 +161,11 @@ popupclass.loadingAnimationPopUp();
       //account parameters required
         let email = document.getElementById('e-mail-input');
         let password = document.getElementById('password-input');
-
+var idl;
       //create account to firebase storage
        auth.createUserWithEmailAndPassword(email.value, password.value).then((userCredential) => {         
         window.location.href = "settings.html";
-
+     idl = userCredential.uid;
         //alert user
         alertUserAboutSuccess("Your account is created!");
        })
@@ -179,7 +179,8 @@ popupclass.loadingAnimationPopUp();
          //error logs to administrator
          console.warn("CODE:" + errorCode + "MESSAGE:" + errorMessage);
        });
-      
+       
+  
       }
 
    //log in
@@ -392,9 +393,16 @@ popupclass.loadingAnimationPopUp();
 
             });//firebase-end
 
-       }//if-end   
 
-    }//for-end
+
+       }//for-end 
+       
+       firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){
+         setUserData(url,(user.email).slice(0, -10),user.uid);
+       })
+
+       
+    }//if-end
     else {
       firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').put('./media/profileimg.png');
 
@@ -402,6 +410,44 @@ popupclass.loadingAnimationPopUp();
        alertUserAboutSuccess("You must log in to post profile image:");
     }//else-end
    }
+
+
+   function setUserData(url,fullname,uid) {
+
+      var context;
+      if(fullname.includes(".")) {
+         context = fullname.replace(/\./g,' ');
+      }else  if(fullname.includes("#")) {
+         context = fullname.replace(/\#/g,' ');
+      }else if(fullname.includes("[")) {
+         context = fullname.replace(/\[/g,' ');
+      } else if(fullname.includes("$")) {
+         context = fullname.replace(/\$/g,' ');
+      }else {
+         context = fullname;
+      }
+
+      firebase.database().ref("accounts/" + context).set(
+         {
+              
+                 
+              username:fullname,
+              id:uid,
+              profileimage:url
+            
+            
+              
+         }
+      );
+
+   }
+  
+   //SHOW ALL USERS
+  /* firebase.database().ref("accounts/").once('value',snap => {
+     snap.forEach(function(snapshot) {
+        console.warn(snapshot.val().username);
+     })
+  })*/
 
     //logged user uploads files in storage
 function uploadFileToFirebase(e){
@@ -475,6 +521,7 @@ for(let i=0;i<e.target.files.length;i++){
    }
 
 var profleImageUrl;
+
    //user is logged to firebase in an existing account
    firebase.auth().onAuthStateChanged(function(user) {
 
@@ -548,8 +595,13 @@ var profleImageUrl;
               } 
             }
             document.getElementById('chat-box').innerHTML += html;
-            var divHeight =  document.getElementById('chat-box').offsetHeight;
-            $('#chat-box').scrollTop(divHeight+100000000000000000000000000000000);
+
+        // $('#chat-box').scrollTop(($('#chat-box').height())*1000);
+
+         $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+
+
+        
          })
 
          //display user's profile 
