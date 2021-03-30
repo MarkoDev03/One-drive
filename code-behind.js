@@ -435,7 +435,8 @@ var idl;
               profileimage:url            
          }
       );
-
+     
+      
    }
 
     //logged user uploads files in storage
@@ -598,13 +599,13 @@ var profleImageUrl;
             snap.forEach(function(snapshot) {
             
                 //show stories
-               document.getElementById('story-wrapper').innerHTML +=`<div class="swiper-slide"><div class="border-frame"><div class="white-frame"><div class="story-image" style="background-image: url(${snapshot.val().profileimage});"></div></div></div><p>${snapshot.val().username}</p></div>`;                     
+               document.getElementById('story-wrapper').innerHTML +=`<div class="swiper-slide"><div class="border-frame"><div class="white-frame"><div class="story-image" style="background-image: url(${snapshot.val().profileimage});"></div></div></div><p class="story-username">${snapshot.val().username}</p></div>`;                     
             })
 
 //install swiper for stories
                var swiper = new Swiper('.swiper-container', {
-                  slidesPerView: 3,
-                  spaceBetween: 10, 
+                  slidesPerView: 4,
+                  spaceBetween:0,
                   loop:false                
                 });
          });
