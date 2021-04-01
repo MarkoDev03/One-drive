@@ -2,14 +2,19 @@
     "header":
     [            
         {
-            "name":"",
-            "class":"far fa-envelope txt-fnt",
+            "name":"Log in",
+            "class":"header-href",
             "id":"1"
         },
         {
-            "name":"",
-            "class":"fas fa-sign-out-alt new-fnt",
+            "name":"Sign up",
+            "class":"header-href",
             "id":"2"
+        },
+        {
+            "name":"Contact",
+            "class":"header-contact",
+            "id":"3"
         }
         
     ],
@@ -35,8 +40,6 @@
             "icon":"far fa-user-circle f-icon",
             "event":5
         }
-    ],
-    "emojes" : [{"content":"💋"},{"content":"🌹"}]
-   
+    ]
     
 }

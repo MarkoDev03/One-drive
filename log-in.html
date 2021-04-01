@@ -13,13 +13,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-functions.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body  class="index-body">
-    <header class="header-index">       
-        <p class="name-netowork"><b>Saveprojects</b></p>
-    <div class="contact-header"></div>
+    <header class="header-index">
+        <div class="contact-header"></div>
+        <div class="user-logged-info">
+            <div id="usernamename"></div>
+            <img src="" alt="" id="img" class="proile-image">
+        </div>
     </header>
     <div class="contact-us">
         <div class="contact-headline">
@@ -27,10 +28,7 @@
         </div>
         <div class="form-index">
             <input type="text" name="emadfsdfil" id="email" placeholder="E-mail" autocomplete="off" autofocus="off" class="input-box" required>
-           
-            <input type="password" style="width: 100%;" name="fvsdfsdf" id="password" placeholder="Password" autocomplete="off" autofocus="off" class="input-box" required>
-          
-       
+            <input type="password" name="fvsdfsdf" id="password" placeholder="Password" autocomplete="off" autofocus="off" class="input-box" required>
             <div class="register-now">
                 <div onclick="createAccountPageID()">
                      <span class="reset-password new-color">Create account</span>
@@ -43,13 +41,8 @@
         </div>
 
     </div>
-    <div class="set-displ" id="log-out-mail" style="padding: 10px;"></div> <div class="overlay-pop-up" id="new-overlay"></div>
-    <div id="pagecontent-index"></div>
     <footer class="footer"></footer>
 </body>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.19/ua-parser.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="code-behind.js"></script>
 <script src="https://smtpjs.com/v3/smtp.js">
 </script>
