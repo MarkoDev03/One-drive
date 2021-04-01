@@ -2,19 +2,14 @@
     "header":
     [            
         {
-            "name":"Log in",
-            "class":"header-href",
+            "name":"",
+            "class":"far fa-envelope txt-fnt",
             "id":"1"
         },
         {
-            "name":"Sign up",
-            "class":"header-href",
+            "name":"",
+            "class":"fas fa-sign-out-alt new-fnt",
             "id":"2"
-        },
-        {
-            "name":"Contact",
-            "class":"header-contact",
-            "id":"3"
         }
         
     ],
@@ -40,6 +35,75 @@
             "icon":"far fa-user-circle f-icon",
             "event":5
         }
+    ],
+    "emojes" : [
+        {"content":"😀"},
+        {"content":"😃"},
+        {"content":"😄"},
+        {"content":"😁"},
+        {"content":"😆"},
+        {"content":"😅"},
+        {"content":"🤣"},
+        {"content":"😂"},
+        {"content":"🙂"},
+        {"content":"🙃"},
+        {"content":"😉"},
+        {"content":"😊"},
+        {"content":"😇"},
+        {"content":"🥰"},
+        {"content":"😍"},
+        {"content":"🤩"},
+        {"content":"😘"},
+        {"content":"😗"},
+        {"content":"😚"},
+        {"content":"😙"},
+        {"content":"😋"},
+        {"content":"😛"},
+        {"content":"😜"},
+        {"content":"🤪"},
+        {"content":"😝"},
+        {"content":"🤑"},
+        {"content":"🤗"},
+        {"content":"🤭"},
+        {"content":"🤫"},
+        {"content":"🤔"},
+        {"content":"🤐"},
+        {"content":"🤨"},
+        {"content":"😐"},
+        {"content":"😑"},
+        {"content":"😶"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+
+        {"content":"😐"},
+        {"content":"😑"},
+        {"content":"😶"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"},
+        {"content":"💋"},
+        {"content":"🌹"}
+    
     ]
+   
     
 }
