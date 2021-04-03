@@ -24,23 +24,32 @@
       <p class="group-name"><b>Group chat</b></p>
         <i class="far fa-edit f-icon"></i>
     </div>
+    <div>
     <div id="chat-box"></div>
  <div id="emojis" class="emoji-block es"></div>  
 </div>
   <div id="pagecontent-index"></div>
   <div class="s-style">
   <div class="text-field a-style">
+    <div class="border-content">
+    
     <div id="cli">      
     </div>
-    <label class="chose-file margin-file fas fa-image f-icon"><input type="file"  accept=".png, .jpg, .jpeg" class="myFile hide-file"id="sendImage" multiple/></label>
-    <label class="chose-file margin-file fas fa-video f-icon"><input type="file" accept="video/mp4,video/x-m4v,video/*" class="myFile hide-file"id="sendVideo" multiple/></label>
-    <i class="far fa-laugh f-icon" onclick="showEmojies()" id="sendEmojiIcon"></i>
-    <div class="send-message-x-field">
+   
+    <i class="far fa-laugh f-icon-x" onclick="showEmojies()" id="sendEmojiIcon"></i>
+
+    <div class="send-message-x-field" id="send-x">
  <input type="text" name="" id="text-message-user"  class="input-message-to-client" autocomplete="off" autofocus="off">
    <button id="sendMessage" class="send-message-to-client-button">SEND</button>
+   <div class="visual-content" id="icons-for-messag">
+   <label class="chose-file-x margin-file-x fas fa-image f-icon-x x-marg"><input type="file"  accept=".png, .jpg, .jpeg" class="myFile hide-file"id="sendImage" multiple/></label>
+    <label class="chose-file-x margin-file-x fas fa-video f-icon-x"><input type="file" accept="video/mp4,video/x-m4v,video/*" class="myFile hide-file"id="sendVideo" multiple/></label>
+  </div>
+  </div>
 </div>
 </div>
-  <footer class="footer chat-footer"></footer></div>
+  <footer class="footer chat-footer"></footer></div></div>
+  <div class="open-message-overlay" id="open-content"></div>
 </body>  
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>AOS.init();</script>

@@ -985,23 +985,32 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     background-color: transparent;
-    border: 1px solid grey;
     height: 20px;
-    width: 70%;
+    width:350px;
     outline: none;
     padding-top: 7px;
     padding-bottom: 7px;
     font-size: 20px;
     padding-left: 10px;
     border-right: none;
+    border: none;
+   position: relative;
+   left: -30px;
+
+}
+.visual-content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 20%;
 }
 .send-message-to-client-button{
     background-color: transparent;
-    border: 1px solid grey;
-   
-
-    width: 70px;
-    margin-left: -30px;
+    border: none;
+    margin-right: -20px;
+    display: inline-block;
+    width: 20%;
     font-weight: 700;
     background: linear-gradient(to right, #333399 0%, #ff00cc 100%);
 	-webkit-background-clip: text;
@@ -1014,7 +1023,10 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     font-size:19px;
     cursor: pointer;
     text-align: center;
-
+    display: none;
+}
+.f-icon-x{
+    font-size: 20px;
 }
 
 .input-message-to-client:active,.input-message-to-client:focus,.send-message-to-client-button:focus{
@@ -1032,11 +1044,12 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     background: linear-gradient(to top, #333399, #ff00cc);
     padding: 7px;
     border-radius: 10px;
-    max-width: 236px;
+    max-width: 266px;
     height: auto;
     margin: 0px;
     margin-left: 5px;
     color: white;
+    box-shadow:0px 0px 0px .1px  rgb(38,38,38);
 }
 
 .message-and-image{
@@ -1129,9 +1142,23 @@ z-index: 1;
     display: flex;
     position: fixed;
     bottom:41px;
+    
 }
 #sendEmojiIcon{
-    display: flex;
+    display: inline-block;
+    background: linear-gradient(to right, #333399 0%, #ff00cc 100%);
+    padding: 2px;
+    border-radius: 50%;
+    color:white;
+    margin-right: 10px;
+}
+.border-content{
+display: flex;
+justify-content: space-between;
+align-items: center;
+ width: 500px;
+ box-shadow: 0px 0px 0px .3px rgb(38,38,38);
+ border-radius: 20px;
 }
 @media only screen and (max-width:700px) {
 
@@ -1211,7 +1238,20 @@ z-index: 1;
     .set-class{
         margin-top: 10px;
     }
-    
+    .input-message-to-client{
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        background-color: transparent;
+        height: 20px;
+        width:200px;
+        outline: none;
+        padding-top: 7px;
+        padding-bottom: 7px;
+        font-size: 20px;
+        padding-left: 10px;
+        border-right: none;
+        border: none;
+    }
 }
 
 @media only screen and (max-width:550px) and (min-width:300px) {
@@ -1222,7 +1262,6 @@ z-index: 1;
     .wrapper{
         width: 100%;
        
-
        }
        #chat-box{
            width: 100%; 
@@ -1231,7 +1270,8 @@ z-index: 1;
    
           
        }
- 
+       .border-content{width: 340px};
+
        .x-style{
            display: none;
        }
@@ -1247,6 +1287,10 @@ z-index: 1;
         width: 100%;
         height: 60px;
         background: rgba(255, 255, 255,1);
+    }
+    .send-message-x-field{
+        width: 300px;
+        margin-right: 10px;
     }
 }
 
@@ -1286,9 +1330,9 @@ z-index: 1;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 70%;
     margin-left: 10px;
     margin-right: 10px;
+    width: 437px;
 }
 
 .group-name{
@@ -1360,4 +1404,41 @@ z-index: 1;
     text-overflow: ellipsis;
     text-align: center;
     margin-top: 5px;
+}
+.not-your{
+    color: black;
+    background: rgba(221, 220, 220, 0.7);
+}
+
+.margin-file-x{
+    margin-top: 0px;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0px;
+}
+.f-icon-x{
+    font-size: 24px;
+    margin-left: 7px;
+}
+.x-marg{
+    margin-left: 10px;
+}
+.f-icon-x-1{
+    font-size: 24px;
+}
+.open-message-overlay{
+    position: fixed;
+    top:0px;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    z-index: 2;
 }

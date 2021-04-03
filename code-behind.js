@@ -396,12 +396,6 @@ var idl;
 
 
        }//for-end 
-       
-       firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){
-         setUserData(url,(user.email).slice(0, -10),user.uid);
-       })
-
-       
     }//if-end
     else {
       firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').put('./media/profileimg.png');
@@ -518,6 +512,10 @@ var profleImageUrl;
       //user is online
       if (user) {
 
+         firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){
+            setUserData(url,(user.email).slice(0, -10),user.uid);
+          });
+       
          //show messages
          firebase.database().ref("messages").on('child_added',function(snapshot){
             var html = '',htmluser='';
@@ -541,7 +539,7 @@ var profleImageUrl;
                <p class="username-in-chat">${snapshot.val().sender}</p>
                <div class="message-and-image">
                <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
-                   <p class="user-message">${snapshot.val().message}</p>
+                   <p class="user-message not-your">${snapshot.val().message}</p>
                </div>
            </div>`;
               }
@@ -551,7 +549,7 @@ var profleImageUrl;
                   html += `
                   <div class="my-message">
      <div class="message-and-image">      
-         <img src="${snapshot.val().image}" alt="" class="sent-image">
+         <img src="${snapshot.val().image}" alt="" class="sent-image" onclick="openImageFromChat('${snapshot.val().image}')">
      </div>
  </div>`;         
                }else{
@@ -588,11 +586,8 @@ var profleImageUrl;
 
         // $('#chat-box').scrollTop(($('#chat-box').height())*1000);
 
-         $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-
-
-        
-         });
+        //scroll to bottom of chat
+         $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);});
 
          //get all users for story
          firebase.database().ref("accounts/").once('value',snap => {
@@ -602,13 +597,13 @@ var profleImageUrl;
                document.getElementById('story-wrapper').innerHTML +=`<div class="swiper-slide"><div class="border-frame"><div class="white-frame"><div class="story-image" style="background-image: url(${snapshot.val().profileimage});"></div></div></div><p class="story-username">${snapshot.val().username}</p></div>`;                     
             })
 
-//install swiper for stories
+               //install swiper for stories
                var swiper = new Swiper('.swiper-container', {
                   slidesPerView: 4,
                   spaceBetween:0,
                   loop:false                
                 });
-         });
+              });
      
          //display user's profile 
          var username = user.email, didsplayname = username.slice(0, -10);                                           
@@ -654,10 +649,8 @@ var profleImageUrl;
                  var storageSveReference = user.uid+fileNameStorage,i=0;
                    
                  //send following data for post to UI function to client side
-                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength);                        
-               
-               });
-               
+                showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength);                                   
+               });              
              })
             .catch(function(er){console.log(er)})
          });
@@ -684,7 +677,6 @@ var profleImageUrl;
       var emailFom = document.getElementById('mail-input');
       emailFom.value = user.email;
 
-
       } else {   
          //if user is not logged in 
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
@@ -695,56 +687,20 @@ AOS.init();
 
     //show users data/ from storage on page
     function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength) {
-      
-     
+        
       //get profile image of user
       images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
             
             //display different content for different file type   
             if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               
-               <div class="show-user-saved">
-               <img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;">
-               <div class="not-active" id="${fileType}${name}">
-               
-           </div>
-           </div>
-        
-
-
-               <div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div>
-               
-               
-               
-               </article>`;      
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
             }else if (fileType === "video/mp4") {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               
-               <div class="show-user-saved">
-               <video src="${URL}" autoplay loop muted width="100%" height="auto"></video>
-               <div class="not-active" id="${fileType}${name}">  
-           </div>
-           </div>
-               
-               <div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>    <div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="not-active" id="${fileType}${name}">  </div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>    <div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
             }else if (fileType === "application/octet-stream"){
-               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               <div class="show-user-saved">
-               <img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;">
-               <div class="not-active" id="${fileType}${name}">  
-               </div>
-               </div>
-               <div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}">  </div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
             }else {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div>
-               <div class="show-user-saved">
-               <img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;">
-               <div class="not-active" id="${fileType}${name}">  
-               </div>
-               </div>
-               <div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}">  </div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
             }
             
             //fetch saved posts from database server
@@ -767,7 +723,6 @@ AOS.init();
          });
     }
 
-
    //loading animation 
    function loadingAnimationPopUp() {
       document.getElementById('loading-popup').style.display = 'flex';
@@ -775,7 +730,6 @@ AOS.init();
       document.getElementById('new-overlay').style.display = 'flex';
    }
 
-  
     //show preview of image
   function preview(locationOfImage,type) {
     
@@ -800,15 +754,14 @@ AOS.init();
    }else{
       txtMessage.style.display = 'flex';txtMessage.innerText =  "Cannot preview the "  + type + " file";previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';image.classList.remove('preview-image');
    }
-
 }
   
 //when page is loaded get all saved posts from database storage
 function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage) {
-   var cont;
+        var cont;
          
-   //replace characters in username to get database reference
-   if(filename.includes(".")) {
+        //replace characters in username to get database reference
+        if(filename.includes(".")) {
             cont = filename.replace(/\./g,' ');
          }else  if(filename.includes("#")) {
             cont = filename.replace(/\#/g,' ');
@@ -832,7 +785,6 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
                onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
      });
    });
-
 }
 
      //close image preview
@@ -841,7 +793,6 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
       document.body.style.overflowY = 'visible';
       var div = document.getElementById('preview-div');
       
-
       //add reverse class
       document.getElementById('preview-div').classList.add('reverse');
       document.getElementById('previe-popup').classList.add('reverse');
@@ -875,7 +826,6 @@ function removeSvedPost(filename, databasereference,URL,filename,fileSizePropert
       pointClass.classList.remove('not-active');
       pointClass.classList.add('active-popop'); 
 
-
       //check file type and set ordered image for it
       if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
            pointClass.innerHTML = `<img src="${URL}" alt="" class="saved-image"><h3>Removed </h3>`;
@@ -883,7 +833,6 @@ function removeSvedPost(filename, databasereference,URL,filename,fileSizePropert
       pointClass.innerHTML = `<img src=" ./media/none-pic.png" alt="" class="saved-image"><h3>Removed</h3>`;
       }     
 
-   
    var cont;
    
    //replace chacraters in name to get database reference
@@ -911,13 +860,11 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
    
       var pointClass = document.getElementById(filetype+filename);
     
-    
-
+     //remove save popup
       setTimeout(() => {
       pointClass.classList.add('not-active');
       pointClass.classList.remove('active-popop'); 
       pointClass.innerHTML = ``;
-
       }, 1000);
 
       pointClass.classList.remove('not-active');
@@ -992,27 +939,28 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
 function deleteThisPost(name,size,type,date,time){
    var user = firebase.auth().currentUser;
    
-   //disable scrolling
-   document.body.style.overflowY = 'hidden';
+     //disable scrolling
+      document.body.style.overflowY = 'hidden';
       document.getElementById('st-dis').style.display = 'flex';
       document.getElementById('new-overlay').style.display = 'flex';
-     
       document.getElementById('st-dis').classList.remove('reverse');
       document.getElementById('new-overlay').classList.remove('overlay-opacity');
      
      var displayname,postType;
 
+     //if name is longer then 25 characters
      if(name.length > 25) {
       displayname = name.slice(0,29);
       }else{
          displayname =name;
       }
 
+      //if type is longer then 25 charcacters
       if(type.length > 25) {
-         postType = type.slice(0,29);
-         }else{
+           postType = type.slice(0,29);
+      }else{
             postType =type;
-         }
+      }
 
      //delete popup content 
    document.getElementById('delete-txt').innerHTML = `
@@ -1023,11 +971,8 @@ function deleteThisPost(name,size,type,date,time){
       
       //delete post from ordered storage location
       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
-         document.getElementById('st-dis').style.display = 'none';
-
-       
-            document.getElementById('new-overlay').style.display = 'none';
-         
+         document.getElementById('st-dis').style.display = 'none';    
+            document.getElementById('new-overlay').style.display = 'none'; 
 
       //refresh page   
       pageReloader();
@@ -1062,7 +1007,6 @@ function closeALert() {
  document.getElementById('alert-popup').classList.add('reverse');
  document.getElementById('new-overlay').classList.add('overlay-opacity');
 }
-
 
         //show info about post
         function infoData(name,size,type,date,time){
@@ -1111,6 +1055,7 @@ function closeALert() {
          document.getElementById('data-info').style.display = 'none';
         }, 500);
         
+        //add hidning classes animation
         document.getElementById('info-popup').classList.add('reverse');
         document.getElementById('new-overlay').classList.add('overlay-opacity');
         document.getElementById('info-mail').classList.add('reverse');
@@ -1159,6 +1104,7 @@ function closeALert() {
          document.getElementById('new-overlay').style.display = 'none';
       }, 500);
 
+      //hide layout and overlay
       logoutPopUpRequest.classList.add('reverse');
       document.getElementById('new-overlay').classList.add('overlay-opacity');
     }
@@ -1184,6 +1130,7 @@ function closeALert() {
       document.getElementById('update-ml').style.display = 'none';
       }, 500);
       
+      //reverse animation
       document.querySelector('.set-displ').classList.add('reverse');
       document.querySelector('.overlay-pop-up').classList.add('overlay-opacity');
       document.getElementById('update-ml').classList.add('reverse');
@@ -1194,7 +1141,6 @@ function closeALert() {
     var iconArray = [];
    //sub-class 
    
-
       //get icons for footer from json file data.json
       async function getFooter() {
          try {
@@ -1255,6 +1201,7 @@ function closeALert() {
       //get button/page id and set it to session storage
       sessionStorage.setItem("optionPageID",ID);
       document.getElementById(ID).classList.add('current-page');
+
       //check the id of button and redirect user to certan page
       switch(sessionStorage.getItem("optionPageID")){
          case "1":
@@ -1285,7 +1232,6 @@ function closeALert() {
       }
    }
 
-   
    //dont have account? create one
    function createAccountPageID() {
       window.location.href = 'create-account.html';
@@ -1312,7 +1258,7 @@ function closeALert() {
       document.getElementById('postcontent').innerHTML = '';
    }
 
-   //fetch emojies from json file and add them to emoji box
+//fetch emojies from json file and add them to emoji box
 fetch('data.json',{method:"GET"})
 .then(response => response.json())
 .then(data => window.onload = showEmojes(data));
@@ -1320,15 +1266,36 @@ fetch('data.json',{method:"GET"})
 //send messages and emojies
 firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().currentUser;
 
+//box with video and image button   
+var iconBox = document.getElementById('icons-for-messag');
+
    firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(x =>{
     
+    //when user clikcs on text box hide icons for video and image sendinf and show button for message sending  
+    document.getElementById('text-message-user').addEventListener('click',() =>{
+         iconBox.style.display = 'none';   
+         document.getElementById('sendMessage').style.display = 'flex';   
+      });
+
+      //when user clicks on chat show icons for image and video sending and hide send button
+      document.getElementById('chat-box').addEventListener('click',() =>{
+         iconBox.style.display = 'flex';
+         document.getElementById('sendMessage').style.display = 'none'; 
+      })
+   
+      //send text message to chat app part in save projects
       document.getElementById('sendMessage').addEventListener('click',(e)=>{
        
+         var message = document.getElementById('text-message-user').value;//message value
          var username = user.email, didsplayname = username.slice(0, -10);
-         var message = document.getElementById('text-message-user').value;
-   
+
+         //show emoji icon
+         iconBox.style.display = 'flex';
         
-     if( message !=""){
+     //if message box is different from empty string     
+     if( message !="" || message != null || message !=" "){
+   
+      //send message to database refernece
         firebase.database().ref("messages").push().set({
             "sender":didsplayname,
             "message":message,
@@ -1336,85 +1303,92 @@ firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().cu
             "image":"/" ,
             "video":"/"
         }) 
-      } 
-      
-      document.getElementById('text-message-user').value = ''
+      }  
+
+      //clear text box and hide button for sending
+      document.getElementById('text-message-user').value = '';
+      document.getElementById('sendMessage').style.display = 'none'; 
     })
    
-  
-
    var username = user.email, didsplayname = username.slice(0, -10);
-   var message = document.getElementById('text-message-user').value;
   
-   //send image
+   //send image to chat using firebase storage for uploading and database for link downloading
    document.getElementById('sendImage').addEventListener('change',(event) =>{
-        var user = firebase.auth().currentUser;
-      var ne;
-     for(var i=0;i<event.target.files.length;i++){
-           let file = event.target.files[i];
-  ne = file.name;
-           firebase.storage().ref("messages/"+ file.name).put(file);              
-     }
+      var imageStorageReference;
+        
+      //in case of several files 
+      for(var i=0;i<event.target.files.length;i++){
+             let file = event.target.files[i];
+               imageStorageReference = file.name;
 
-        setTimeout(() => {
-         
+               //upload image to firebase storage reference
+                 firebase.storage().ref("messages/"+ file.name).put(file);              
+            }
 
-      firebase.storage().ref("messages/"+ne).getDownloadURL().then(function(url){
-     
+   //wait for image to be uploaded to storage and download link from storage     
+     setTimeout(() => {
+      firebase.storage().ref("messages/"+imageStorageReference).getDownloadURL().then(function(url){
        firebase.database().ref("messages").push().set({
         "sender":didsplayname,
-        "message":"message",
-        "profileimage":x,
-        "image":url,
+         "message":"message",
+         "profileimage":x,
+         "image":url,
         "video":"/"
-    }) })}, 7000);
-        
-     });//stop sending
+       }) 
+      })
+     }, 7000);      
+   });
 
+  //send video in chat box using storage for uploading and database for link reciveing
+  document.getElementById('sendVideo').addEventListener('change',(event) =>{
+      var storageReferenceForVideo;
 
-
-     document.getElementById('sendVideo').addEventListener('change',(event) =>{
-      var user = firebase.auth().currentUser;
-    var ne;
+   //upload video to firebase storage   
    for(var i=0;i<event.target.files.length;i++){
          let file = event.target.files[i];
-ne = file.name;
-         firebase.storage().ref("videos/"+ file.name).put(file);              
+            storageReferenceForVideo = file.name;
+
+            //upload video to firebase storage reference
+              firebase.storage().ref("videos/"+ file.name).put(file);              
    }
 
-      setTimeout(() => {
-       
-
-    firebase.storage().ref("videos/"+ne).getDownloadURL().then(function(videoURL){
-   
+   //wait for video to be uploaded and download link from storage
+   setTimeout(() => {
+    firebase.storage().ref("videos/"+storageReferenceForVideo).getDownloadURL().then(function(videoURL){
      firebase.database().ref("messages").push().set({
       "sender":didsplayname,
       "message":"message",
       "profileimage":x,
       "image":"/",
       "video":videoURL
-  }) })}, 7000);
-      
+      }) 
+     })
+    }, 7000);   
    });
-
-
-
-   })
+  })
 })
 
-    function showEmojes(data){
+//show all emojies in block for sending
+function showEmojes(data){
        var ardArray = data.emojes;
-     for(var i=0;ardArray.length;i++){
+ for(var i=0;ardArray.length;i++){
    document.getElementById('emojis').innerHTML += `<p onclick="setIcon('${ardArray[i].content}')">${ardArray[i].content}</p>`;
+   }
 }
-    }
 
-function setIcon(icon) {document.getElementById('text-message-user').value+=icon}
+//send emoji in text message
+function setIcon(icon) {
+   document.getElementById('text-message-user').value+=icon
+}
 
+//show block with all emojies
 function showEmojies() {
    document.getElementById('emojis').style.display = 'grid';
   
-} document.getElementById('chat-box').addEventListener('click',()=>{
+} 
+
+//hide emoji logo
+document.getElementById('chat-box').addEventListener('click',()=>{
       document.getElementById('emojis').style.display = 'none';
-   })
+})
    
