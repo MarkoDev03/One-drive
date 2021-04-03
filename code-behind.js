@@ -1372,7 +1372,7 @@ var iconBox = document.getElementById('icons-for-messag');
 function showEmojes(data){
        var ardArray = data.emojes;
  for(var i=0;ardArray.length;i++){
-   document.getElementById('emojis').innerHTML += `<p onclick="setIcon('${ardArray[i].content}')">${ardArray[i].content}</p>`;
+       document.getElementById('emojis').innerHTML += `<p onclick="setIcon('${ardArray[i].content}')">${ardArray[i].content}</p>`;
    }
 }
 
@@ -1391,4 +1391,3 @@ function showEmojies() {
 document.getElementById('chat-box').addEventListener('click',()=>{
       document.getElementById('emojis').style.display = 'none';
 })
-   
