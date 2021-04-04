@@ -476,8 +476,8 @@ for(let i=0;i<e.target.files.length;i++){
    
    var fileType = file.type,fileSizeProperty = (file.size/1000000).toFixed(2),name = file.name;
 
-   if(name.length > 25) {
-      name = name.slice(0,-14);
+   if(name.length > 20) {
+      name = name.slice(0,-20);
    }
    if(fileType.length > 25) {
       fileType = fileType.slice(0,-22);
@@ -527,8 +527,8 @@ var profleImageUrl;
             if(snapshot.val().sender === user.email.slice(0, -10)) {
                  html += `
                  <div class="my-message">
-    <div class="message-and-image">      
-        <p class="user-message">${snapshot.val().message}</p>
+    <div class="message-and-image flex-messages">      
+    <i class="fas fa-ellipsis-h edit-message"></i><p class="user-message">${snapshot.val().message}</p>
     </div>
 </div>`;
                        
@@ -558,7 +558,7 @@ var profleImageUrl;
                 <p class="username-in-chat">${snapshot.val().sender}</p>
                 <div class="message-and-image">
                     <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
-                    <img src="${snapshot.val().image}" alt=""   class="sent-image">
+                    <img src="${snapshot.val().image}" alt=""   class="sent-image" onclick="openImageFromChat('${snapshot.val().image}')">
                 </div>
             </div>`;
               } 
@@ -568,7 +568,7 @@ var profleImageUrl;
                   html += `
                   <div class="my-message">
      <div class="message-and-image">      
-     <video src="${snapshot.val().video}" loop muted autoplay class="sent-image"></video>
+     <video src="${snapshot.val().video}" loop muted autoplay class="sent-image" onclick="openVideoFromChat('${snapshot.val().video}')"></video>
      </div>
  </div>`;         
                }else{
@@ -577,7 +577,7 @@ var profleImageUrl;
                 <p class="username-in-chat">${snapshot.val().sender}</p>
                 <div class="message-and-image">
                     <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
-                   <video src="${snapshot.val().video}" loop muted  autoplay class="sent-image"></video>
+                   <video src="${snapshot.val().video}" loop muted  autoplay class="sent-image" onclick="openVideoFromChat('${snapshot.val().video}')"></video>
                 </div>
             </div>`;
               } 
@@ -749,7 +749,7 @@ AOS.init();
       div.innerHTML = `<img src="${src}" alt="" class="preview-image">`;previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';txtMessage.style.display = 'none';
    }else if(type === "video/mp4") {    
       div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-image"></video>`;previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';txtMessage.style.display = 'none';
-   }else if(type === "audio/wav" || type === "audio/mp3") {
+   }else if(type === "audio/wav" || type === "audio/mp3" || type === "audio/mpeg") {
       div.innerHTML = `<video src="${src}" autoplay loop muted controls class="preview-audio" id="audio"></video>`;previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';txtMessage.style.display = 'none';
    }else{
       txtMessage.style.display = 'flex';txtMessage.innerText =  "Cannot preview the "  + type + " file";previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';image.classList.remove('preview-image');
@@ -781,8 +781,7 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
                        console.log(childSnapshot.val())
 
                //set new bookmark for saved posrs
-               document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" 
-               onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
+               document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
      });
    });
 }
@@ -1270,7 +1269,7 @@ firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().cu
 var iconBox = document.getElementById('icons-for-messag');
 
    firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(x =>{
-    
+
     //when user clikcs on text box hide icons for video and image sendinf and show button for message sending  
     document.getElementById('text-message-user').addEventListener('click',() =>{
          iconBox.style.display = 'none';   
@@ -1282,7 +1281,7 @@ var iconBox = document.getElementById('icons-for-messag');
          iconBox.style.display = 'flex';
          document.getElementById('sendMessage').style.display = 'none'; 
       })
-   
+
       //send text message to chat app part in save projects
       document.getElementById('sendMessage').addEventListener('click',(e)=>{
        
@@ -1293,7 +1292,7 @@ var iconBox = document.getElementById('icons-for-messag');
          iconBox.style.display = 'flex';
         
      //if message box is different from empty string     
-     if( message !="" || message != null || message !=" "){
+     if( message != ""){
    
       //send message to database refernece
         firebase.database().ref("messages").push().set({
@@ -1391,3 +1390,27 @@ function showEmojies() {
 document.getElementById('chat-box').addEventListener('click',()=>{
       document.getElementById('emojis').style.display = 'none';
 })
+
+//show image sent in chat 
+function openImageFromChat(imageUrl) {
+   document.getElementById('open-content').classList.remove('reverse');
+   document.getElementById('open-content').style.display = 'flex';
+   document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImage()"></i><img src="${imageUrl} alt="" class="viewd-image">`;
+}
+
+//close chat video/image preview
+function closeImage() {
+   setTimeout(() => {
+   document.getElementById('open-content').style.display = 'none';
+   document.getElementById('open-content').innerHTML = ``;
+   }, 500);
+   
+   document.getElementById('open-content').classList.add('reverse');
+}
+
+//show video sent in chat
+function openVideoFromChat(videoUrl) {
+   document.getElementById('open-content').classList.remove('reverse');
+   document.getElementById('open-content').style.display = 'flex';
+   document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImage()"></i><video src="${videoUrl}" class="viewd-image"  loop controls muted autoplay></video>`; 
+}

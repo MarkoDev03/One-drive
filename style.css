@@ -254,6 +254,13 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 #submit{
     animation: pulse 1s ease infinite;
 }
+.viewd-image{
+    width: 550px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    animation: zoom .5s;
+}
 @keyframes pulse{
     0%{
         box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);      
@@ -438,7 +445,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 
 .overlay-pop-up{
-    background:  rgba(0, 0, 0, 0.6); 
+    background:  rgba(0, 0, 0, 0.85);
     width: 100%;
     height: 100vh;
     position: fixed;
@@ -1044,7 +1051,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     background: linear-gradient(to top, #333399, #ff00cc);
     padding: 7px;
     border-radius: 10px;
-    max-width: 266px;
+    max-width: 276px;
     height: auto;
     margin: 0px;
     margin-left: 5px;
@@ -1086,9 +1093,12 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     justify-content: flex-end;
     align-content: flex-end;
     text-align: right;
-
 }
-
+.flex-messages{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .emoji-block{
     background:  rgba(255, 255, 255, 1);
     width: 300px;
@@ -1292,6 +1302,10 @@ align-items: center;
         width: 300px;
         margin-right: 10px;
     }
+    .viewd-image{
+        width: 100%;
+        height: auto;
+    }
 }
 
 .s-style{
@@ -1407,7 +1421,7 @@ align-items: center;
 }
 .not-your{
     color: black;
-    background: rgba(221, 220, 220, 0.7);
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .margin-file-x{
@@ -1434,11 +1448,25 @@ align-items: center;
 .open-message-overlay{
     position: fixed;
     top:0px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.9);
     display: none;
     justify-content: center;
     align-items: center;
+    align-content: center;
     width: 100%;
     height: 100vh;
-    z-index: 2;
+    z-index: 9;
+    animation: zoom .5s; 
+}
+
+.close-x{
+    color: white;
+    position: fixed;
+    right: 30px;
+    top: 10px;
+    font-size: 30px;
+}
+
+.edit-message{
+    color: black;
 }
