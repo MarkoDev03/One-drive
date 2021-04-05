@@ -528,7 +528,7 @@ var profleImageUrl;
                  html += `
                  <div class="my-message" id="${snapshot.key}">
     <div class="message-and-image flex-messages">      
-    <i class="fas fa-ellipsis-h edit-message" onclick="deleteMessage('${snapshot.key}','${snapshot.val().message}')"></i><p class="user-message">${snapshot.val().message}</p>
+    <i class="fas fa-ellipsis-h edit-message" onclick="deleteMessage('${snapshot.key}')"></i><p class="user-message">${snapshot.val().message}</p>
     </div>
 </div>`;
                        
@@ -549,7 +549,7 @@ var profleImageUrl;
                   html += `
                   <div class="my-message" id="${snapshot.key}">
      <div class="message-and-image user-x-image-controls">      
-     <i class="fas fa-ellipsis-h edit-message delete-image" onclick="deleteMessage('${snapshot.key}')"></i><img src="${snapshot.val().image}" alt="" class="sent-image" onclick="openImageFromChat('${snapshot.val().image}')">
+     <i class="fas fa-ellipsis-h edit-message delete-image" onclick="deleteMessage('${snapshot.key}','${snapshot.val().storage_reference}')"></i><img src="${snapshot.val().image}" alt="" class="sent-image" onclick="openImageFromChat('${snapshot.val().image}')">
      </div>
  </div>`;         
                }else{
@@ -567,8 +567,8 @@ var profleImageUrl;
                if(snapshot.val().sender === user.email.slice(0, -10)) {
                   html += `
                   <div class="my-message" id="${snapshot.key}">
-     <div class="message-and-image">      
-     <i class="fas fa-ellipsis-h edit-message delete-image" onclick="deleteMessage('${snapshot.key}')"></i> <video src="${snapshot.val().video}" loop muted autoplay class="sent-image" onclick="openVideoFromChat('${snapshot.val().video}')"></video>
+     <div class="message-and-image user-x-image-controls">      
+     <i class="fas fa-ellipsis-h edit-message delete-image" onclick="deleteMessage('${snapshot.key}','${snapshot.val().storage_reference}')"></i> <video src="${snapshot.val().video}" loop muted autoplay class="sent-image" onclick="openVideoFromChat('${snapshot.val().video}')"></video>
      </div>
  </div>`;         
                }else{
@@ -802,7 +802,7 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
             document.getElementById('previe-popup').style.display = 'none';
            document.getElementById('new-overlay').style.display = 'none';
            div.style.display = 'none';div.innerHTML = ``;
-         }, 500);
+         }, 400);
 
          //pause video/audio and close it
            document.getElementById('audio').pause();      
@@ -944,6 +944,7 @@ function deleteThisPost(name,size,type,date,time){
       document.getElementById('new-overlay').style.display = 'flex';
       document.getElementById('st-dis').classList.remove('reverse');
       document.getElementById('new-overlay').classList.remove('overlay-opacity');
+      
      
      var displayname,postType;
 
@@ -967,14 +968,15 @@ function deleteThisPost(name,size,type,date,time){
   
   //onclick function for post deleting
    document.getElementById('delete').addEventListener('click',() =>{
-      
+      document.getElementById(size).style.display = 'none';
+      document.body.style.overflowY = 'auto';
       //delete post from ordered storage location
       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';    
             document.getElementById('new-overlay').style.display = 'none'; 
 
       //refresh page   
-      pageReloader();
+  // pageReloader();
    })
    .catch((error)=>{
 
@@ -1001,7 +1003,7 @@ function closeALert() {
    document.getElementById('alert-popup').style.display = 'none';
    document.getElementById('text-message-alert').innerText = "";
    document.getElementById('new-overlay').style.display = 'none';
- }, 500);
+ }, 400);
 
  document.getElementById('alert-popup').classList.add('reverse');
  document.getElementById('new-overlay').classList.add('overlay-opacity');
@@ -1052,7 +1054,7 @@ function closeALert() {
          document.getElementById('new-overlay').style.display = 'none';
          document.getElementById('info-mail').style.display = 'none';
          document.getElementById('data-info').style.display = 'none';
-        }, 500);
+        }, 400);
         
         //add hidning classes animation
         document.getElementById('info-popup').classList.add('reverse');
@@ -1101,7 +1103,7 @@ function closeALert() {
       setTimeout(() => {
          logoutPopUpRequest.style.display = 'none';
          document.getElementById('new-overlay').style.display = 'none';
-      }, 500);
+      }, 400);
 
       //hide layout and overlay
       logoutPopUpRequest.classList.add('reverse');
@@ -1127,7 +1129,7 @@ function closeALert() {
       document.querySelector('.set-displ').style.display = 'none';
       document.querySelector('.overlay-pop-up').style.display = 'none';
       document.getElementById('update-ml').style.display = 'none';
-      }, 500);
+      }, 400);
       
       //reverse animation
       document.querySelector('.set-displ').classList.add('reverse');
@@ -1332,7 +1334,8 @@ var iconBox = document.getElementById('icons-for-messag');
          "message":"message",
          "profileimage":x,
          "image":url,
-        "video":"/"
+        "video":"/",
+        "storage_reference":imageStorageReference
        }) 
       })
      }, 7000);      
@@ -1348,7 +1351,8 @@ var iconBox = document.getElementById('icons-for-messag');
             storageReferenceForVideo = file.name;
 
             //upload video to firebase storage reference
-              firebase.storage().ref("videos/"+ file.name).put(file);              
+              firebase.storage().ref("videos/"+ file.name).put(file);  
+                          
    }
 
    //wait for video to be uploaded and download link from storage
@@ -1359,7 +1363,8 @@ var iconBox = document.getElementById('icons-for-messag');
       "message":"message",
       "profileimage":x,
       "image":"/",
-      "video":videoURL
+      "video":videoURL,
+      "storage_reference":storageReferenceForVideo
       }) 
      })
     }, 7000);   
@@ -1393,44 +1398,43 @@ document.getElementById('chat-box').addEventListener('click',()=>{
 
 //show image sent in chat 
 function openImageFromChat(imageUrl) {
-   document.getElementById('open-content').classList.remove('reverse');
    document.getElementById('open-content').style.display = 'flex';
-   document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImage()"></i><img src="${imageUrl} alt="" class="viewd-image">`;
+   document.getElementById('open-content').classList.remove('back');
+   document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImageInChatBox()"></i><img src="${imageUrl} alt="" class="viewd-image">`;
 }
 
 //close chat video/image preview
-function closeImage() {
+function closeImageInChatBox() {
    setTimeout(() => {
    document.getElementById('open-content').style.display = 'none';
-   document.getElementById('open-content').innerHTML = ``;
-   }, 500);
+   /*document.getElementById('open-content').innerHTML = ``;*/
+   }, 400);
    
-   document.getElementById('open-content').classList.add('reverse');
+   document.getElementById('open-content').classList.add('back');
 }
 
 //show video sent in chat
 function openVideoFromChat(videoUrl) {
-   document.getElementById('open-content').classList.remove('reverse');
    document.getElementById('open-content').style.display = 'flex';
-   document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImage()"></i><video src="${videoUrl}" class="viewd-image"  loop controls muted autoplay></video>`; 
+   document.getElementById('open-content').classList.remove('back');
+   document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImageInChatBox()"></i><video src="${videoUrl}" class="viewd-image"  loop controls muted autoplay></video>`; 
 }
 
 //delete message from chat 
-function deleteMessage(messageIdKey) {
+function deleteMessage(messageIdKey,storageReference) {
    document.getElementById('message-overlay').style.display = 'flex';
    document.getElementById('delete-message-popup').classList.remove('reverse');
    document.getElementById('delete-message-popup').style.display = 'flex';
    document.getElementById('message-overlay').classList.remove('reverse');
-   document.getElementById('delete-message-popup').innerHTML = `
-    <button class="button-messages">Copy</button>
-    <button class="button-messages red-btn" onclick="deleteUserMessage('${messageIdKey}')">Delete</button>
-    <button class="new-mail" onclick="closeDeleteMessage()">CLOSE</button>
-`;
+   document.getElementById('delete-message-popup').innerHTML = `<button class="button-messages">Copy</button><button class="button-messages red-btn" onclick="deleteUserMessage('${messageIdKey}','${storageReference}')">Delete</button><button class="new-mail" onclick="closeDeleteMessage()">CLOSE</button>`;
 }
 
-function deleteUserMessage(messageIdKey) {
+function deleteUserMessage(messageIdKey,storageReference) {
     firebase.database().ref("messages").child(messageIdKey).remove();
     document.getElementById(messageIdKey).style.display = 'none';
+    firebase.storage().ref("messages").child(storageReference).delete(); 
+    firebase.storage().ref("videos").child(storageReference).delete(); 
+    console.warn(storageReference);
     closeDeleteMessage();
 }
 
@@ -1441,7 +1445,7 @@ function closeDeleteMessage() {
   setTimeout(() => {
    document.getElementById('delete-message-popup').style.display='none';
    document.getElementById('message-overlay').style.display = 'none';
-  }, 500);
+  }, 400);
   document.getElementById('delete-message-popup').classList.add('reverse');
   document.getElementById('message-overlay').classList.add('reverse');
 }

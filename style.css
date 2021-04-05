@@ -1554,3 +1554,7 @@ align-items: center;
 .delete-image{
     margin-right: 7px;
 }
+
+.back{
+    animation: zoomout .5s ease;
+}
