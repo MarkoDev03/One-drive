@@ -431,6 +431,9 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     padding-right: 20px;
 
 }
+.new-mail:active{
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.2);    
+}
 .set-displ{
     width: 100%;
     height: 100vh;
@@ -1057,6 +1060,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     margin-left: 5px;
     color: white;
     box-shadow:0px 0px 0px .1px  rgb(38,38,38);
+    z-index: 1;
 }
 
 .message-and-image{
@@ -1117,6 +1121,20 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     display: none;
     border-bottom: none;
     grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    animation: grid-animation 250ms ease-out;
+}
+@keyframes grid-animation {
+    0%{
+        position: relative;
+        bottom: -500px;
+        z-index: 1;
+    }
+
+    100%{
+        position: relative;
+        bottom: 100px;
+        z-index: 1;
+    }
 }
 
 .emoji-block p {
@@ -1125,7 +1143,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 .wrapper{
  width: 100%;
-z-index: 1;
+z-index: 9;
  margin-left: auto;
  margin-right: auto;
  height: calc(100vh - 101px);
@@ -1152,6 +1170,7 @@ z-index: 1;
     display: flex;
     position: fixed;
     bottom:41px;
+    
     
 }
 #sendEmojiIcon{
@@ -1310,7 +1329,7 @@ align-items: center;
 
 .s-style{
   display: flex;
-  z-index: 3;
+  z-index: 10;
 }
 
 .sent-image{
@@ -1458,7 +1477,11 @@ align-items: center;
     z-index: 9;
     animation: zoom .5s; 
 }
-
+.user-x-image-controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .close-x{
     color: white;
     position: fixed;
@@ -1469,4 +1492,65 @@ align-items: center;
 
 .edit-message{
     color: black;
+}
+
+.pop-up-message-deleting{
+    background-color: white;
+    width: 300px;
+    height: fit-content;
+    padding: 5px;
+    border-radius:10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    z-index: 999;
+    animation: zoom .5s;
+}
+.delete-overlay{
+    background-color: rgba(0, 0, 0,0.8);
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+   
+}
+.button-messages{
+    width: 100%;
+    text-align: left;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    border: none;
+    outline: none;
+    border-bottom: .5px solid rgb(153, 153, 153);
+    font-size: 20px;
+    background-color: transparent;
+    transition: all 0.5s !important;
+}
+
+.button-messages-x-blue{
+    margin-top: 20px;
+    background: var(--txt-color);
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    border: none;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.button-messages:hover{
+    box-shadow: inset -300px 0px 0px rgba(201, 229, 255, 0.8);
+}
+.red-btn{
+    color: red;
+}
+
+.delete-image{
+    margin-right: 7px;
 }

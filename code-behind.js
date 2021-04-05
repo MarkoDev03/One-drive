@@ -526,9 +526,9 @@ var profleImageUrl;
 
             if(snapshot.val().sender === user.email.slice(0, -10)) {
                  html += `
-                 <div class="my-message">
+                 <div class="my-message" id="${snapshot.key}">
     <div class="message-and-image flex-messages">      
-    <i class="fas fa-ellipsis-h edit-message"></i><p class="user-message">${snapshot.val().message}</p>
+    <i class="fas fa-ellipsis-h edit-message" onclick="deleteMessage('${snapshot.key}','${snapshot.val().message}')"></i><p class="user-message">${snapshot.val().message}</p>
     </div>
 </div>`;
                        
@@ -547,9 +547,9 @@ var profleImageUrl;
                  ////photo image
                if(snapshot.val().sender === user.email.slice(0, -10)) {
                   html += `
-                  <div class="my-message">
-     <div class="message-and-image">      
-         <img src="${snapshot.val().image}" alt="" class="sent-image" onclick="openImageFromChat('${snapshot.val().image}')">
+                  <div class="my-message" id="${snapshot.key}">
+     <div class="message-and-image user-x-image-controls">      
+     <i class="fas fa-ellipsis-h edit-message delete-image" onclick="deleteMessage('${snapshot.key}')"></i><img src="${snapshot.val().image}" alt="" class="sent-image" onclick="openImageFromChat('${snapshot.val().image}')">
      </div>
  </div>`;         
                }else{
@@ -566,9 +566,9 @@ var profleImageUrl;
 
                if(snapshot.val().sender === user.email.slice(0, -10)) {
                   html += `
-                  <div class="my-message">
+                  <div class="my-message" id="${snapshot.key}">
      <div class="message-and-image">      
-     <video src="${snapshot.val().video}" loop muted autoplay class="sent-image" onclick="openVideoFromChat('${snapshot.val().video}')"></video>
+     <i class="fas fa-ellipsis-h edit-message delete-image" onclick="deleteMessage('${snapshot.key}')"></i> <video src="${snapshot.val().video}" loop muted autoplay class="sent-image" onclick="openVideoFromChat('${snapshot.val().video}')"></video>
      </div>
  </div>`;         
                }else{
@@ -1413,4 +1413,35 @@ function openVideoFromChat(videoUrl) {
    document.getElementById('open-content').classList.remove('reverse');
    document.getElementById('open-content').style.display = 'flex';
    document.getElementById('open-content').innerHTML = `<i class="fas fa-times close-x" onclick="closeImage()"></i><video src="${videoUrl}" class="viewd-image"  loop controls muted autoplay></video>`; 
+}
+
+//delete message from chat 
+function deleteMessage(messageIdKey) {
+   document.getElementById('message-overlay').style.display = 'flex';
+   document.getElementById('delete-message-popup').classList.remove('reverse');
+   document.getElementById('delete-message-popup').style.display = 'flex';
+   document.getElementById('message-overlay').classList.remove('reverse');
+   document.getElementById('delete-message-popup').innerHTML = `
+    <button class="button-messages">Copy</button>
+    <button class="button-messages red-btn" onclick="deleteUserMessage('${messageIdKey}')">Delete</button>
+    <button class="new-mail" onclick="closeDeleteMessage()">CLOSE</button>
+`;
+}
+
+function deleteUserMessage(messageIdKey) {
+    firebase.database().ref("messages").child(messageIdKey).remove();
+    document.getElementById(messageIdKey).style.display = 'none';
+    closeDeleteMessage();
+}
+
+
+
+//close message delete popup
+function closeDeleteMessage() {
+  setTimeout(() => {
+   document.getElementById('delete-message-popup').style.display='none';
+   document.getElementById('message-overlay').style.display = 'none';
+  }, 500);
+  document.getElementById('delete-message-popup').classList.add('reverse');
+  document.getElementById('message-overlay').classList.add('reverse');
 }
