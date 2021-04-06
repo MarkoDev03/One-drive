@@ -1039,6 +1039,13 @@ function deleteThisPost(name,size,type,date,time){
       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';    
             document.getElementById('new-overlay').style.display = 'none'; 
+           
+           //clear info
+            name = "";
+            size = "";
+            type = "";
+            date = "";
+            time = "";
 
       //refresh page   
   // pageReloader();
