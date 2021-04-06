@@ -433,22 +433,25 @@ var idl;
       
    }
 
+    
     //logged user uploads files in storage
 function uploadFileToFirebase(e){
    document.getElementById('postcontent').innerHTML = ``;
   
    var user = firebase.auth().currentUser;      
-        
-   //user is online
+          var file_name_x; 
+          var _x_file;
+   //user is online  x89
    if(user){
 
       //allow multiple files uploading
       for(let i=0;i<e.target.files.length;i++){
             let file = e.target.files[i];
-            
+            _x_file = file;
+            file_name_x = file.name;
          //upload file to fireabse server using put function
         firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
-      
+
          //show uploading progress to client if it is bigger then 0%
          if(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) === "0") {
          document.getElementById('uploading-proces').style.display="none";
@@ -465,7 +468,38 @@ function uploadFileToFirebase(e){
          document.getElementById('total-transfered-percetage').innerText =((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0) + "%";
      }
    })
+
+  
 }
+document.getElementById('private').addEventListener('click',() =>{
+   /*firebase.database().ref("public_posts").push().set({
+      "file_name":file_name_x,
+       "username":user.uid
+   })*/
+
+   for(let i=0;i<e.target.files.length;i++){
+      let file = e.target.files[i];
+      _x_file = file;
+      file_name_x = file.name;
+   //upload file to fireabse server using put function
+  firebase.storage().ref("PUBLIC/"+ file.name).put(file);}
+})
+ /*var _x;
+ firebase.database().ref("public_posts").push().set({
+   "file_name":name,
+    "user_id":fileSizeProperty,
+    "post_url":URL
+})*/
+      
+   
+ /*console.warn(_x);
+      firebase.database().ref("public_posts").push().set({
+      "file_name":file_name_x,
+       "username":user.email,
+       "post_url":"result"
+   })*/
+    /*var __url = window.URL.createObjectURL(_x_file);
+    console.warn("users/" + user.uid +"/data/" + file_name_x + "/" + __url);*/
 
 for(let i=0;i<e.target.files.length;i++){
    let file = e.target.files[i];
@@ -473,7 +507,6 @@ for(let i=0;i<e.target.files.length;i++){
   
    //image url
      var imageURLdownload  = window.URL.createObjectURL(file);
-   
    var fileType = file.type,fileSizeProperty = (file.size/1000000).toFixed(2),name = file.name;
 
    if(name.length > 20) {
@@ -495,6 +528,9 @@ for(let i=0;i<e.target.files.length;i++){
        document.getElementById('postcontent').innerHTML += HTML;
 }
 
+
+
+
 }
 //user is not logged in
            else{
@@ -504,6 +540,10 @@ for(let i=0;i<e.target.files.length;i++){
            }
    }
 
+
+   
+
+
 var profleImageUrl;
 
    //user is logged to firebase in an existing account
@@ -511,6 +551,15 @@ var profleImageUrl;
 
       //user is online
       if (user) {
+
+         firebase.database().ref("public_posts").on('child_added',function(snapshot){
+            firebase.storage().ref("users/" + snapshot.val().username +'/data/').listAll().then(function(snap){
+               snap.items.forEach(function(item){
+                  console.log("ITEM:"+item);
+               })
+            })
+          
+             })
 
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){
             setUserData(url,(user.email).slice(0, -10),user.uid);
@@ -612,11 +661,19 @@ var profleImageUrl;
          //list all files from firebase storage
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
           
+
+          
+
+             
+          
+
             var arrayLength = result.items.length;
             result.items.forEach(function(imageRef){
                  
                  //get metadata foreach file
                  imageRef.getMetadata().then(s=>{
+
+
                     
                     //get file size, file type, when file is created and user id
                     var fileSizeProperty = (s.size/1000000).toFixed(2);     
@@ -633,6 +690,10 @@ var profleImageUrl;
   //save file, premesti ovo na post kad se klikne i prosled mu parametre
   var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
 
+
+
+
+
      //get users ipv4 address and log it to console
      var xml = new XMLHttpRequest();
      xml.open("GET","https://api.ipify.org");
@@ -648,6 +709,7 @@ var profleImageUrl;
                  //reference to database server
                  var storageSveReference = user.uid+fileNameStorage,i=0;
                    
+  
                  //send following data for post to UI function to client side
                 showUsersStorageContectOnPage(context,i, imageRef,iiName,didsplayname,imgurl,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength);                                   
                });              
@@ -692,6 +754,9 @@ AOS.init();
       images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
             
+
+   
+
             //display different content for different file type   
             if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
