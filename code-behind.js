@@ -482,7 +482,15 @@ document.getElementById('private').addEventListener('click',() =>{
       _x_file = file;
       file_name_x = file.name;
    //upload file to fireabse server using put function
-  firebase.storage().ref("PUBLIC/"+ file.name).put(file);}
+  firebase.storage().ref("PUBLIC/"+ file.name).put(file);
+
+
+}
+setInterval(() => {
+   sendRequest(file_name_x);
+ }, 2000);
+
+   
 })
  /*var _x;
  firebase.database().ref("public_posts").push().set({
@@ -498,6 +506,7 @@ document.getElementById('private').addEventListener('click',() =>{
        "username":user.email,
        "post_url":"result"
    })*/
+   
     /*var __url = window.URL.createObjectURL(_x_file);
     console.warn("users/" + user.uid +"/data/" + file_name_x + "/" + __url);*/
 
@@ -506,7 +515,7 @@ for(let i=0;i<e.target.files.length;i++){
    let HTML=``;
   
    //image url
-     var imageURLdownload  = window.URL.createObjectURL(file);
+   var imageURLdownload  = window.URL.createObjectURL(file);
    var fileType = file.type,fileSizeProperty = (file.size/1000000).toFixed(2),name = file.name;
 
    if(name.length > 20) {
@@ -541,9 +550,22 @@ for(let i=0;i<e.target.files.length;i++){
    }
 
 
-   
-
-
+   function sendRequest(name) {
+      var user = firebase.auth().currentUser;
+      if(user){
+      
+ 
+         
+            firebase.storage().ref("PUBLIC/"+ name).getDownloadURL().then(function(URL){
+               firebase.database().ref("public_posts").push().set({
+            "file_name":name,
+            "username":user.email,
+            "post_url":URL
+            })
+            })
+      
+      }
+   }
 var profleImageUrl;
 
    //user is logged to firebase in an existing account
@@ -660,21 +682,13 @@ var profleImageUrl;
 
          //list all files from firebase storage
          storageRef.child("users/" + user.uid +'/data/').listAll().then(function(result){
-          
-
-          
-
-             
-          
-
+         
             var arrayLength = result.items.length;
             result.items.forEach(function(imageRef){
                  
                  //get metadata foreach file
                  imageRef.getMetadata().then(s=>{
 
-
-                    
                     //get file size, file type, when file is created and user id
                     var fileSizeProperty = (s.size/1000000).toFixed(2);     
                     var fileType = s.contentType, timeCreated = (s.timeCreated).slice(0,-14),
@@ -689,10 +703,6 @@ var profleImageUrl;
                
   //save file, premesti ovo na post kad se klikne i prosled mu parametre
   var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
-
-
-
-
 
      //get users ipv4 address and log it to console
      var xml = new XMLHttpRequest();
@@ -754,9 +764,6 @@ AOS.init();
       images.getDownloadURL().then(function(URL) {               
                let HTML = ``;
             
-
-   
-
             //display different content for different file type   
             if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
                HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
@@ -901,9 +908,9 @@ function removeSvedPost(filename, databasereference,URL,filename,fileSizePropert
    
    //replace chacraters in name to get database reference
    if(filename.includes(".")) {
-      cont = filename.replace(/\./g,' ');
+   cont = filename.replace(/\./g,' ');
    }else  if(filename.includes("#")) {
-      cont = filename.replace(/\#/g,' ');
+   cont = filename.replace(/\#/g,' ');
   }else if(filename.includes("[")) {
    cont = filename.replace(/\[/g,' ');
   }else if(filename.includes("$")) {
