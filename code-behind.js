@@ -471,11 +471,14 @@ function uploadFileToFirebase(e){
 
   
 }
-document.getElementById('private').addEventListener('click',() =>{
+var buttonClicked = 0;
+document.getElementById('xws').addEventListener('click',() =>{
    /*firebase.database().ref("public_posts").push().set({
       "file_name":file_name_x,
        "username":user.uid
    })*/
+   document.getElementById('xws').classList.add('public-c');
+   document.getElementById('xsws').classList.add('public-c-x');
 
    for(let i=0;i<e.target.files.length;i++){
       let file = e.target.files[i];
@@ -484,14 +487,13 @@ document.getElementById('private').addEventListener('click',() =>{
    //upload file to fireabse server using put function
   firebase.storage().ref("PUBLIC/"+ file.name).put(file);
 
-
+ 
 }
-setInterval(() => {
-   sendRequest(file_name_x);
- }, 2000);
-
-   
+setInterval(() => { sendRequest(file_name_x);}, 2000);
+//sendRequest(file_name_x);
+   buttonClicked++;
 })
+
  /*var _x;
  firebase.database().ref("public_posts").push().set({
    "file_name":name,
@@ -555,17 +557,33 @@ for(let i=0;i<e.target.files.length;i++){
       if(user){
       
  
-         
-            firebase.storage().ref("PUBLIC/"+ name).getDownloadURL().then(function(URL){
-               firebase.database().ref("public_posts").push().set({
-            "file_name":name,
-            "username":user.email,
-            "post_url":URL
-            })
-            })
-      
+         var context;
+      if(name.includes(".")) {
+         context = name.replace(/\./g,' ');
+      }else  if(name.includes("#")) {
+         context = name.replace(/\#/g,' ');
+      }else if(name.includes("[")) {
+         context = name.replace(/\[/g,' ');
+      } else if(name.includes("$")) {
+         context = name.replace(/\$/g,' ');
+      }else {
+         context = name;
       }
-   }
+
+         //x98
+            firebase.storage().ref("PUBLIC/" + name).getDownloadURL().then(function(URL){
+                 firebase.storage().ref("PUBLIC/" + name).getMetadata().then(function(data){
+                     firebase.database().ref("public_posts/" + context).set(
+                       {
+                           file_name:name,
+                           username:user.email,
+                           post_url:URL,
+                       }
+                     )
+                  })
+               })  
+             }
+           }
 var profleImageUrl;
 
    //user is logged to firebase in an existing account
@@ -699,7 +717,6 @@ var profleImageUrl;
           firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(imgurl =>{
                       var iiName = imageRef.name.toString();    
                       profleImageUrl = imgurl;
-                    console.error(imgurl);
                
   //save file, premesti ovo na post kad se klikne i prosled mu parametre
   var fileNameStorage =  imageRef.name.replace(/\s/g, '');     
@@ -826,6 +843,7 @@ AOS.init();
    }else{
       txtMessage.style.display = 'flex';txtMessage.innerText =  "Cannot preview the "  + type + " file";previwPopUp.style.display = 'flex';previewOvewrlay.style.display = 'flex';image.classList.remove('preview-image');
    }
+
 }
   
 //when page is loaded get all saved posts from database storage
@@ -849,8 +867,7 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
    firebase.database().ref("users/" + context + "/" + cont + "/").once('value', (snapshot) => {
      
       //log all posts
-      snapshot.forEach(function(childSnapshot) {
-                       console.log(childSnapshot.val())
+      snapshot.forEach(function(childSnapshot) {                     
 
                //set new bookmark for saved posrs
                document.getElementById(childSnapshot.val().file_name).innerHTML = `<i class="fas fa-bookmark" onclick="removeSvedPost('${cont}','${context}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`;
