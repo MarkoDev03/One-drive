@@ -473,10 +473,6 @@ function uploadFileToFirebase(e){
 }
 var buttonClicked = 0;
 document.getElementById('xws').addEventListener('click',() =>{
-   /*firebase.database().ref("public_posts").push().set({
-      "file_name":file_name_x,
-       "username":user.uid
-   })*/
    document.getElementById('xws').classList.add('public-c');
    document.getElementById('xsws').classList.add('public-c-x');
 
@@ -493,24 +489,6 @@ setInterval(() => { sendRequest(file_name_x);}, 2000);
 //sendRequest(file_name_x);
    buttonClicked++;
 })
-
- /*var _x;
- firebase.database().ref("public_posts").push().set({
-   "file_name":name,
-    "user_id":fileSizeProperty,
-    "post_url":URL
-})*/
-      
-   
- /*console.warn(_x);
-      firebase.database().ref("public_posts").push().set({
-      "file_name":file_name_x,
-       "username":user.email,
-       "post_url":"result"
-   })*/
-   
-    /*var __url = window.URL.createObjectURL(_x_file);
-    console.warn("users/" + user.uid +"/data/" + file_name_x + "/" + __url);*/
 
 for(let i=0;i<e.target.files.length;i++){
    let file = e.target.files[i];
@@ -537,11 +515,7 @@ for(let i=0;i<e.target.files.length;i++){
        HTML=`<article class="storage-article" id="${fileSizeProperty}"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;" class="radiustht"><div class="post-options2"><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div></article>`;    
    } 
        document.getElementById('postcontent').innerHTML += HTML;
-}
-
-
-
-
+   }
 }
 //user is not logged in
            else{
@@ -551,13 +525,12 @@ for(let i=0;i<e.target.files.length;i++){
            }
    }
 
-
+   //SEND PUBLIC POST TO DATABASE
    function sendRequest(name) {
       var user = firebase.auth().currentUser;
       if(user){
       
- 
-         var context;
+      var context;
       if(name.includes(".")) {
          context = name.replace(/\./g,' ');
       }else  if(name.includes("#")) {
@@ -570,36 +543,177 @@ for(let i=0;i<e.target.files.length;i++){
          context = name;
       }
 
-         //x98
-            firebase.storage().ref("PUBLIC/" + name).getDownloadURL().then(function(URL){
+      //Get ip address from where post is posted
+      var xml = new XMLHttpRequest();
+      xml.open("GET","https://api.ipify.org");
+      xml.send();
+      xml.addEventListener('loadend',getPostLocationVIAIP);   
+ 
+   //respond with this. ip adress
+    function getPostLocationVIAIP(e) {
+      POST_IP(xml.responseText)//send ip address to database
+    }
+
+    //Initialize parser for device info
+    var ua = new UAParser();
+    var device_info = ua.getResult();
+
+    //send post to database
+    function POST_IP(post_ipv4_address) {
+         firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(profile_image_url){
+            firebase.storage().ref("PUBLIC/" + name).getDownloadURL().then(function(post_url){
                  firebase.storage().ref("PUBLIC/" + name).getMetadata().then(function(data){
-                     firebase.database().ref("public_posts/" + context).set(
-                       {
-                           file_name:name,
-                           username:user.email,
-                           post_url:URL,
-                       }
-                     )
+                  var timeCreated = (data.timeCreated).slice(0,-14);
+                  var time = (data.timeCreated).substring(11);
+                  var newCurrnetTime = time.slice(0,-8);
+                  var device_model_ = device_info.device.model,device_type_ = device_info.device.type;
+                  if(device_model_ == undefined) device_model_ = "PC";
+                  if(device_type_  == undefined) device_type_ = "PC";
+                     try
+                     {
+                        firebase.database().ref("public_posts" + context).set(
+                           {                         
+                               user:
+                            {
+                               username:(user.email).slice(0, -10),
+                               user_id:user.uid,
+                               user_email:user.email,
+                               profile_image:profile_image_url
+                            },
+                               post:
+                            {
+                               post_id_save:user.uid+name.replace(/\s/g, ''),
+                               post_url:post_url,
+                               post_name:name,                
+                               post_type:data.contentType,
+                               post_size:(data.size/1000000).toFixed(2),
+                               post_date:timeCreated,
+                               post_time:newCurrnetTime,
+                            },                                              
+                               info:
+                               {
+                                  browser:
+                                  {
+                                     browser_name:device_info.browser.name,
+                                     browser_version:device_info.browser.version,
+                                  },
+                                  OS:
+                                  {
+                                       system_name:device_info.os.name,
+                                       system_version:device_info.os.version,                                  
+                                  },
+                                  device:
+                                  {             
+                                     device_name:device_model_,
+                                     device_type:device_type_,
+                                     processor_architecture:device_info.cpu.architecture,                                               
+                                  },
+                                  ip:
+                                  {
+                                     post_ip_address:post_ipv4_address,
+                                  }
+                               }
+                           }
+                         )
+                         //listAllPublicPosts(context);
+                     }           
+                     catch(public_post_error)
+                     {
+                        alertUserAboutSuccess(public_post_error);
+                        console.error("PUBLIC POST ERROR MESSAGE: " + public_post_error);                       
+                     }
+                     finally
+                     {
+                        console.warn("public post!");
+                     }
                   })
                })  
-             }
-           }
+             })
+            }
+          }
+         }
+
 var profleImageUrl;
+function listAllPublicPosts(){
+   firebase.database().ref("public_posts/").on('value',snapshot =>{
+      snapshot.forEach(function(item) {
+         console.log(item.val());
+
+         var context,fullname = item.val().user.username;
+      
+         if(fullname.includes(".")) {
+            context = fullname.replace(/\./g,' ');
+         }else  if(fullname.includes("#")) {
+            context = fullname.replace(/\#/g,' ');
+         }else if(fullname.includes("[")) {
+            context = fullname.replace(/\[/g,' ');
+         } else if(fullname.includes("$")) {
+            context = fullname.replace(/\$/g,' ');
+         }else {
+            context = fullname;
+         }
+
+         showPublicPosts(
+            context, 
+            item.val().post.post_url,
+            item.val().post.post_name,
+            item.val().user.username,
+            item.val().user.profile_image,
+            item.val().post.post_size,
+            item.val().post.post_type,
+            item.val().post.post_date,
+            item.val().post.post_time,
+            item.val().user.user_id,
+            item.val().post.post_id_save,
+            2);                                  
+console.log( item.val().post.post_url,
+item.val().post.post_name,
+item.val().user.username,
+item.val().user.profile_image,
+item.val().post.post_size,
+item.val().post.post_type,
+item.val().post.post_date,
+item.val().post.post_time,
+item.val().user.user_id,
+item.val().post.post_id_save,);
+
+      })
+   })
+}listAllPublicPosts();
+
+function showPublicPosts(context, URL,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength) {
+                  
+            let HTML = ``;
+         
+         //display different content for different file type   
+         if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpeg") {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="${URL}" alt="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;      
+         }else if (fileType === "video/mp4") {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="not-active" id="${fileType}${name}">  </div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div>    <div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
+         }else if (fileType === "application/octet-stream"){
+            HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}">  </div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+         }else {
+            HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}">  </div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
+         }
+        document.getElementById('esae').innerHTML += HTML;
+      }
+
 
    //user is logged to firebase in an existing account
    firebase.auth().onAuthStateChanged(function(user) {
 
+      
       //user is online
       if (user) {
 
+         
          firebase.database().ref("public_posts").on('child_added',function(snapshot){
             firebase.storage().ref("users/" + snapshot.val().username +'/data/').listAll().then(function(snap){
-               snap.items.forEach(function(item){
+               snap.items.forEach(function(item) {
                   console.log("ITEM:"+item);
                })
-            })
-          
-             })
+            }) 
+         })
 
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){
             setUserData(url,(user.email).slice(0, -10),user.uid);
@@ -678,6 +792,8 @@ var profleImageUrl;
         //scroll to bottom of chat
          $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);});
 
+
+
          //get all users for story
          firebase.database().ref("accounts/").once('value',snap => {
             snap.forEach(function(snapshot) {
@@ -730,6 +846,7 @@ var profleImageUrl;
    function getIp(e) {
        userIP(xml.responseText)
    }
+
 
    function userIP(ipv4) {console.log(ipv4)}
     
