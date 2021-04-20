@@ -14,5 +14,4 @@ function fillWithButtons() {
     }
   }
   
-  fillWithButtons();
-  
+  fillWithButtons();  
