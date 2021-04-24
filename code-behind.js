@@ -500,6 +500,7 @@ function uploadFileToFirebase(e){
             let file = e.target.files[i];
             _x_file = file;
             file_name_x = file.name;
+
          //upload file to fireabse server using put function
         firebase.storage().ref("users/" + user.uid +'/data/'+ file.name).put(file).on('state_changed',snapshot =>{
 
@@ -530,15 +531,35 @@ document.getElementById('xws').addEventListener('click',() =>{
       let file = e.target.files[i];
       _x_file = file;
       file_name_x = file.name;
+      
    //upload file to fireabse server using put function
   firebase.storage().ref("PUBLIC/"+ file.name).put(file);
-
- 
 }
-setInterval(() => { sendRequest(file_name_x);}, 2000);
-//sendRequest(file_name_x);
+
+setInterval(() => { sendRequest(file_name_x);}, 10);
    buttonClicked++;
+
+
+
+
+   firebase.database().ref("public_posts/").on('value',snapshot =>{
+      snapshot.forEach(function(item) {
+         if(item.val().post.post_name === file_name_x && item.val().user.username === user.email.slice(0, -10))
+         {
+            alertUserAboutSuccess("File uploaded!");
+            window.location.href = 'index.html';
+         }
+      })
+   })
 })
+
+// firebase.database().ref("public_posts/").on("value",snap => {
+//    snap.forEach(snapshot =>{
+//       if(snapshot.val().post_name === file_name_x) {
+//          alert("POSTED!");
+//       }
+//    })
+// })
 
 for(let i=0;i<e.target.files.length;i++){
    let file = e.target.files[i];
@@ -593,6 +614,21 @@ for(let i=0;i<e.target.files.length;i++){
          context = name;
       }
 
+
+      var userNameData = user.email.slice(0,-10), correctUsername;
+
+      if(userNameData.includes(".")) {
+         correctUsername = userNameData.replace(/\./g,' ');
+      }else  if(userNameData.includes("#")) {
+         correctUsername = userNameData.replace(/\#/g,' ');
+      }else if(userNameData.includes("[")) {
+         correctUsername = userNameData.replace(/\[/g,' ');
+      } else if(userNameData.includes("$")) {
+         correctUsername = userNameData.replace(/\$/g,' ');
+      }else {
+         correctUsername = userNameData;
+      }
+
       //Get ip address from where post is posted
       var xml = new XMLHttpRequest();
       xml.open("GET","https://api.ipify.org");
@@ -621,7 +657,7 @@ for(let i=0;i<e.target.files.length;i++){
                   if(device_type_  == undefined) device_type_ = "PC";
                      try
                      {
-                        firebase.database().ref("public_posts/" + context).set(
+                        firebase.database().ref("public_posts/" + context+" "+correctUsername).set(
                            {                         
                                user:
                             {
@@ -686,7 +722,7 @@ var profleImageUrl;
 function listAllPublicPosts(){
    firebase.database().ref("public_posts/").on('value',snapshot =>{
       snapshot.forEach(function(item) {
-         console.log(item.val());
+         //console.log(item.val());
 
          var user = firebase.auth().currentUser;
          if(user){
@@ -737,6 +773,7 @@ listAllPublicPosts();
       document.getElementById('esae').style.display = 'grid';
    }
    
+ 
    //show public posts
    function publicPosts() {
       document.getElementById('public-posts').classList.add('selected');
@@ -752,7 +789,11 @@ listAllPublicPosts();
       document.getElementById('bodyID').style.display = 'grid';
       document.getElementById('esae').style.display = 'none';
    }
-                    
+         
+   window.onload = function(){
+      publicPosts();
+   }
+   
    //user is logged to firebase in an existing account
    firebase.auth().onAuthStateChanged(function(user) {
 
@@ -955,9 +996,10 @@ function showPublicPosts(context, URL,name,didsplayname,profileimage,fileSizePro
                HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><video src="${URL}" autoplay loop muted width="100%" height="auto"></video><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a>
 <i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;               
             }else if (fileType === "application/octet-stream"){
-               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/rar.jpg" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a>
+             <i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;            
             }else {
-               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-trash-alt"onclick="deleteThisPost('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
+               HTML=`<article class="storage-article" id="${fileSizeProperty}" data-aos="zoom-in-up"><div class="artcile-header"><div class="user-header-info"><div style="background-image:url(${profileimage});background-size:cover;" class="user-profile-image"></div><b class="user-username">${didsplayname}</b></div><i class="fas fa-ellipsis-v" onclick="infoData('${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}')"></i></div><div class="show-user-saved"><img src="./media/none-pic.png" alt ="" width="100%" height="auto" style="pointer-events: none;"><div class="not-active" id="${fileType}${name}"></div></div><div class="post-options"><div class="left-options"><a href='${URL}'><i class="fas fa-download"></i></a><i class="far fa-eye" onclick="preview('${URL}','${fileType}')"></i></div><div id="${name}"><i class="far fa-bookmark" onclick="savePostToStorage('${context}','${URL}','${name}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i></div></div><div class="article-description"><span><b class="user-username">name:</b></span><span class="post-name">${name}</span></div><div class="article-description"><span><b class="user-username">size:</b></span><span class="post-name">${fileSizeProperty} MB</span></div><div class="article-description"><span><b class="user-username">type:</b></span><span class="post-name">${fileType}</span></div><div class="article-description"><span><b class="user-username">posted:</b></span><span class="post-name">${timeCreated} at ${newCurrnetTime}</span></div></article>`;    
             }
             
             //fetch saved posts from database server

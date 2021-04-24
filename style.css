@@ -1633,7 +1633,7 @@ align-items: center;
     width: 60px;
     height: 30px;
     border-radius: 30px;
-    background: linear-gradient(to left,rgb(226, 226, 226),grey);
+    background: linear-gradient(to left,rgb(226, 226, 226),rgb(151, 151, 151));
 
   }
   .public{
