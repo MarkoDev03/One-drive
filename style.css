@@ -847,6 +847,21 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     border-radius: 50%;
     animation: pulse-up 1s ease infinite;
 }
+
+.post-now{
+    animation: pulse-up-2 285ms ease infinite;
+}
+
+@keyframes pulse-up-2{
+    0%{
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);      
+    }
+
+    100%{
+        box-shadow: 0 0 0 12px rgba(0, 0, 0, 0.2);
+    }
+}
+
 @keyframes pulse-up{
     0%{
         box-shadow: 0 0 0 10px rgba(212, 0, 255, 0.2);      
