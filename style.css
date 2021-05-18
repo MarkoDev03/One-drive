@@ -1,6 +1,12 @@
 :root{
     --bg-color:white;
     --txt-color:#2970e2;
+    --msg-color:linear-gradient(to top, #333399, #ff00cc);
+    --user-color:rgba(255, 255, 255, 0.5);
+    --chat-color:rgba(255, 255, 255, 0.9);
+    --msg-color-txt:white;
+    --friend-color-txt:black;
+    --username-in-chat:rgb(107, 107, 107);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@1,200&display=swap');
@@ -286,7 +292,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 .f-icon{
     font-size: 25px;
-
+    cursor: pointer;
 }
 #create-acc{
     color:var(--txt-color)
@@ -308,6 +314,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     font-size: 20px;
     color:var(--txt-color);
     font-weight: 900;
+    cursor:pointer ;
 }
 .hide-file {
    display: none;
@@ -635,6 +642,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     font-size: 27px;
     color: black;
     margin-right: 10px;
+    cursor: pointer;
 }
 .fa-eye{
     margin-right: 0px;
@@ -694,9 +702,11 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     margin-bottom: 0px;
     margin-top: 0px;
     margin-right: 10px;
+    cursor: pointer;
 }
 .new-fnt{
     font-size: 29px;
+    cursor: pointer;
     margin-left: 10px;
 }
 
@@ -849,16 +859,17 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 
 .post-now{
-    animation: pulse-up-2 285ms ease infinite;
+    animation: pulse-up-2 800ms ease infinite;
+    cursor: grab;
 }
 
 @keyframes pulse-up-2{
     0%{
-        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);      
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);      
     }
 
     100%{
-        box-shadow: 0 0 0 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
     }
 }
 
@@ -978,7 +989,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
  /*------------chating*/ 
 #chat-box{
     width: 550px;
-    background:  rgba(255, 255, 255, 0.9);
+    background:  var(--chat-color);
     color: white;
     height: calc(100vh - 160px);
     overflow-y: auto;
@@ -1052,6 +1063,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 }
 .f-icon-x{
     font-size: 20px;
+    cursor: pointer;
 }
 
 .input-message-to-client:active,.input-message-to-client:focus,.send-message-to-client-button:focus{
@@ -1063,19 +1075,22 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
     height: 24px;
     border-radius: 50%;
 }
-
+.crs{
+    background-color: black;
+}
 .user-message{
     display: block;
-    background: linear-gradient(to top, #333399, #ff00cc);
+    background: var(--msg-color);
     padding: 7px;
     border-radius: 10px;
     max-width: 276px;
     height: auto;
     margin: 0px;
     margin-left: 5px;
-    color: white;
+    color: var(--msg-color-txt);
     box-shadow:0px 0px 0px .1px  rgb(38,38,38);
     z-index: 1;
+    text-align: left;
 }
 
 .message-and-image{
@@ -1100,7 +1115,7 @@ background: linear-gradient(to left, #333399, #ff00cc); /* W3C, IE 10+/ Edge, Fi
 
 .username-in-chat{
     margin-left: 31px;
-    color: rgb(107, 107, 107);
+    color: var(--username-in-chat);
 }
 .my-message{
     margin-top: 20px;
@@ -1454,8 +1469,8 @@ align-items: center;
     margin-top: 5px;
 }
 .not-your{
-    color: black;
-    background: rgba(255, 255, 255, 0.5);
+    color: var(--friend-color-txt);
+    background: var(--user-color);
 }
 
 .margin-file-x{
@@ -1506,7 +1521,7 @@ align-items: center;
 }
 
 .edit-message{
-    color: black;
+    color: var(--username-in-chat);
 }
 
 .pop-up-message-deleting{
@@ -1665,6 +1680,7 @@ align-items: center;
       left: 0;
       right: 0;
       bottom: 0;    
+      cursor: pointer;
   }
 
  .public-c{
@@ -1717,4 +1733,111 @@ align-items: center;
 .fa-lock{
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
+}
+
+#customisator{
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    z-index: 9999999999;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    position: fixed;
+    top: 0px;
+  
+}
+.hide-custom{
+    transform: translate(100%);
+    transition: 285ms;
+}
+.hide-custom-2{
+    transform: translate(-100%);
+    transition: 285ms;
+}
+.custom-added{
+    transform: translate(0%);
+    transition: 285ms;
+}
+.header-customizer{
+    width: 100%;
+    height: fit-content;
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: .5px solid whitesmoke;
+    height: 40px;
+
+}
+.content-customizeer{
+    margin-left: 15px;
+}
+.h3Inbox{
+    margin-left: 10px;
+ 
+}
+input[type="color"] {
+	opacity: 1;
+	display: block;
+	width: 32px;
+	height: 32px;
+	border: none;
+    outline: none;
+    border: 1px solid transparent;
+    background-color: transparent;
+    border-radius: 50%;
+}
+.style-wrapper{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+   margin-top: 20px;
+}
+
+.style-component{
+    margin-top: -10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+}
+
+.group-name-box{
+    width: 100%;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(26, 26, 26);
+    font-size: 20px;
+    color: black;
+    font-weight: 700;
+
+}
+.gr-component{
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    margin-top: 5px;
+}
+@media only screen and (max-width:500000px) and (min-width:900px) {
+    .style-wrapper{
+        width: 40%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.chat-img{
+    border-radius: 10px;
+    color: black;
+    height: 10px;
+    width: 10px;
+    border: 1px solid black;
+   margin: 0px;
 }

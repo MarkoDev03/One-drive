@@ -1,6 +1,8 @@
 //header id for evry page--------------------------------------------
 var contactHeader = document.querySelector('.contact-header');
 
+
+
 //files and posts arrays
 let files = {};
 var posts = [];
@@ -228,6 +230,9 @@ popupclass.showDeletePopUpAccount();
       appId: "1:1068677321956:web:97a4d0b9ddeb63520588f1",
       measurementId: "G-HXW1NYY74D"
     };
+
+           
+
 
     // Initialize Firebase to saveprojects
     firebase.initializeApp(firebaseConfig);
@@ -601,14 +606,20 @@ var buttonClicked = 0;
 document.getElementById('xws').addEventListener('click',() =>{
    document.getElementById('xws').classList.add('public-c');
    document.getElementById('xsws').classList.add('public-c-x');
+   document.getElementById('upload-button').style.display = 'none';
 
+  
    for(let i=0;i<e.target.files.length;i++){
       let file = e.target.files[i];
+      
+      
       _x_file = file;
       file_name_x = file.name;
+
+   
       
    //upload file to fireabse server using put function
-  firebase.storage().ref("PUBLIC/"+ file_name_x + user.email.slice(0,-10)).put(file).on('state_changed',snapshot => {
+  firebase.storage().ref("PUBLIC/"+  user.email.slice(0,-10) + "--" + file_name_x ).put(file).on('state_changed',snapshot => {
     
    document.getElementById('uploading-proces').style.display="flex";
 
@@ -729,15 +740,18 @@ for(let i=0;i<e.target.files.length;i++){
     //send post to database
     function POST_IP(post_ipv4_address) {
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(profile_image_url){
-            firebase.storage().ref("PUBLIC/" + name + user.email.slice(0,-10)).getDownloadURL().then(function(post_url){
-                 firebase.storage().ref("PUBLIC/" + name + user.email.slice(0,-10)).getMetadata().then(function(data){
+            firebase.storage().ref("PUBLIC/" + user.email.slice(0,-10) + "--" +name ).getDownloadURL().then(function(post_url){
+                 firebase.storage().ref("PUBLIC/" + user.email.slice(0,-10) + "--" +name).getMetadata().then(function(data){
                   var timeCreated = (data.timeCreated).slice(0,-14);
                   var time = (data.timeCreated).substring(11);
                   var newCurrnetTime = time.slice(0,-8);
                   var device_model_ = device_info.device.model,device_type_ = device_info.device.type;
                   if(device_model_ == undefined) device_model_ = "PC";
                   if(device_type_  == undefined) device_type_ = "PC";
-                     try
+                   
+                  console.warn("URL"+post_url);//~~~
+                  
+                  try
                      {
                         firebase.database().ref("public_posts/" + context+" "+correctUsername).set(
                            {                         
@@ -792,6 +806,8 @@ for(let i=0;i<e.target.files.length;i++){
                      finally
                      {
                         console.warn("public post!");
+                       // alertUserAboutSuccess("Post is live!");
+                       document.getElementById('upload-button').style.display = 'flex';
                      }
                   })
                })  
@@ -801,6 +817,7 @@ for(let i=0;i<e.target.files.length;i++){
          }
 
 var profleImageUrl;
+window.addEventListener('load',() => {
 function listAllPublicPosts(){
    firebase.database().ref("public_posts/").on('value',snapshot =>{
       snapshot.forEach(function(item) {
@@ -846,6 +863,7 @@ function listAllPublicPosts(){
 }
 
 listAllPublicPosts();
+})
        
    //when page is loaded show all public posts
    window.onload = function() {
@@ -876,9 +894,72 @@ listAllPublicPosts();
       publicPosts();
    }
    
+   window.addEventListener('load',() =>{
    //user is logged to firebase in an existing account
    firebase.auth().onAuthStateChanged(function(user) {
 
+      
+         var user = firebase.auth().currentUser;
+      
+       if(user) {
+          var fullname = user.email.slice(0,-10),context;
+         if(fullname.includes(".")) {
+            context = fullname.replace(/\./g,' ');
+         }else  if(fullname.includes("#")) {
+            context = fullname.replace(/\#/g,' ');
+         }else if(fullname.includes("[")) {
+            context = fullname.replace(/\[/g,' ');
+         } else if(fullname.includes("$")) {
+            context = fullname.replace(/\$/g,' ');
+         }else {
+            context = fullname;
+         }
+         firebase.database().ref("custom-colors/").on('value',snapshot => {
+            snapshot.forEach(item => {
+               console.log(item.val());
+               if(item.val().user == context) {
+               root.style.setProperty("--msg-color", item.val().messageColor);
+               root.style.setProperty("--user-color", item.val().freindColor);
+               root.style.setProperty("--chat-color", item.val().backgroundColor);
+               root.style.setProperty("--friend-color-txt",item.val().freindColorText);
+               root.style.setProperty("--msg-color-txt", item.val().messageColortext);
+               root.style.setProperty("--username-in-chat", item.val().usernameInChat);
+
+               
+        document.getElementById('color-message').value = item.val().messageColor;
+        document.getElementById('color-message-text').value =item.val().messageColortext;
+        document.getElementById('color-msg-friends').value = item.val().freindColor;
+       document.getElementById('color-msg-friends-text').value =item.val().freindColorText;
+        document.getElementById('color-background').value = item.val().backgroundColor;
+       document.getElementById('color-background-text').value= item.val().usernameInChat;
+               }
+            })
+         })
+         var fullname = user.email.slice(0,-10),context;
+         if(fullname.includes(".")) {
+            context = fullname.replace(/\./g,' ');
+         }else  if(fullname.includes("#")) {
+            context = fullname.replace(/\#/g,' ');
+         }else if(fullname.includes("[")) {
+            context = fullname.replace(/\[/g,' ');
+         } else if(fullname.includes("$")) {
+            context = fullname.replace(/\$/g,' ');
+         }else {
+            context = fullname;
+         }
+
+         firebase.database().ref("wallpapes/"+context).on('value', snap => {
+            
+console.log(snap.val())
+              document.getElementById('chat-box').style.backgroundImage = `url('${snap.val().chatWallpaper}')`;
+              document.getElementById('chat-box').style.backgroundSize = 'cover';
+              document.getElementById('chat-box').style.backgroundPosition = 'center';
+            
+         })
+
+   
+      
+      }
       
       //user is online
       if (user) {
@@ -895,7 +976,7 @@ listAllPublicPosts();
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(url){
             setUserData(url,(user.email).slice(0, -10),user.uid);
           });
-       
+
          //show messages
          firebase.database().ref("messages").on('child_added',function(snapshot){
             var html = '',htmluser='';
@@ -915,7 +996,7 @@ listAllPublicPosts();
               }else{
                html += `
                  
-               <div class="message-box">
+               <div class="message-box" id="${snapshot.key}">
                <p class="username-in-chat">${snapshot.val().sender}</p>
                <div class="message-and-image">
                <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
@@ -934,7 +1015,7 @@ listAllPublicPosts();
  </div>`;         
                }else{
                 html += `                               
-                <div class="message-box">
+                <div class="message-box" id="${snapshot.key}">
                 <p class="username-in-chat">${snapshot.val().sender}</p>
                 <div class="message-and-image">
                     <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
@@ -953,7 +1034,7 @@ listAllPublicPosts();
  </div>`;         
                }else{
                 html += `                               
-                <div class="message-box">
+                <div class="message-box" id="${snapshot.key}">
                 <p class="username-in-chat">${snapshot.val().sender}</p>
                 <div class="message-and-image">
                     <img src="${snapshot.val().profileimage}" alt="" class="user-profile-image-in-chat">
@@ -983,7 +1064,8 @@ listAllPublicPosts();
                var swiper = new Swiper('.swiper-container', {
                   slidesPerView: 4,
                   spaceBetween:0,
-                  loop:false                
+                  loop:false,
+                  freeMode: true,
                 });
               });
      
@@ -1065,7 +1147,7 @@ listAllPublicPosts();
          document.getElementById('usernamename').innerHTML = `<p>username</p>`;
          document.getElementById('img').src = 'https://www.clipartmax.com/png/middle/256-2564545_nauman-javid-none-profile.png';
     }
-});
+});})
 AOS.init();
 
 function showPublicPosts(context, URL,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength) {
@@ -1114,6 +1196,7 @@ function showPublicPosts(context, URL,name,didsplayname,profileimage,fileSizePro
             document.getElementById('esae').innerHTML += HTML;
               
       }
+
     //show users data/ from storage on page
     function showUsersStorageContectOnPage(context,row, images,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength) {
         
@@ -1153,6 +1236,7 @@ function showPublicPosts(context, URL,name,didsplayname,profileimage,fileSizePro
       //       }
          });
     }
+   
 
    //loading animation 
    function loadingAnimationPopUp() {
@@ -1431,7 +1515,7 @@ function deleteThisPost(name,size,type,date,time){
       //document.getElementById(size).style.display = 'none';
       document.body.style.overflowY = 'auto';
       //delete post from ordered storage location
-firebase.storage().ref().child("PUBLIC/"+ name + user.email.slice(0, -10)).delete();
+firebase.storage().ref().child("PUBLIC/"+user.email.slice(0, -10) + "--"+ name ).delete();
    firebase.database().ref("public_posts").child(context +" " + correctUsername).remove();
       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';    
@@ -1698,6 +1782,7 @@ fetch('data.json',{method:"GET"})
 .then(response => response.json())
 .then(data => window.onload = showEmojes(data));
 
+
 //send messages and emojies
 firebase.auth().onAuthStateChanged(function(user) {var user = firebase.auth().currentUser;
 
@@ -1710,6 +1795,9 @@ var iconBox = document.getElementById('icons-for-messag');
     document.getElementById('text-message-user').addEventListener('click',() =>{
          iconBox.style.display = 'none';   
          document.getElementById('sendMessage').style.display = 'flex';   
+
+   
+
       });
 
       //when user clicks on chat show icons for image and video sending and hide send button
@@ -1719,18 +1807,21 @@ var iconBox = document.getElementById('icons-for-messag');
       })
 
       //send text message to chat app part in save projects
-      document.getElementById('sendMessage').addEventListener('click',(e)=>{
+      document.getElementById('sendMessage').onclick = function (){
+       
        
          var message = document.getElementById('text-message-user').value;//message value
          var username = user.email, didsplayname = username.slice(0, -10);
 
          //show emoji icon
          iconBox.style.display = 'flex';
-        
+
+         
      //if message box is different from empty string     
      if( message != ""){
    
       //send message to database refernece
+      
         firebase.database().ref("messages").push().set({
             "sender":didsplayname,
             "message":message,
@@ -1738,12 +1829,23 @@ var iconBox = document.getElementById('icons-for-messag');
             "image":"/" ,
             "video":"/"
         }) 
+
+        sessionStorage.setItem("message",message);
+        sessionStorage.setItem("user",didsplayname);
       }  
 
+      
       //clear text box and hide button for sending
       document.getElementById('text-message-user').value = '';
       document.getElementById('sendMessage').style.display = 'none'; 
-    })
+
+  
+  
+    }
+    var username = user.email, didsplayname = username.slice(0, -10);
+    var message = document.getElementById('text-message-user').value;//message valu
+
+ 
    
    var username = user.email, didsplayname = username.slice(0, -10);
   
@@ -1865,12 +1967,15 @@ function deleteMessage(messageIdKey,storageReference) {
 
 function deleteUserMessage(messageIdKey,storageReference) {
     firebase.database().ref("messages").child(messageIdKey).remove();
-    document.getElementById(messageIdKey).style.display = 'none';
+    
+       document.getElementById(messageIdKey).style.display = 'none';
+  
     firebase.storage().ref("messages").child(storageReference).delete(); 
     firebase.storage().ref("videos").child(storageReference).delete(); 
-    console.warn(storageReference);
+    //console.warn(storageReference);
     closeDeleteMessage();
-}
+   }
+
 
 //close message delete popup
 function closeDeleteMessage() {
@@ -1917,5 +2022,139 @@ switch(sessionStorage.getItem("optionPageID")){
                   break;
                   default:
                      return null;
+}
+}
+
+window.addEventListener('load',() => {
+   document.getElementById('customisator').style.height =window.innerHeight + 'px';
+   document.getElementById('customisator').classList.add('hide-custom');
+   document.getElementById('customisator').classList.remove('hide-custom-2');
+   document.getElementById('customisator').classList.remove('custom-added');
+})
+
+function customize() {
+   document.getElementById('customisator').classList.add('custom-added');
+   document.getElementById('customisator').classList.remove('hide-custom');
+   document.getElementById('customisator').classList.remove('hide-custom-2');
+}
+
+function closeCustomizator() {
+   document.getElementById('customisator').classList.remove('custom-added');
+   document.getElementById('customisator').classList.add('hide-custom-2');
+   document.getElementById('customisator').classList.remove('hide-custom');
+}
+
+var root = document.documentElement;
+
+function customizeChat() {
+   root.style.setProperty("--msg-color", document.getElementById('color-message').value);
+   root.style.setProperty("--user-color", document.getElementById('color-msg-friends').value);
+   root.style.setProperty("--chat-color", document.getElementById('color-background').value);
+   root.style.setProperty("--friend-color-txt", document.getElementById('color-msg-friends-text').value);
+
+   root.style.setProperty("--msg-color-txt", document.getElementById('color-message-text').value);
+   root.style.setProperty("--username-in-chat", document.getElementById('color-background-text').value);
+
+   var messageColor = document.getElementById('color-message').value;
+   var messageColortext = document.getElementById('color-message-text').value;
+   var freindColor = document.getElementById('color-msg-friends').value;
+   var freindColorText = document.getElementById('color-msg-friends-text').value;
+   var backgroundColor = document.getElementById('color-background').value;
+   var usernameInChat = document.getElementById('color-background-text').value;
+
+
+ var user = firebase.auth().currentUser;
+
+ if(user) {
+    var fullname = user.email.slice(0,-10),context;
+   if(fullname.includes(".")) {
+      context = fullname.replace(/\./g,' ');
+   }else  if(fullname.includes("#")) {
+      context = fullname.replace(/\#/g,' ');
+   }else if(fullname.includes("[")) {
+      context = fullname.replace(/\[/g,' ');
+   } else if(fullname.includes("$")) {
+      context = fullname.replace(/\$/g,' ');
+   }else {
+      context = fullname;
+   }
+   firebase.database().ref("custom-colors/"+context).remove();
+   firebase.database().ref("custom-colors/"+context).set({
+      messageColor:messageColor,
+      messageColortext:messageColortext,
+      freindColor:freindColor,
+      freindColorText:freindColorText,
+      backgroundColor:backgroundColor,
+      usernameInChat:usernameInChat,
+      user:context
+   });
+ }
+   
+  closeCustomizator();
+}
+
+function setGroupName(event) {
+   firebase.database().ref("custom-colors/"+"name").set({
+      name:event.target.value
+   })
+}
+
+firebase.auth().onAuthStateChanged(function(user) {
+   var user = firebase.auth().currentUser;
+   if(user) {
+
+      var fullname = user.email.slice(0,-10),context;
+      if(fullname.includes(".")) {
+         context = fullname.replace(/\./g,' ');
+      }else  if(fullname.includes("#")) {
+         context = fullname.replace(/\#/g,' ');
+      }else if(fullname.includes("[")) {
+         context = fullname.replace(/\[/g,' ');
+      } else if(fullname.includes("$")) {
+         context = fullname.replace(/\$/g,' ');
+      }else {
+         context = fullname;
+      }
+      
+
+      firebase.database().ref("custom-colors/").child("name").on('value',snap => {        
+         document.getElementById('group-name-headline').innerText = snap.val().name;
+         document.getElementById('grop-name').value = snap.val().name;      
+      })
+
+      firebase.storage().ref("wallpapers/" + user.email.slice(0,-10) + "/wallpaper.jpg").getDownloadURL().then(url => {
+         firebase.database().ref("wallpapes/" + context).set({
+            chatWallpaper:url,
+         
+         })
+               
+      })
+
+   }
+})
+   
+function typing() {
+   console.log("typing...");
+}
+
+firebase.database().ref("messages").on('child_removed',function(snapshot){  
+   console.warn(snapshot.key);        
+  document.getElementById(snapshot.key).style.display = 'none';
+});
+
+function uploadChatBackgroundImage(e) {
+ const files = e.target.files;
+ const user = firebase.auth().currentUser;
+
+ if(user) {
+   for(const file of files) {
+      firebase.storage().ref("wallpapers/" + user.email.slice(0,-10) + "/wallpaper.jpg").put(file).on('state_changed', snapshot =>{
+         if((snapshot.bytesTransferred / snapshot.totalBytes) * 100 === 100) {
+            setTimeout(() => {
+               window.location.reload();
+            }, 100);
+         }
+      })
+   }
 }
 }

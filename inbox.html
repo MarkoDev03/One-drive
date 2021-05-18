@@ -21,8 +21,9 @@
 <script>document.body.style.overflow='hidden'</script>
 <div class="wrapper">
     <div class="header-chat">
-      <p class="group-name"><b>Group chat</b></p>
-        <i class="far fa-edit f-icon"></i>
+      <p class="group-name"><b id="group-name-headline">Group chat</b></p>
+        <i class="far fa-edit f-icon" onclick="customize()"></i>
+       
     </div>
     <div>
     <div id="chat-box"></div>
@@ -39,7 +40,7 @@
     <i class="far fa-laugh f-icon-x" onclick="showEmojies()" id="sendEmojiIcon"></i>
 
     <div class="send-message-x-field" id="send-x">
- <input type="text" name="" id="text-message-user"  class="input-message-to-client" autocomplete="off" autofocus="off">
+ <input type="text" name="" id="text-message-user"  class="input-message-to-client" autocomplete="off" autofocus="off" onclick="typing()">
    <button id="sendMessage" class="send-message-to-client-button">SEND</button>
    <div class="visual-content" id="icons-for-messag">
    <label class="chose-file-x margin-file-x fas fa-image f-icon-x x-marg"><input type="file"  accept=".png, .jpg, .jpeg" class="myFile hide-file"id="sendImage" multiple/></label>
@@ -54,6 +55,48 @@
   <div class="delete-overlay" id="message-overlay">
     <div class="pop-up-message-deleting d-class" id="delete-message-popup"></div>
     
+  </div>
+  <div id="customisator">
+        <div class="header-customizer">
+          <i class="fas fa-arrow-left f-icon content-customizeer" onclick="closeCustomizator()"></i><h1 class="h3Inbox">Customize chat</h1>
+        </div>
+          <div class="style-wrapper">
+            <div class="style-component gr-component">
+              <input type="text" name="" id="grop-name" class="group-name-box" oninput="setGroupName(event)">
+            </div>
+            <div class="style-component">
+               <h3>Your message color</h3>
+               <input type="color" name="" id="color-message">
+            </div>
+            <div class="style-component">
+              <h3>Friends message color</h3>
+              <input type="color" name="" id="color-msg-friends">
+           </div>
+           <div class="style-component">
+            <h3>Background color</h3>
+            <input type="color" name="" id="color-background">
+         </div>
+
+         <div class="style-component">
+          <h3>Your text color</h3>
+          <input type="color" name="" id="color-message-text">
+       </div>
+       <div class="style-component">
+         <h3>Friends text color</h3>
+         <input type="color" name="" id="color-msg-friends-text">
+      </div>
+      <div class="style-component">
+       <h3>Username color</h3>
+       <input type="color" name="" id="color-background-text">
+    </div>
+    <div class="style-component">
+     <h3>Background image</h3>
+     <label class="chose-file margin-file chat-img" id="profile_image"><input type="file" class="myFile hide-file" accept=".png, .jpg, .jpeg" onchange="uploadChatBackgroundImage(event)"/>+</label>
+    </div>
+         <button class="submit-button" onclick="customizeChat()">Apply changes</button>
+        
+          </div>
+        
   </div>
 </body>  
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
