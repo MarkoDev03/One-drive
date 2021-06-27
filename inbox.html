@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Saveprojects</title>
     <link rel="shortcut icon" href="./media/none-pic.png" type="image/png">
     <link rel="stylesheet" href="style.css">
@@ -17,21 +17,26 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
-<body  class="index-body" >
+<body  class="index-body x" >
 <script>document.body.style.overflow='hidden'</script>
 <div class="wrapper">
-    <div class="header-chat">
+    <div class="header-chat" id="chat-header">
+     <div class="hd">
+      <i class="fas fa-arrow-left f-icon" onclick="window.location.href = 'index.html'"></i>
       <p class="group-name"><b id="group-name-headline">Group chat</b></p>
+     </div>
         <i class="far fa-edit f-icon" onclick="customize()"></i>
        
     </div>
     <div>
+      <div>
+      
     <div id="chat-box"></div>
  <div id="emojis" class="emoji-block es"></div>  
 </div>
   <div id="pagecontent-index"></div>
   <div class="s-style">
-  <div class="text-field a-style">
+  <div class="text-field a-style" id="a-style-x">
     <div class="border-content">
     
     <div id="cli">      
@@ -49,7 +54,8 @@
   </div>
 </div>
 </div>
-  <footer class="footer chat-footer"></footer></div></div>
+  </div></div>
+  
   <div class="open-message-overlay" id="open-content"></div>
   
   <div class="delete-overlay" id="message-overlay">
@@ -93,6 +99,21 @@
      <h3>Background image</h3>
      <label class="chose-file margin-file chat-img" id="profile_image"><input type="file" class="myFile hide-file" accept=".png, .jpg, .jpeg" onchange="uploadChatBackgroundImage(event)"/>+</label>
     </div>
+    
+    <div class="style-component">
+     <h3>Remove Background Image</h3>
+     <i class="fas fa-minus f-icon" style="margin-right: 4px;" onclick="removeChatWallpaper()"></i>
+  </div>
+    <div class="style-component">
+      <h3>Reset</h3>
+      <i class="fas fa-power-off f-icon" style="margin-right: 4px;" onclick="setAsDefault()"></i>
+   </div>
+
+   <div class="style-component">
+    <h3>Dark mode</h3>
+    <i class="far fa-moon f-icon" style="margin-right: 4px;" onclick="chatDarkMode()"></i>
+ </div>
+
          <button class="submit-button" onclick="customizeChat()">Apply changes</button>
         
           </div>
@@ -103,6 +124,14 @@
 <script>AOS.init();</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.19/ua-parser.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
 <script src="code-behind.js"></script>
 <script src="https://smtpjs.com/v3/smtp.js"></script>
+<script>
+  var chat = document.getElementById('chat-box');
+  var header = document.getElementById('header-chat').clientHeight;
+  var footer = document.getElementById('a-style-x').clientHeight;
+  chat.style.height =window.innerHeight - (header + footer) + 'px'
+</script>
 </html>

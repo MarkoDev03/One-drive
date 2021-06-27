@@ -10,8 +10,6 @@
   };
 
 
-
-
   //logged user uploads files in storage
 function uploadFileToFirebase(e){
     document.getElementById('postcontent').innerHTML = ``;

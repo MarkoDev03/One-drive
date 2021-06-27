@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Document</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
@@ -30,7 +30,7 @@
                 <label class="chose-file margin-file" id="profile_image"><input type="file" class="myFile hide-file" onchange="uploadImageUser(event)"/>+</label>
                 <p class="l-margin">Set profile image</p>
             </div>
-            <button onclick="pageReloader()" class="update-button green">Update</button>
+            <button onclick="pageReloader()" class="update-button green" id="update-profileimg">Update</button>
         </div>
 
     <div class="progress-div" id="load-animations">
@@ -51,12 +51,18 @@
     </div>
 
     <div class=" set-class flex-down">  
-        <button  class="setting-button" onclick="logOut()">Log out</button>   
+        <button  class="setting-button" onclick="openPageInHeader(2)">Log out</button>   
     </div>
    
     <div class="set-class flex-down">
         <button  class="setting-button" onclick="help()">Help</button> 
         <button  class="setting-button" onclick="help()">Contact us</button>     
+    </div>
+
+    <div class="set-class flex-down">
+        <button  class="setting-button" onclick="darkModeApp()">Dark mode</button> 
+        <button  class="setting-button" onclick="LightMode()">Light mode</button> 
+          
     </div>
 
 </div>
