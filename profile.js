@@ -30,11 +30,11 @@ firebase.auth().onAuthStateChanged((user) => {
              context = fullname;
         }
 
-        username.innerText = user.email.slice(0,-10);
+        username.innerText = user.displayName;
 
         database.ref("accounts/").on('value',(snapshot) => {
             snapshot.forEach((snap) => {
-                if (snap.val().username === user.email.slice(0,-10)) {
+                if (snap.val().username === user.displayName) {
                      profileImage.style.backgroundImage = `url('${snap.val().profileimage}')`;
                      profileImage.style.backgroundSize = 'cover';
                 }
@@ -45,7 +45,7 @@ firebase.auth().onAuthStateChanged((user) => {
            var postCount = 0;
 
            snapshot.forEach(snap => {
-              if (snap.val().user.username === user.email.slice(0,-10)) {
+              if (snap.val().user.user_id === user.uid) {
                     postCount++;
                     
                }  
@@ -54,13 +54,59 @@ firebase.auth().onAuthStateChanged((user) => {
            publicPostsCounter.innerText = postCount
         })
 
-        database.ref("private_posts/" + context).on('child_added', (snap) => { 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       database.ref("users/" + context +"/").on('child_added',(snap) => {
+        
+          // console.log(snap.val().post)       
+          var post = '';
+            
+                          var postUrl = snap.val().post.post_url;
+                          var profileImage = snap.val().post.profile_image;
+                          var timeCreated = snap.val().post.time_created;
+                          var dateCreated = snap.val().post.date_created;
+                          var fileType = snap.val().post.file_type;
+                          var postSize = snap.val().post.file_size;
+                          var postName = snap.val().post.file_name;
+                          var postId = snap.val().post.post_id;
+                          var usernamePost = snap.val().post.username;
+               
+ //openPost(postUrl,postType,username,profileImage,postSize,timeCreated,newTime,postName)         
+                          
+                          if (fileType == "image/png" ||fileType == "image/jpg" || fileType == "image/jpeg") {
+                  
+                         
+                   post = `<div class="post-prof set-hzx" id="${postUrl+timeCreated}"
+                     style="background-image: url(${postUrl});background-size:cover;"
+                     onclick="opeSvedPostHTML('${postUrl}','${fileType}','${usernamePost}','${profileImage}','${postSize}','${timeCreated}','${dateCreated}','${postName}')"
+                     ></div>`
+               } else if (fileType === "video/mp4") {
+               
+                   post = `<video class="post-prof set-hzx" id="${postUrl+timeCreated}" src="${postUrl}" autoplay muted loop
+                   onclick="opeSvedPostHTML('${postUrl}','${fileType}','${usernamePost}','${profileImage}','${postSize}','${timeCreated}','${dateCreated}','${postName}')"
+                   ></video>`;
+               } else {
+               
+               
+                   post = `<div class="post-prof set-hzx"   id="${postUrl+timeCreated}"  style="background-image: url('./media/none-pic.png');background-size:cover"
+                   onclick="opeSvedPostHTML('${postUrl}','${fileType}','${usernamePost}','${profileImage}','${postSize}','${timeCreated}','${dateCreated}','${postName}')"
+                   ></div>`
+               }  
+            
+               document.getElementById('saved').innerHTML += post;
            
-                
+       })
 
-        })
 
-        database.ref("private_posts/" + context).once('value', (snapshot) => {
+       database.ref("users/" + context +"/").on('child_removed',(snap) => {
+        var postUrl = snap.val().post.post_url;   
+        var timeCreated = snap.val().post.time_created;
+        document.getElementById(postUrl+timeCreated).style.display = 'none'
+        setTimeout(() => {
+            document.getElementById(postUrl+timeCreated).style.height = document.getElementById(postUrl+timeCreated).clientWidth +"px";
+        }, 10000);
+       })
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        database.ref("private_posts/" + user.uid).once('value', (snapshot) => {
             var postCounter = 0;
   
             snapshot.forEach((snap) => {
@@ -93,7 +139,7 @@ firebase.auth().onAuthStateChanged((user) => {
        
       
           
-            if (snap.val().user.username === activeUser)
+            if (snap.val().user.user_id === user.uid)
             {
                 setTimeout(() => {
                     document.getElementById(snap.val().post.post_url).style.height = document.getElementById(snap.val().post.post_url).clientWidth +"px";
@@ -132,18 +178,22 @@ function listPrivateAndAll() {
 
     document.getElementById('posts').innerHTML = '';
 
-    database.ref("private_posts/" + context).once('value', (snapshot) => {
+    database.ref("private_posts/" + user.uid).once('value', (snapshot) => {
        
         var post = '';
         snapshot.forEach((snap) => {     
             setTimeout(() => {
                 document.getElementById(snap.val().imageRef).style.height = document.getElementById(snap.val().imageRef).clientWidth +"px";
-            }, 200);    
+            }, 10);    
            
             if (snap.val().fileType == "image/png" ||snap.val().fileType == "image/jpg" ||snap.val().fileType == "image/jpeg") {
                 post = `<div class="post-prof"  id="${snap.val().imageRef}"
                 onclick="openPost('${snap.val().imageRef}','${snap.val().fileType}','${snap.val().didsplayname}','${snap.val().imgurl}','${snap.val().fileSizeProperty}','${snap.val().timeCreated}','${snap.val().newCurrnetTime}','${snap.val().iiName}')" 
                 style="background-image: url(${snap.val().imageRef});background-size:cover"></div>`
+               
+                   // document.getElementById(snap.val().imageRef).style.height = document.getElementById(snap.val().imageRef).clientWidth +"px";
+                
+               
             } else if (snap.val().fileType === "video/mp4") {
                 setTimeout(() => {
                     document.getElementById(snap.val().iiName).style.height = document.getElementById(snap.val().iiName).clientWidth +"px";
@@ -211,6 +261,7 @@ function openPost(postUrl,postType,username,profileImage,postSize,timeCreated,ne
        </div>
            `;
     }else if (postType === "video/mp4") {
+       
         overlay.innerHTML = 
            `
            <div class="post" id="postids">
@@ -221,7 +272,7 @@ function openPost(postUrl,postType,username,profileImage,postSize,timeCreated,ne
                </div>
                <i class="fas fa-times f-icon" onclick="closePost()"></i>
            </div>
-           <video src="${postUrl}" class="post-content-pewview" autoplay muted></video>
+           <video src="${postUrl}" class="" autoplay muted style="width:100%;height:auto;max-height:${(window.innerHeight)/98 - 207 + 'px'}" id="video+${postUrl}"></video>
            <div class="post-header">
                <div class="left-block">
                <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
@@ -232,6 +283,9 @@ function openPost(postUrl,postType,username,profileImage,postSize,timeCreated,ne
            </div>
        </div>
            `;
+           setTimeout(() => {
+            document.getElementById('video'+postUrl).style.maxHeight = (window.innerHeight)/98 - 97 + 'px'
+           }, 1000);
     }else {
         overlay.innerHTML =  `
         <div class="post" id="postids">
@@ -279,3 +333,103 @@ function shareLink(text) {
 
     alertUserAboutSuccess("Link copied!");
   }
+
+function openSavedPosts() {
+        document.getElementById('saved').classList.add('open-x');
+        document.getElementById('saved-overlay').style.display = 'flex'
+       // document.getElementById('saved').style.zIndex = 99
+      //  overlay.classList.add('load-overlay');
+     //   overlay.style.display = 'flex'
+       // overlay.innerHTML = '';
+       document.getElementById('saved').style.display = 'block'
+}
+
+function closeSavedPosts() {
+
+       document.getElementById('saved').classList.add('close')
+       document.getElementById('saved').classList.remove('open-x');
+       setTimeout(() => {
+        document.getElementById('saved').style.display = 'none'
+        document.getElementById('saved-overlay').style.display = 'none'
+       }, 100);
+      
+}
+
+function opeSvedPostHTML(postUrl,postType,username,profileImage,postSize,timeCreated,newTime,postName) {
+     document.body.style.overflow = 'hidden'
+    console.log(postUrl)
+    overlay.classList.add('load-overlay');
+    overlay.style.display = 'flex'
+    overlay.innerHTML = '';
+
+    if (postType === "image/png" ||postType === "image/jpg" ||postType === "image/jpeg") {
+           overlay.innerHTML = 
+           `
+           <div class="post" id="postids">
+           <div class="post-header">
+               <div class="left-block">
+                 <div style="background-image:url('${profileImage}');background-size:cover;" class="user-profile-image"></div>
+                 <span class="username-post-info"><b>${username}</b></span>
+               </div>
+               <i class="fas fa-times f-icon" onclick="closePost()"></i>
+           </div>
+           <img src="${postUrl}" alt="" class="post-content-pewview">
+           <div class="post-header">
+               <div class="left-block">
+                    <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
+                   <i class="far fa-bookmark f-icon" onclick="deleteThisPost('${postName}','${postSize}','${postType}','${timeCreated}','${newTime}')"></i>
+                   <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"></i>
+               </div>
+               <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+           </div>
+       </div>
+           `;
+    }else if (postType === "video/mp4") {
+       
+        overlay.innerHTML = 
+           `
+           <div class="post" id="postids">
+           <div class="post-header">
+               <div class="left-block">
+                 <div style="background-image:url('${profileImage}');background-size:cover;" class="user-profile-image"></div>
+                 <span class="username-post-info"><b>${username}</b></span>
+               </div>
+               <i class="fas fa-times f-icon" onclick="closePost()"></i>
+           </div>
+           <video src="${postUrl}" class="" autoplay muted style="width:100%;height:auto;max-height:${(window.innerHeight)/98 - 207 + 'px'}" id="video+${postUrl}"></video>
+           <div class="post-header">
+               <div class="left-block">
+               <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
+                   <i class="far fa-bookmark f-icon" onclick="deleteThisPost('${postName}','${postSize}','${postType}','${timeCreated}','${newTime}')"></i>
+                   <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"></i>
+               </div>
+               <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+           </div>
+       </div>
+           `;
+           setTimeout(() => {
+            document.getElementById('video'+postUrl).style.maxHeight = (window.innerHeight)/98 - 97 + 'px'
+           }, 1000);
+    }else {
+        overlay.innerHTML =  `
+        <div class="post" id="postids">
+        <div class="post-header">
+            <div class="left-block">
+              <div style="background-image:url('${profileImage}');background-size:cover;" class="user-profile-image"></div>
+              <span class="username-post-info"><b>${username}</b></span>
+            </div>
+            <i class="fas fa-times f-icon" onclick="closePost()"></i>
+        </div>
+        <img src="./media/none-pic.png" alt="" class="post-content-pewview">
+        <div class="post-header">
+            <div class="left-block">
+               <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
+                <i class="far fa-bookmark f-icon" onclick="deleteThisPost('${postName}','${postSize}','${postType}','${timeCreated}','${newTime}')"></i>
+                <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"></i>
+            </div>
+            <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+        </div>
+    </div>
+        `;
+    }
+}

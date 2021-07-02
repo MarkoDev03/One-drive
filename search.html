@@ -15,13 +15,29 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-functions.js"></script>
 </head>
 <body>
+    <h1>Enter number to create account</h1>
+    <div>
+        <input type="text" id="number" placeholder="+923********">
+        <div id="recaptcha-container"></div>
+        <button type="button" onclick="phoneAuth();">SendCode</button>
+    </div><br>
+    <h1>Enter Verification code</h1>
+    <div>
+        <input type="text" id="verificationCode" placeholder="Enter verification code">
+        <button type="button" onclick="codeverify();">Verify code</button>
     
-   
+    </div>
+    
+    
+    
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
     
 </body>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.19/ua-parser.min.js"></script>
-<script src="code-behind.js"></script>
+<script src="phone.js"></script>
+
 <script src="https://smtpjs.com/v3/smtp.js">
 </script>
 </html>

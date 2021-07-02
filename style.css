@@ -22,16 +22,37 @@
     --public-color:linear-gradient(to left,rgb(226, 226, 226),rgb(151, 151, 151));
     --public-button:white;
     --popup-button:1px solid whitesmoke;
-    --delete-ovrlay:rgba(0, 0, 0,0.8);
+    --delete-ovrlay:rgba(0, 0, 0,0.4);
     --customizer-color:rgb(255, 255, 255);
     --chat-img-border:1px solid black;
     --group-box-border:1px solid rgb(26, 26, 26);
     --header-footer-property:white;
+    --saved-post-color:rgb(226, 223, 223)
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@1,200&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-
+::-webkit-scrollbar {
+    width: 0px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    width: 1px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    width: 1px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    width: 1px;
+  }
 
 body{
     padding: 0px;
@@ -140,7 +161,7 @@ body{
 }
 @keyframes mailer{
     0%{
-        transform: scale(-1);
+        transform: scale(0);
     }
     100%{
         transform: scale(1);
@@ -155,7 +176,7 @@ body{
     to {transform:scale(0);display: none;}
   }
 .reverse{
-animation: zoomout .4s ;
+animation: zoomout .5s ;
 }
 .contact-headline{
     display: block;
@@ -185,9 +206,17 @@ animation: zoomout .4s ;
 #passowrd{
     width:450px;
 }
+
+/*OPACITY OVERLAY-----------------------*/
 .overlay-opacity{
-    animation: overlaypaciti 10ms;
+    animation: overlaypaciti 200ms;
 }
+.load-overlay-opacity{
+    animation: loadoverlay 200ms;
+}
+
+
+
 #new-overlay{
     animation: loadoverlay 300ms;
 }
@@ -272,6 +301,7 @@ animation: zoomout .4s ;
 }
 .fa-envelope{
     margin-top: 100px;
+    text-decoration: none;
 }
 
 .body-animation,.index-body,.x{
@@ -483,9 +513,9 @@ animation: zoomout .4s ;
     align-items: center;
     align-self: center;
     align-content: center;
-    z-index: 99999999999;
+    z-index: 999;
     padding: 0px;
-    background:  var(--delete-overlay);
+    /* background:  var(--delete-overlay); */
 }
 
 .overlay-pop-up{
@@ -494,7 +524,7 @@ animation: zoomout .4s ;
     height: 100vh;
     position: fixed;
     top: 0px;
-    z-index: 2;
+    z-index: 99;
     display: none;
     justify-content: center;
     align-items: center;
@@ -747,6 +777,7 @@ animation: zoomout .4s ;
 .new-fnt{
     font-size: 29px;
     cursor: pointer;
+    text-decoration: none;
     margin-left: 10px;
     color: var(--post-text-color);
 }
@@ -806,7 +837,9 @@ animation: zoomout .4s ;
    font-size: 25px;
    margin-left: -40px;
    margin-top: 20px;
-   color:var(--post-text-color);
+   background: linear-gradient(to right, #333399 0%, #ff00cc 100%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
 }
 .video{
     height:fit-content;
@@ -1087,6 +1120,7 @@ animation: zoomout .4s ;
     padding-left: 10px;
     border-right: none;
     border: none;
+    color: var(--post-text-color);
    position: relative;
    left: -30px;
 
@@ -1101,7 +1135,7 @@ animation: zoomout .4s ;
 .send-message-to-client-button{
     background-color: transparent;
     border: none;
-    margin-right: -20px;
+    margin-right: -12px;
     display: inline-block;
     width: 20%;
     font-weight: 700;
@@ -1373,6 +1407,7 @@ align-items: center;
         padding-left: 10px;
         border-right: none;
         border: none;
+        color: var(--post-text-color);
     }
 }
 
@@ -2055,18 +2090,20 @@ input[type="color"] {
     width: 100%;
     margin-top: 7px;
     height: auto;
-    
-  
-  
 }
 .post-prof{
     display: inline-block;
     width: 32.5%;
    border-radius: 10px;
+
    margin: 2px;
    margin-bottom: 0px;
    margin-top: 0px;
+   z-index: 8;
     background: var(--post-color) ;
+}
+.set-hzx{
+    height: 199px;
 }
 @media only screen and (max-width:623px) and (min-width:300px) {
     .post-prof{
@@ -2074,9 +2111,11 @@ input[type="color"] {
         width: 31%;
        border-radius: 10px;
        margin: 4px;
+       z-index: 8;
        margin-bottom: 0px;
    
     }
+   
     .posts-prof{
         margin: 0px;
         margin: 0 auto;
@@ -2250,7 +2289,7 @@ input[type="color"] {
 .post-content-pewview{
     width: 100%;
     height: auto;
-    max-height: calc(98vh - 97px);
+    max-height: calc(98vh - 150px);
 }
 
 .close{
@@ -2266,7 +2305,7 @@ input[type="color"] {
     .post-content-pewview{
         width: 100%;
         height: auto;     
-        max-height: calc(98vh - 90px);
+        max-height: calc(98vh - 150px);
     }
 }
 .profile-types{
@@ -2308,4 +2347,68 @@ input[type="color"] {
     flex-direction: column;   
      position: relative;
      background-image: url('https://www.w3schools.com/howto/img_avatar2.png');
+}
+
+.saved-posts{
+    width: 600px;
+    height: calc(100vh - 30vh);
+    background-color: var(--saved-post-color);
+    border-radius:10px ;
+    padding: 0px;
+    z-index: 3;
+    padding-top: 0px;
+  
+    border: var(--bar-border);
+    display: none;
+    overflow-y: auto;
+}
+
+.recaptcha{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    position: relative;
+    left: -55px;
+}
+
+.open-x{
+    animation: 500ms mailer;
+    display: block;
+}
+#saved-overlay{
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2;
+}
+.saved-header{
+    width: 100%;
+    border-bottom: 1px solid rgb(184, 184, 184);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:40px;
+    background-color: var(--post-color);
+    margin-bottom: 10px;
+    color: var(--post-text-color);
+}
+.wid-saved-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+}
+@media only screen and (max-width:600px) {
+    .saved-posts{
+        width: 350px;
+    }
+    .set-hzx{
+        height: 116.5px;
+    }
 }

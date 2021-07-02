@@ -45,8 +45,8 @@
                 <p class="post-type-avatar">private</p>
             </div>
         </div>
-        <div class="avatar-biography" onclick="alertUserAboutSuccess('Comming soon! Work in progress!')">
-            <p class="biography-profile">Saved posts</p>
+        <div class="avatar-biography" onclick="openSavedPosts()">
+            <p class="biography-profile" onclick="openSavedPosts()">Saved posts</p>
             <i class="fas fa-chevron-right f-icon"></i>
         </div>
 
@@ -56,40 +56,21 @@
             <div class="post-type-btn" onclick="private()" id="private">Private</div>
         </div>
 
-        <div class="posts-prof" id="posts">
-            
-
-        </div>
-        
+        <div class="posts-prof container" id="posts"></div>     
       </div>
-
-     
-
   <div id="pagecontent-index"></div>
   <div id="post-content-previw"></div>
+  <div id="post-wrapper-overlay"></div>
 
-
-  <div id="post-wrapper-overlay">
-
-
-
- <!-- <div class="profile-types">
-     <p>Choose type of your profile:</p>
-     <div class="bar">Entrepreneuer</div>
-     <div class="bar">Developer</div>
-     <div class="bar">Public figure</div>
-     <div class="bar">Profile name</div>
- </div> -->
-
-
-
-
-
-
-  </div>
-
-
-
+<div id="saved-overlay">
+    <div class="saved-posts" id="saved">
+        <div class="saved-header">
+            <div class="wid-saved-header">
+                <p><b>Saved posts</b></p><i class="fas fa-times f-icon" onclick="closeSavedPosts()"></i>
+            </div>
+        </div>
+    </div>
+</div>
   <footer class="footer"></footer>
 </body>  
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

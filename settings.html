@@ -17,12 +17,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body  class="index-body">
-    <header class="header-index">       
+    <header class="header-index" style="position: fixed;top: 0px;">       
         <p class="name-netowork"><b>Saveprojects</b></p>
     <div class="contact-header"></div>
     </header>
 
-<div class="body-context">
+<div class="body-context" style="margin-top: 50px;">
 
     <div class="set-class set-padding column-gird">
         <div class="main-content">
@@ -39,14 +39,19 @@
     </div>
     </div>
 
-
-    <div class="set-class flex-down" onclick="showMailUpdater()">
-        <button  class="setting-button">Update email</button>   
+    <div class="set-class flex-down">
+          <button  class="setting-button" onclick="showMailUpdater()">Update email</button>   
+          <button  class="setting-button" onclick="showDisplayNameUpdateFunc()">Update username</button> 
     </div>
 
     <div class="set-class flex-down">
+        <button  class="setting-button" onclick="showAddNumber()">Add phone number</button>   
+  </div>
+
+    <div class="set-class flex-down">
         <button onclick="resetPassword()" class="setting-button">Reset password</button>
-        <button onclick="verifyAccount()" class="setting-button">Verify account</button>
+        <button onclick="verifyAccount()" class="setting-button">Send E-mail verification</button>
+        <button onclick="showAddNumber()" class="setting-button">Send SMS verification</button>
         <button onclick="showDeletePopUpAccountFromClass()" class="setting-button delete">Delete account</button>
     </div>
 
@@ -62,6 +67,8 @@
     <div class="set-class flex-down">
         <button  class="setting-button" onclick="darkModeApp()">Dark mode</button> 
         <button  class="setting-button" onclick="LightMode()">Light mode</button> 
+        <button  class="setting-button" onclick="limeMode()" style="color: lime;">Lime mode</button> 
+        <button  class="setting-button" onclick="blueMode()" style="color: blue;">Blue mode</button> 
           
     </div>
 

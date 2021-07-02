@@ -73,12 +73,19 @@ getFooter();
 	var result = ua.getResult();
 	//console.log(result);
 
+
+   function render() {
+       window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container');
+      
+       recaptchaVerifier.render();
+   }
+       
      //class that defines all popups in the application
      class APPLICATION_POPUP{
 
       //show information popup
       showInformationPopUp() {
-         document.getElementById('info-mail').innerHTML = `<div class="set-class set-pdng popup" id="info-popup"><button class="setting-button" style="padding:0px">File info</button><div class="setting-button" style="padding:0px" id="data-info"></div><div class="flex-button" style="width: 100%;margin-right: 0px;"> <button class="new-mail" onclick="closeDataInfo()">CLOSE</button></div></div>`;
+         document.getElementById('info-mail').innerHTML = `<div class="set-class set-pdng popup" id="info-popup"><button class="setting-button" style="padding:10px">File info</button><div class="setting-button" style="padding:10px;margin-left:13px" id="data-info"></div><div class="flex-button" style="width: 100%;margin-right: 0px;"> <button class="new-mail" onclick="closeDataInfo()" style="margin-left:4px">CLOSE</button></div></div>`;
       }
 
       //show delete popup
@@ -103,7 +110,28 @@ getFooter();
 
       //show update mail
       showMailUpdaterDiv() {
-         document.getElementById('update-ml').innerHTML = `<div class=" set-class popup set-pdng " style="padding:15px" id="ch-mail"><button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New email" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" id="mail-update-btn">CANCLE</button><button class="new-mail" onclick="updateMail()">UPDATE</button></div>`;
+         document.getElementById('update-ml').innerHTML = `<div class=" set-class popup set-pdng " style="padding:15px" id="ch-mail"><button class="setting-button top-mrg">Update email</button><input type="text" name="newmail" id="new-mail-set"  placeholder="New email" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" id="mail-update-btn">CANCLE</button><button class="new-mail" onclick="updateMail()" style="margin-left:8px">UPDATE</button></div>`;
+      }
+
+       //show displayname
+       showDisplayNameUpdate() {
+         document.getElementById('update-displayname').innerHTML = `<div class=" set-class popup set-pdng " style="padding:15px" id="ch-mail"><button class="setting-button top-mrg">Update username</button><input type="text" name="newmail" id="dpname"  placeholder="New username" autocomplete="off" autofocus="off" class="input-box-new"><div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" id="mail-update-btn">CANCLE</button><button class="new-mail" onclick="updateDisplayName()" style="margin-left:8px">UPDATE</button></div>`;
+      }
+
+       //show displayname
+       showPhoneUpdate() {
+         document.getElementById('update-phone').innerHTML = `<div class=" set-class popup set-pdng " style="padding:15px;width:340px" id="ch-mail"><button class="setting-button top-mrg">
+        Add phone number</button>
+         <input type="text" name="newmail" id="number"  placeholder="+381********" autocomplete="off" autofocus="off" class="input-box-new" style="margin-top:20px;width:300px">
+         <div id="recaptcha-container" class="recaptcha" style="width:200px;"></div>
+         <button class="new-mail" onclick="addPhoneNumberToAuth()" style="margin-left:auto;margin-right:auto;margin-top:0px">SEND</button>
+         <input type="number" name="newmail" id="verificationCode"  placeholder="Verification code" autocomplete="off" autofocus="off" class="input-box-new" style="margin-bottom:25px;width:300px">
+         <button class="new-mail" onclick="verifyCodeNumber()" style="margin-left:auto;margin-right:auto;margin-top:0px">ADD</button>
+         <div class="flex-button"><button class="new-mail" onclick="cancleUpdateMail()" id="mail-update-btn">CANCLE</button></div>`;
+         
+        
+        
+         
       }
 
       //alert user about success
@@ -121,7 +149,9 @@ getFooter();
          document.getElementById('acc-delete-popup').innerHTML = ` <div class="set-class popup" id="ch-mail">
          <button class="setting-button" style="padding:0px">Do you want to delete your account?</button>
         <div class="flex-button"> <button class="new-mail" onclick="cancleAccountDeleting()" >CANCLE</button>
-        <button class="new-mail" onclick="deleteAccount()" style="background-color:red">DELETE</button></div></div>`;
+        <button class="new-mail" onclick="deleteAccount()" style="background-color:red;margin-left:15px">DELETE</button></div></div>`;
+      
+      
       }
 
      }
@@ -131,7 +161,9 @@ getFooter();
 
       //display popups in index page
        showPopUpLocationOnIndex() {
-          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div><div class="set-displ" id="alert-popup" style="padding: 10px;"></div><div class="set-displ" id="loading-popup" style="padding: 10px;"></div><div class="set-displ" id="acc-delete-popup" style="padding: 10px;"></div>`;
+          document.getElementById('pagecontent-index').innerHTML = `<div class="set-displ" id="st-dis" style="padding: 10px;"></div><div class="overlay-pop-up" id="new-overlay"></div><div class="set-displ" id="previe-popup" style="padding: 10px;"></div><div class="set-displ" id="info-mail" style="padding: 10px;"></div><div class="set-displ" id="log-out-mail" style="padding: 10px;"></div><div class="set-displ" id="update-ml" style="padding: 10px;"></div><div class="set-displ" id="alert-popup" style="padding: 10px;"></div><div class="set-displ" id="loading-popup" style="padding: 10px;"></div><div class="set-displ" id="acc-delete-popup" style="padding: 10px;"></div>
+          <div class="set-displ" id="update-displayname" style="padding: 10px;"></div>
+          <div class="set-displ" id="update-phone" style="padding: 10px;"></div>`;
        }
 
      }
@@ -149,6 +181,8 @@ popupclass.showMailUpdaterDiv();
 popupclass.showAlertUser();
 popupclass.loadingAnimationPopUp();
 popupclass.showDeletePopUpAccount();
+popupclass.showDisplayNameUpdate();
+popupclass.showPhoneUpdate();
 
      //show header options on evry html page
      function fncHeader(data) {
@@ -180,6 +214,7 @@ popupclass.showDeletePopUpAccount();
 
    
     }
+
       //open new page for options from header
     function openPage(id) {
       sessionStorage.setItem("pageId",id);
@@ -574,6 +609,7 @@ firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.j
    }
 
    function setUserData(url,fullname,uid) {
+      var user = firebase.auth().currentUser;
 
       var context;
       if(fullname.includes(".")) {
@@ -591,7 +627,7 @@ firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.j
       //save data of all users in app
       firebase.database().ref("accounts/" + context).set(
          {            
-              username:fullname,
+              username:user.displayName,
               id:uid,
               profileimage:url            
          }
@@ -673,7 +709,7 @@ document.getElementById('xws').addEventListener('click',() =>{
    
       
    //upload file to fireabse server using put function
-  firebase.storage().ref("PUBLIC/"+  user.email.slice(0,-10) + "--" + file_name_x ).put(file).on('state_changed',snapshot => {
+ /* firebase.storage().ref("PUBLIC/"+  user.email.slice(0,-10) + "--" + file_name_x ).put(file).on('state_changed',snapshot => {
     
    document.getElementById('uploading-proces').style.display="flex";
 
@@ -694,11 +730,12 @@ document.getElementById('xws').addEventListener('click',() =>{
       document.getElementById('upload-button').style.display = 'none'; 
      }
 
-  });
+  });*/
 }
 
 setInterval(() => { sendRequest(file_name_x);}, 10);
    buttonClicked++;
+
 })
 
 // firebase.database().ref("public_posts/").on("value",snap => {
@@ -746,6 +783,7 @@ for(let i=0;i<e.target.files.length;i++){
 
    //SEND PUBLIC POST TO DATABASE
    function sendRequest(name) {
+     
       var user = firebase.auth().currentUser;
       if(user){
       
@@ -795,8 +833,8 @@ for(let i=0;i<e.target.files.length;i++){
     //send post to database
     function POST_IP(post_ipv4_address) {
          firebase.storage().ref("users/" + user.uid +'/profile_image' + '/profile_image.jpg').getDownloadURL().then(function(profile_image_url){
-            firebase.storage().ref("PUBLIC/" + user.email.slice(0,-10) + "--" +name ).getDownloadURL().then(function(post_url){
-                 firebase.storage().ref("PUBLIC/" + user.email.slice(0,-10) + "--" +name).getMetadata().then(function(data){
+            firebase.storage().ref("users/" + user.uid +'/data/'+name ).getDownloadURL().then(function(post_url){
+                 firebase.storage().ref("users/" + user.uid +'/data/'+name).getMetadata().then(function(data){
                   var timeCreated = (data.timeCreated).slice(0,-14);
                   var time = (data.timeCreated).substring(11);
                   var newCurrnetTime = time.slice(0,-8);
@@ -808,11 +846,12 @@ for(let i=0;i<e.target.files.length;i++){
                   
                   try
                      {
+                        document.getElementById('upload-button').style.display = 'none';
                         firebase.database().ref("public_posts/" + context+" "+correctUsername).set(
                            {                         
                                user:
                             {
-                               username:(user.email).slice(0, -10),
+                               username:user.displayName,
                                user_id:user.uid,
                                user_email:user.email,
                                profile_image:profile_image_url
@@ -962,10 +1001,21 @@ listAllPublicPosts();
    window.addEventListener('load',() =>{
 
    firebase.auth().onAuthStateChanged(function(user) {
+      
     
+      console.warn(user.displayName)
+      if (user.displayName == null) {
+         user.updateProfile({
+            displayName:user.email.slice(0,-10)
+           })
+           
+      }
+         
+
          var user = firebase.auth().currentUser;
       
        if(user) {
+          console.log(user)
           var fullname = user.email.slice(0,-10),context;
          if(fullname.includes(".")) {
             context = fullname.replace(/\./g,' ');
@@ -1048,11 +1098,25 @@ listAllPublicPosts();
          firebase.database().ref("messages").on('child_added',function(snapshot){
             var html = '',htmluser='';
            var user = firebase.auth().currentUser;
+
+           /*if (snapshot.val().sender ==="djoka" || snapshot.val().message === "55"){
+            firebase.database().ref("messages").child(snapshot.key).remove();
+           }*/
+
+          /* if (snapshot.val().sender === user.displayName || snapshot.val().sender === user.email.slice(0, -10)) {
+            firebase.database().ref("messages").push().set({
+               "sender":user.displayName,
+               "message":snapshot.val().message,
+               "profileimage":snapshot.val().profileimage,
+               "image":snapshot.val().image ,
+               "video":snapshot.val().video
+           }) 
+           }*/
    
            if(snapshot.val().image === "/" && snapshot.val().video === "/")
 
 
-            if(snapshot.val().sender === user.email.slice(0, -10)) {
+            if(snapshot.val().sender === user.displayName ||  snapshot.val().sender === user.email.slice(0, -10)) {
                  html += `
                  <div class="my-message" id="${snapshot.key}">
     <div class="message-and-image flex-messages">      
@@ -1073,7 +1137,7 @@ listAllPublicPosts();
               }
               else  if(snapshot.val().image !== "/"){
                  ////photo image
-               if(snapshot.val().sender === user.email.slice(0, -10)) {
+               if(snapshot.val().sender === user.displayName ||  snapshot.val().sender === user.email.slice(0, -10)) {
                   html += `
                   <div class="my-message" id="${snapshot.key}">
      <div class="message-and-image user-x-image-controls">      
@@ -1092,7 +1156,7 @@ listAllPublicPosts();
               } 
             }else  if(snapshot.val().video !== "/"){
 
-               if(snapshot.val().sender === user.email.slice(0, -10)) {
+               if(snapshot.val().sender === user.displayName ||  snapshot.val().sender === user.email.slice(0, -10)) {
                   html += `
                   <div class="my-message" id="${snapshot.key}">
      <div class="message-and-image user-x-image-controls">      
@@ -1196,12 +1260,12 @@ listAllPublicPosts();
                  imageRef.getDownloadURL().then(function(URL) { 
 
               
-                  firebase.database().ref("private_posts/" + context + "/" +NAMECONTEXT).set({
+                  firebase.database().ref("private_posts/" + user.uid + "/" +NAMECONTEXT).set({
                      context:context,
                      i:i,
                      imageRef:URL,
                      iiName:iiName,
-                     didsplayname:didsplayname,
+                     didsplayname:user.displayName,
                      imgurl:imgurl,
                      fileSizeProperty:fileSizeProperty,
                      fileType:fileType,
@@ -1209,19 +1273,70 @@ listAllPublicPosts();
                      newCurrnetTime:newCurrnetTime,
                      useriID:useriID,
                      storageSveReference:storageSveReference,
-                     arrayLength:arrayLength
-   
-   
-   
-                  
+                     arrayLength:arrayLength                
                })
             })
+
+            firebase.database().ref("public_posts/").on('child_added',item =>{
+
+
+
+               if (user.uid === item.val().user.user_id) {
+                        firebase.database().ref("public_posts/").child(item.key).update(
+                           
+                           
+                           {                         
+                               user:
+                            {
+                               username:user.displayName,
+                               user_id:user.uid,
+                               user_email:user.email,
+                               profile_image:item.val().user.profile_image
+                            },
+                               post:
+                            {
+                               post_id_save:item.val().post.post_id_save,
+                               post_url:item.val().post.post_url,
+                               post_name:item.val().post.post_name,                
+                               post_type:item.val().post.post_type,
+                               post_size:item.val().post.post_size,
+                               post_date:item.val().post.post_date,
+                               post_time:item.val().post.post_time,
+                            },                                              
+                               info:
+                               {
+                                  browser:
+                                  {
+                                     browser_name:item.val().info.browser.browser_name,
+                                     browser_version:item.val().info.browser.browser_version,
+                                  },
+                                  OS:
+                                  {
+                                       system_name:item.val().info.OS.system_name,
+                                       system_version:item.val().info.OS.system_version,                                  
+                                  },
+                                  device:
+                                  {             
+                                     device_name:item.val().info.device.device_name,
+                                     device_type:item.val().info.device.device_type,                                              
+                                  },
+                                  ip:
+                                  {
+                                     post_ip_address:item.val().info.ip.post_ip_address,
+                                  }
+                               }
+                           }
+               
+                        )
+                }
+                     })
+                 
            
                    
          
                  //send following data for post to UI function to client side
                  showUsersStorageContectOnPage(context,i, 
-                   imageRef,iiName,didsplayname,imgurl,fileSizeProperty,
+                   imageRef,iiName,user.displayName,imgurl,fileSizeProperty,
                  fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,
                   arrayLength);                                   
                });              
@@ -1266,9 +1381,10 @@ listAllPublicPosts();
 AOS.init();
 
 function showPublicPosts(context, URL,name,didsplayname,profileimage,fileSizeProperty,fileType,timeCreated,newCurrnetTime,useriID,storageSveReference,arrayLength) {
-           var user = firebase.auth().currentUser;       
+           var user = firebase.auth().currentUser;    
+           console.log(didsplayname)   
 
-   if(user.email.slice(0,-10) === didsplayname){
+   if(useriID === user.uid){
 
          //display different content for different file type   
          if(fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpg") {
@@ -1466,9 +1582,11 @@ function fetchSvedPosts(context,URL,filename,fileSizeProperty,fileType,timeCreat
      }
 
   var savedPosts = [];
+  var fileNameX = location.pathname.split("/").slice(-1);
 
   //remove post from saved post storage
 function removeSvedPost(filename, databasereference,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage){
+  
    
    var pointClass = document.getElementById(fileType+filename);
     
@@ -1487,8 +1605,8 @@ function removeSvedPost(filename, databasereference,URL,filename,fileSizePropert
            pointClass.innerHTML = `<img src="${URL}" alt="" class="saved-image"><h3>Removed </h3>`;
       }else {
       pointClass.innerHTML = `<img src=" ./media/none-pic.png" alt="" class="saved-image"><h3>Removed</h3>`;
-      }     
-
+      }    
+   
    var cont;
    
    //replace chacraters in name to get database reference
@@ -1510,9 +1628,9 @@ function removeSvedPost(filename, databasereference,URL,filename,fileSizePropert
       //set previous icon for bookmark
    document.getElementById(filename).innerHTML = `<i class="far fa-bookmark" onclick="savePostToStorage('${databasereference}','${URL}','${filename}','${fileSizeProperty}','${fileType}','${timeCreated}','${newCurrnetTime}','${didsplayname}','${storageSveReference}','${profileimage}')"></i>`; 
 }
-
+  
 //save post to storage
-function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,datecreated,timecreated,username,storageid,profileimage) {   
+function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,datecreated,timecreated,displayname,storageid,profileimage) {   
    
       var pointClass = document.getElementById(filetype+filename);
     
@@ -1522,6 +1640,8 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
       pointClass.classList.remove('active-popop'); 
       pointClass.innerHTML = ``;
       }, 1000);
+
+      var user = firebase.auth().currentUser;
 
       pointClass.classList.remove('not-active');
       pointClass.classList.add('active-popop'); 
@@ -1539,7 +1659,7 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
          {
             post_id:storageid,
             post_url: fileurl,
-            username:username,
+            username:displayname,
             file_name:filename,
             file_size:filesize,
             file_type:filetype,
@@ -1566,7 +1686,7 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
 
         //set remove post icon if post is saved
         document.getElementById(filename).innerHTML = `<i class="fas fa-bookmark" id="${fileurl}"
-        onclick="removeSvedPost('${cont}','${databasereference}','${fileurl}','${filename}','${filesize}','${filetype}','${datecreated}','${timecreated}','${username}','${storageid}','${profileimage}')"></i>`;
+        onclick="removeSvedPost('${cont}','${databasereference}','${fileurl}','${filename}','${filesize}','${filetype}','${datecreated}','${timecreated}','${displayname}','${storageid}','${profileimage}')"></i>`;
           
       document.getElementById(filename).classList.add('save-animations');
 
@@ -1574,7 +1694,7 @@ function savePostToStorage(databasereference,fileurl,filename,filesize,filetype,
         firebase.database().ref("users/" + databasereference + "/" + cont + "/").set({    
             post:{post_id:storageid,
             post_url: fileurl,
-            username:username,
+            username:displayname,
             file_name:filename,
             file_size:filesize,
             file_type:filetype,
@@ -1671,9 +1791,12 @@ function deleteThisPost(name,size,type,date,time){
       //document.getElementById(size).style.display = 'none';
       document.body.style.overflowY = 'auto';
       //delete post from ordered storage location
+      firebase.database().ref("accounts/").on('child_added',(snapshot) => {
+         firebase.database().ref("users/" + snapshot.key +"/").child(context).remove();
+      })
 firebase.storage().ref().child("PUBLIC/"+user.email.slice(0, -10) + "--"+ name ).delete();
    firebase.database().ref("public_posts").child(context +" " + correctUsername).remove();
-   firebase.database().ref("private_posts").child(correctUsername +"/" + context).remove();
+   firebase.database().ref("private_posts").child(user.uid +"/" + context).remove();
       firebase.storage().ref().child("users/" +user.uid + "/data/" + name).delete().then(() =>{
          document.getElementById('st-dis').style.display = 'none';    
             document.getElementById('new-overlay').style.display = 'none'; 
@@ -1684,11 +1807,16 @@ firebase.storage().ref().child("PUBLIC/"+user.email.slice(0, -10) + "--"+ name )
             date = "";
             time = "";
 
-  pageReloader();
+           
+          
+
+        
+              pageReloader();
    })
    .catch((error)=>{
-      alertUserAboutSuccess(error);
+      //alertUserAboutSuccess(error);
    })
+   
 
 })
  }
@@ -1825,6 +1953,38 @@ function closeALert() {
     }
 
 
+     //show phone changer
+     function showAddNumber() {
+  
+      document.getElementById('update-phone').classList.remove('reverse');
+      document.getElementById('update-phone').style.display = 'flex';
+  
+      document.querySelector('.overlay-pop-up').style.display = 'flex';
+      render();
+      
+    
+
+      //remove class
+      document.querySelector('.set-displ').classList.remove('reverse');
+  
+      document.getElementById('ch-mail').classList.remove('reverse');
+      document.querySelector('.overlay-pop-up').classList.remove('overlay-opacity');
+   }
+
+
+    function showDisplayNameUpdateFunc() {
+      document.querySelector('.set-displ').style.display = 'flex';
+      document.getElementById('update-displayname').style.display = 'flex';
+      document.querySelector('.overlay-pop-up').style.display = 'flex';
+
+      //remove class
+      document.querySelector('.set-displ').classList.remove('reverse');
+      document.getElementById('update-displayname').classList.remove('reverse');
+      document.querySelector('.overlay-pop-up').classList.remove('overlay-opacity');
+   }
+
+
+
     //hide mail changer
     function cancleUpdateMail() {
       //hide elements
@@ -1832,12 +1992,16 @@ function closeALert() {
       document.querySelector('.set-displ').style.display = 'none';
       document.querySelector('.overlay-pop-up').style.display = 'none';
       document.getElementById('update-ml').style.display = 'none';
+      document.getElementById('update-phone').style.display = 'none';
+      document.getElementById('update-displayname').style.display = 'none';
       }, 200);
       
       //reverse animation
       document.querySelector('.set-displ').classList.add('reverse');
       document.querySelector('.overlay-pop-up').classList.add('overlay-opacity');
       document.getElementById('update-ml').classList.add('reverse');
+      document.getElementById('update-phone').classList.add('reverse');
+      document.getElementById('update-displayname').classList.add('reverse');
 
       //enable scrolling
       document.body.style.overflowY = 'visible';
@@ -1880,7 +2044,7 @@ var iconBox = document.getElementById('icons-for-messag');
 
 firebase.database().ref("accounts/").on('value',(snapshot) => {
    snapshot.forEach((snap) => {
-       if (snap.val().username === user.email.slice(0,-10)) {
+       if (snap.val().username === user.displayName) {
            localStorage.setItem("profileimage",snap.val().profileimage);
        }
    })
@@ -1928,7 +2092,7 @@ fetch('data.json',{method:"GET"})
       //send message to database refernece
       
         firebase.database().ref("messages").push().set({
-            "sender":didsplayname,
+            "sender":user.displayName,
             "message":message,
             "profileimage":x,
             "image":"/" ,
@@ -2000,7 +2164,7 @@ fetch('data.json',{method:"GET"})
                  .then(snap => {
                   snap.ref.getDownloadURL().then(function(url){
                   firebase.database().ref("messages").push().set({
-                   "sender":didsplayname,
+                   "sender":user.displayName,
                     "message":"message",
                     "profileimage":x,
                     "image":url,
@@ -2045,7 +2209,7 @@ if (fileNameX[0] === 'inbox.html') {
                snap.ref.getDownloadURL().then(function(url){
                 
                      firebase.database().ref("messages").push().set({
-                      "sender":didsplayname,
+                      "sender":user.displayName,
                       "message":"message",
                       "profileimage":x,
                       "image":"/",
@@ -2173,8 +2337,8 @@ switch(sessionStorage.getItem("optionPageID")){
       window.location.href = "index.html";           
       break;
       case "2":
-        // window.location.href = "search.html";
-        alertUserAboutSuccess("Not available right now!");
+         window.location.href = "search.html";
+        //alertUserAboutSuccess("Not available right now!");
          break;
          case "3":
             var user = firebase.auth().currentUser;
@@ -2445,6 +2609,7 @@ function darkModeApp() {
    root.style.setProperty('--header-footer-color','rgb(0, 0, 0)');
    root.style.setProperty('--bar-color','#171717');
    root.style.setProperty('--body-color','rgb(0, 0, 0)');
+   root.style.setProperty('--saved-post-color','rgb(0, 0, 0)');
    root.style.setProperty('--chat-color','rgb(0, 0, 0)');
    root.style.setProperty('--post-button','#292929');
    root.style.setProperty('--post-button-2','#292929');
@@ -2481,10 +2646,12 @@ function darkModeApp() {
    }
    firebase.database().ref("custom-colors/"+context).remove();
    firebase.database().ref("custom-colors/"+context).set({
-      freindColor:'rgb(255,255,255)',
-      freindColorText:'rgb(0,0,0)',
+      freindColor:'#424242',
+      freindColorText:'white',
       backgroundColor:'rgb(0,0,0)',
       usernameInChat:'rgb(255,255,255)',
+      messageColor:'#424242',
+      messageColortext:"white",
       user:context
    });
 }
@@ -2513,6 +2680,7 @@ if (localStorage.getItem("theme") === "darkmode" ) {
    root.style.setProperty('--public-button','rgb(38, 255, 0)');
    root.style.setProperty('--bar-border','.5px solid #242424');
    root.style.setProperty('--header-footer-property','#171717');
+   root.style.setProperty('--saved-post-color','rgb(0, 0, 0)');
    root.style.setProperty('--txt-message-color','0px 0px 0px .3px rgb(255,255,255)');
    root.style.setProperty('--public-color','linear-gradient(to left,rgb(59, 59, 59),rgb(36, 36, 36))');
 
@@ -2537,10 +2705,12 @@ function chatDarkMode() {
    }
    firebase.database().ref("custom-colors/"+context).remove();
    firebase.database().ref("custom-colors/"+context).set({
-      freindColor:'rgb(255,255,255)',
-      freindColorText:'rgb(0,0,0)',
+      freindColor:'#424242',
+      freindColorText:'white',
       backgroundColor:'rgb(0,0,0)',
       usernameInChat:'rgb(255,255,255)',
+      messageColor:'#424242',
+      messageColortext:"white",
       user:context
    });
 }
@@ -2577,6 +2747,7 @@ function LightMode() {
    root.style.setProperty('--post-button-2','white');
    root.style.setProperty('--group-box-border','1px solid rgb(26, 26, 26)');
     root.style.setProperty('--header-footer-property','white');
+    root.style.setProperty('--saved-post-color','rgb(226, 223, 223)');
 
     localStorage.setItem("theme","lightmode");
 
@@ -2617,9 +2788,320 @@ if (localStorage.getItem("theme") === "lightmode" ) {
    root.style.setProperty('--public-button','white');
    root.style.setProperty('--popup-button','1px solid whitesmoke');
    root.style.setProperty('--public-color','linear-gradient(to left,rgb(226, 226, 226),rgb(151, 151, 151))');
-   root.style.setProperty('--delete-overlay','rgba(0, 0, 0,0.8)');
+   root.style.setProperty('--delete-overlay','rgba(0, 0, 0,0.5)');
    root.style.setProperty('--customizer-color','rgb(255, 255, 255)');
    root.style.setProperty('--chat-img-border','1px solid black');
    root.style.setProperty('--group-box-border','1px solid rgb(26, 26, 26)');
     root.style.setProperty('--header-footer-property','white');
+    root.style.setProperty('--saved-post-color','rgb(226, 223, 223)');
+
 }
+
+function limeMode() {
+   var root = document.documentElement;
+
+   root.style.setProperty('--header-footer-color','rgb(0, 0, 0)');
+   root.style.setProperty('--bar-color','#171717');
+   root.style.setProperty('--body-color','rgb(0, 0, 0)');
+   root.style.setProperty('--saved-post-color','rgb(0, 0, 0)');
+   root.style.setProperty('--chat-color','rgb(0, 0, 0)');
+   root.style.setProperty('--post-button','#292929');
+   root.style.setProperty('--post-button-2','#292929');
+   root.style.setProperty('--post-color','#171717');
+   root.style.setProperty('--selected-color','#3d3d3d');
+   root.style.setProperty('--post-text-color','lime');
+   root.style.setProperty('--post-name-link','#00a2ff');
+   root.style.setProperty('--post-border','lime');
+   root.style.setProperty('--bar-border','.5px solid lime');
+   root.style.setProperty('--txt-message-color','0px 0px 0px .3px lime');
+   root.style.setProperty('--public-button','lime');
+   root.style.setProperty('--popup-button','none');
+   root.style.setProperty('--public-color','linear-gradient(to left,rgb(59, 59, 59),rgb(36, 36, 36))');
+   root.style.setProperty('--delete-overlay','rgba(0, 0, 0,0.5)');
+   root.style.setProperty('--customizer-color','#171717');
+   root.style.setProperty('--chat-img-border','1px solid lime');
+   root.style.setProperty('--group-box-border','1px solid lime');
+    root.style.setProperty('--header-footer-property','#171717');
+    root.style.setProperty('--saved-post-color','rgb(0, 0, 0)');
+
+   var user = firebase.auth().currentUser;
+
+ if(user) {
+    var fullname = user.email.slice(0,-10),context;
+   if(fullname.includes(".")) {
+      context = fullname.replace(/\./g,' ');
+   }else  if(fullname.includes("#")) {
+      context = fullname.replace(/\#/g,' ');
+   }else if(fullname.includes("[")) {
+      context = fullname.replace(/\[/g,' ');
+   } else if(fullname.includes("$")) {
+      context = fullname.replace(/\$/g,' ');
+   }else {
+      context = fullname;
+   }
+   firebase.database().ref("custom-colors/"+context).remove();
+   firebase.database().ref("custom-colors/"+context).set({
+      freindColor:'lime',
+      freindColorText:'rgb(0,0,0)',
+      backgroundColor:'rgb(0,0,0)',
+      usernameInChat:'lime',
+      messageColor:'white',
+      messageColortext:"lime",
+      user:context
+   });
+}
+
+   localStorage.setItem("theme","lime");
+}
+
+
+if (localStorage.getItem("theme") === "lime" ) {
+   var root = document.documentElement;
+
+   root.style.setProperty('--header-footer-color','rgb(0, 0, 0)');
+   root.style.setProperty('--bar-color','#171717');
+   root.style.setProperty('--body-color','rgb(0, 0, 0)');
+   root.style.setProperty('--saved-post-color','rgb(0, 0, 0)');
+   root.style.setProperty('--chat-color','rgb(0, 0, 0)');
+   root.style.setProperty('--post-button','#292929');
+   root.style.setProperty('--post-button-2','#292929');
+   root.style.setProperty('--post-color','#171717');
+   root.style.setProperty('--selected-color','#3d3d3d');
+   root.style.setProperty('--post-text-color','lime');
+   root.style.setProperty('--post-name-link','#00a2ff');
+   root.style.setProperty('--post-border','lime');
+   root.style.setProperty('--bar-border','.5px solid lime');
+   root.style.setProperty('--txt-message-color','0px 0px 0px .3px lime');
+   root.style.setProperty('--public-button','lime');
+   root.style.setProperty('--popup-button','none');
+   root.style.setProperty('--public-color','linear-gradient(to left,rgb(59, 59, 59),rgb(36, 36, 36))');
+   root.style.setProperty('--delete-overlay','rgba(0, 0, 0,0.5)');
+   root.style.setProperty('--customizer-color','#171717');
+   root.style.setProperty('--chat-img-border','1px solid lime');
+   root.style.setProperty('--group-box-border','1px solid lime');
+    root.style.setProperty('--header-footer-property','#171717');
+}
+
+
+function blueMode() {
+   localStorage.setItem("theme","blue");
+   var root = document.documentElement;
+
+   root.style.setProperty('--header-footer-color','#030145');
+  root.style.setProperty('--bar-color','#030145');
+  root.style.setProperty('--body-color','#02002b');
+  root.style.setProperty('--saved-post-color','#02002b');
+  root.style.setProperty('--chat-color','#030145');
+  root.style.setProperty('--post-button','#292929');
+  root.style.setProperty('--post-button-2','#292929');
+  root.style.setProperty('--post-color','#030145');
+  root.style.setProperty('--selected-color','#3d3d3d');
+  root.style.setProperty('--post-text-color','white');
+  root.style.setProperty('--post-name-link','#00a2ff');
+  root.style.setProperty('--post-border','none');
+  root.style.setProperty('--bar-border','none');
+  root.style.setProperty('--txt-message-color','0px 0px 0px .3px white');
+  root.style.setProperty('--public-button','#030145');
+  root.style.setProperty('--popup-button','none');
+  root.style.setProperty('--public-color','linear-gradient(to left,rgb(59, 59, 59),rgb(36, 36, 36))');
+  root.style.setProperty('--delete-overlay','rgba(0, 0, 0,0.5)');
+  root.style.setProperty('--customizer-color','#030145');
+  root.style.setProperty('--chat-img-border','1px solid white');
+  root.style.setProperty('--group-box-border','1px solid white');
+   root.style.setProperty('--header-footer-property','#030145');
+
+   var user = firebase.auth().currentUser;
+
+   if(user) {
+      var fullname = user.email.slice(0,-10),context;
+     if(fullname.includes(".")) {
+        context = fullname.replace(/\./g,' ');
+     }else  if(fullname.includes("#")) {
+        context = fullname.replace(/\#/g,' ');
+     }else if(fullname.includes("[")) {
+        context = fullname.replace(/\[/g,' ');
+     } else if(fullname.includes("$")) {
+        context = fullname.replace(/\$/g,' ');
+     }else {
+        context = fullname;
+     }
+     firebase.database().ref("custom-colors/"+context).remove();
+     firebase.database().ref("custom-colors/"+context).set({
+        freindColor:'#2f29ff',
+        freindColorText:'white',
+        backgroundColor:'#030145',
+        usernameInChat:'white',
+        messageColor:'blue',
+        user:context
+     });
+   }
+}
+
+if (localStorage.getItem("theme") === "blue") {
+   var root = document.documentElement;
+
+   root.style.setProperty('--header-footer-color','#030145');
+   root.style.setProperty('--bar-color','#030145');
+   root.style.setProperty('--body-color','#02002b');
+   root.style.setProperty('--chat-color','#030145');
+   root.style.setProperty('--post-button','#060082');
+   root.style.setProperty('--post-button-2','#060082');
+   root.style.setProperty('--post-color','#030145');
+   root.style.setProperty('--selected-color','#0c00ff');
+   root.style.setProperty('--post-text-color','white');
+   root.style.setProperty('--post-name-link','#00a2ff');
+   root.style.setProperty('--post-border','none');
+   root.style.setProperty('--bar-border','none');
+   root.style.setProperty('--txt-message-color','0px 0px 0px .3px white');
+   root.style.setProperty('--public-button','#030145');
+   root.style.setProperty('--popup-button','#0c00ff');
+   root.style.setProperty('--public-color','linear-gradient(to left,rgb(59, 59, 59),rgb(36, 36, 36))');
+   root.style.setProperty('--delete-overlay','rgba(0, 0, 0,0.5)');
+   root.style.setProperty('--customizer-color','#030145');
+   root.style.setProperty('--chat-img-border','1px solid white');
+   root.style.setProperty('--group-box-border','1px solid white');
+    root.style.setProperty('--header-footer-property','#030145');
+    root.style.setProperty('--saved-post-color','#02002b');
+  
+}
+
+function updateDisplayName() {
+   firebase.auth().onAuthStateChanged((user) => {
+      sessionStorage.setItem("usernameA",user.displayName)
+      user.updateProfile({
+       displayName:document.getElementById('dpname').value
+      })
+
+      /*firebase.database().ref("messages").on('child_added',function(snapshot){
+         var html = '',htmluser='';
+        var user = firebase.auth().currentUser;
+
+        if (snapshot.val().sender === sessionStorage.setItem("usernameA") || snapshot.val().sender === user.email.slice(0, -10)) {
+         firebase.database().ref("messages").push().set({
+            "sender":user.displayName,
+            "message":snapshot.val().message,
+            "profileimage":snapshot.val().profileimage,
+            "image":snapshot.val().image ,
+            "video":snapshot.val().video
+        }) 
+        }
+      })*/
+
+      firebase.database().ref("public_posts/").on('child_added',item =>{
+
+
+
+if (user.uid === item.val().user.user_id) {
+         firebase.database().ref("public_posts/").child(item.key).update(
+            
+            
+            {                         
+                user:
+             {
+                username:user.displayName,
+                user_id:user.uid,
+                user_email:user.email,
+                profile_image:item.val().user.profile_image
+             },
+                post:
+             {
+                post_id_save:item.val().post.post_id_save,
+                post_url:item.val().post.post_url,
+                post_name:item.val().post.post_name,                
+                post_type:item.val().post.post_type,
+                post_size:item.val().post.post_size,
+                post_date:item.val().post.post_date,
+                post_time:item.val().post.post_time,
+             },                                              
+                info:
+                {
+                   browser:
+                   {
+                      browser_name:item.val().info.browser.browser_name,
+                      browser_version:item.val().info.browser.browser_version,
+                   },
+                   OS:
+                   {
+                        system_name:item.val().info.OS.system_name,
+                        system_version:item.val().info.OS.system_version,                                  
+                   },
+                   device:
+                   {             
+                      device_name:item.val().info.device.device_name,
+                      device_type:item.val().info.device.device_type,                                              
+                   },
+                   ip:
+                   {
+                      post_ip_address:item.val().info.ip.post_ip_address,
+                   }
+                }
+            }
+
+         )
+ }
+      })
+  
+      console.log(user.displayName)
+   })
+   cancleUpdateMail()
+ }
+   
+  
+
+
+  function addPhoneNumberToAuth() {
+//get the number
+
+var number = document.getElementById('number').value;
+
+ 
+
+   //   firebase.auth().onAuthStateChanged((user) => {
+   //    if (user.phoneNumber === null) {
+
+   //       user.phoneNumber = 'aaaa'
+   //       user.updateProfile({
+   //          phoneNumber:'+16505550101'
+   //         })
+   //    }
+   //    console.log(user.phoneNumber)
+   // })
+  
+
+firebase.auth().signInWithPhoneNumber(number,window.recaptchaVerifier).then(function (confirmationResult) {
+    //s is in lowercase
+
+    window.confirmationResult=confirmationResult;
+    var oderesult=confirmationResult;
+    console.log(confirmationResult)
+    console.log("message-sent");
+}).catch(function (error) {
+    alertUserAboutSuccess(error.message);
+});
+
+
+  
+
+  }
+
+  function verifyCodeNumber() {
+   var code=document.getElementById('verificationCode').value;
+   coderesult.confirm(code).then(function (result) {
+      var user = firebase.auth().currentUser;
+       
+       
+       firebase.database().ref("phone-numbers/" + user.uid).set({
+          username:user.displayName,
+          email:user.email,
+          phone:number
+       })
+       user.updateProfile({
+                phoneNumber:number
+                 })
+                
+                 cancleUpdateMail()
+       console.log(user);
+   }).catch(function (error) {
+       alertUserAboutSuccess(error.message);
+   });
+  }
