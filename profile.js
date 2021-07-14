@@ -316,7 +316,7 @@ function closePost() {
     document.body.style.overflow = 'auto'
     overlay.innerHTML = ''
     overlay.style.display = 'none'
-   }, 100);
+   }, 205);
    document.getElementById('postids').classList.add('close')
 }
 
@@ -351,7 +351,7 @@ function closeSavedPosts() {
        setTimeout(() => {
         document.getElementById('saved').style.display = 'none'
         document.getElementById('saved-overlay').style.display = 'none'
-       }, 100);
+       }, 285);
       
 }
 
@@ -361,6 +361,35 @@ function opeSvedPostHTML(postUrl,postType,username,profileImage,postSize,timeCre
     overlay.classList.add('load-overlay');
     overlay.style.display = 'flex'
     overlay.innerHTML = '';
+
+        var cont;
+        if(postName.includes(".")) {
+            cont = postName.replace(/\./g,' ');
+       }else  if(postName.includes("#")) {
+            cont = postName.replace(/\#/g,' ');
+       }else if(postName.includes("[")) {
+            cont = postName.replace(/\[/g,' ');
+       }else if(postName.includes("$")) {
+            cont = postName.replace(/\$/g,' ');
+       }else {
+              cont = postName;
+      }
+
+      var user = firebase.auth().currentUser;
+      var storageid = user.uid;
+      var context,fullname = user.email.slice(0, -10);
+      
+         if(fullname.includes(".")) {
+            context = fullname.replace(/\./g,' ');
+         }else  if(fullname.includes("#")) {
+            context = fullname.replace(/\#/g,' ');
+         }else if(fullname.includes("[")) {
+            context = fullname.replace(/\[/g,' ');
+         } else if(fullname.includes("$")) {
+            context = fullname.replace(/\$/g,' ');
+         }else {
+            context = fullname;
+         }
 
     if (postType === "image/png" ||postType === "image/jpg" ||postType === "image/jpeg") {
            overlay.innerHTML = 
@@ -377,10 +406,10 @@ function opeSvedPostHTML(postUrl,postType,username,profileImage,postSize,timeCre
            <div class="post-header">
                <div class="left-block">
                     <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
-                   <i class="far fa-bookmark f-icon" onclick="deleteThisPost('${postName}','${postSize}','${postType}','${timeCreated}','${newTime}')"></i>
-                   <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"></i>
+                 <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+                   <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"  style="margin-left:8px"></i>
                </div>
-               <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+               <i class="fas fa-bookmark f-icon" id="${postUrl}"  onclick="removeSvedPostFromProfile('${cont}','${context}','${postUrl}','${postName}','${postSize}','${postType}','${newTime}','${timeCreated}','${username}','${storageid}','${profileImage}')"></i>
            </div>
        </div>
            `;
@@ -400,10 +429,10 @@ function opeSvedPostHTML(postUrl,postType,username,profileImage,postSize,timeCre
            <div class="post-header">
                <div class="left-block">
                <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
-                   <i class="far fa-bookmark f-icon" onclick="deleteThisPost('${postName}','${postSize}','${postType}','${timeCreated}','${newTime}')"></i>
-                   <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"></i>
-               </div>
                <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+                    <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"    style="margin-left:8px"></i>
+               </div>
+               <i class="fas fa-bookmark f-icon" id="${postUrl}"  onclick="removeSvedPostFromProfile('${cont}','${context}','${postUrl}','${postName}','${postSize}','${postType}','${newTime}','${timeCreated}','${username}','${storageid}','${profileImage}')"></i>
            </div>
        </div>
            `;
@@ -424,12 +453,34 @@ function opeSvedPostHTML(postUrl,postType,username,profileImage,postSize,timeCre
         <div class="post-header">
             <div class="left-block">
                <a href="${postUrl}"> <i class="fas fa-download f-icon"></i></a>
-                <i class="far fa-bookmark f-icon" onclick="deleteThisPost('${postName}','${postSize}','${postType}','${timeCreated}','${newTime}')"></i>
-                <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"></i>
+               <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+               <i class="far fa-eye f-icon" onclick="preview('${postUrl}','${postType}')"  style="margin-left:8px"></i>
             </div>
-            <i class="fas fa-share f-icon" onclick="shareLink('${postUrl}')"></i>
+            <i class="fas fa-bookmark f-icon" id="${postUrl}"  onclick="removeSvedPostFromProfile('${cont}','${context}','${postUrl}','${postName}','${postSize}','${postType}','${newTime}','${timeCreated}','${username}','${storageid}','${profileImage}')"></i>
         </div>
     </div>
         `;
     }
 }
+
+//remove post from saved post storage
+function removeSvedPostFromProfile(filename, databasereference,URL,filename,fileSizeProperty,fileType,timeCreated,newCurrnetTime,didsplayname,storageSveReference,profileimage){   
+    var cont;
+    //replace chacraters in name to get database reference
+    if(filename.includes(".")) {
+    cont = filename.replace(/\./g,' ');
+    }else  if(filename.includes("#")) {
+    cont = filename.replace(/\#/g,' ');
+   }else if(filename.includes("[")) {
+    cont = filename.replace(/\[/g,' ');
+   }else if(filename.includes("$")) {
+    cont = filename.replace(/\$/g,' ');
+   }else {
+    cont = filename;
+   }
+ 
+   //remove post from database
+    firebase.database().ref("users/" + databasereference +"/"  + cont).remove();
+ 
+     closePost()
+ }

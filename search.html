@@ -3,41 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Saveprojects</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-functions.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>Enter number to create account</h1>
-    <div>
-        <input type="text" id="number" placeholder="+923********">
-        <div id="recaptcha-container"></div>
-        <button type="button" onclick="phoneAuth();">SendCode</button>
-    </div><br>
-    <h1>Enter Verification code</h1>
-    <div>
-        <input type="text" id="verificationCode" placeholder="Enter verification code">
-        <button type="button" onclick="codeverify();">Verify code</button>
-    
+<body   class="index-body" style="width: 100%;height: 90vh;">
+    <header class="header-index sticky-header">       
+        <p class="name-netowork"><b>Saveprojects</b></p>
+    <div class="contact-header"></div>
+    </header>
+   
+<div class="set-displ" id="log-out-mail" style="padding: 10px;"></div> <div class="overlay-pop-up" id="new-overlay"></div>
+
+<div id="pagecontent-index"></div>
+<div id="accounts"></div>
+    <footer class="footer"></footer>
+<div class="chat-overlay-ui" id="chat-private-overlay"></div>
+<div class="chat-ui" id="chat-ui">
+    <div class="chat-ui-header" >
+        <div class="chat-ui-header-left">
+            <i class="fas fa-times f-icon" id="close-chat-btn"></i>
+           <div class="chat-ui-header-left">
+            <img src="" alt="" class="profile-chat-image-private" id="user-image-private">
+            <p class="chat-ui-private-name" id="username-private">@username</p>
+           </div>
+        </div>
+        <i class="far fa-edit f-icon" onclick="customize()"></i>
     </div>
-    
-    
-    
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
-    
+    <div id="private-chat"></div>
+    <div class="emoji-private-chat" id="emoji-private"></div>
+    <div class="chat-ui-footer">
+        <div class="chat-ui-text-block">
+            <i class="far fa-laugh f-icon-x" onclick="showEmojies()" id="sendEmojiIcon"></i>
+            <input type="text" name="message" id="private-ui-chat-message">
+            <button id="sned-private-message-ui" class="send-mesage-private">SEND</button>
+            <div class="visual-content" id="icons-for-messag-private">
+                <label class="chose-file-x margin-file-x fas fa-image f-icon-x x-marg"><input type="file"  accept=".png, .jpg, .jpeg" class="myFile hide-file" id="sendImagePrivate" multiple/></label>
+                 <label class="chose-file-x margin-file-x fas fa-video f-icon-x"><input type="file" accept="video/mp4,video/x-m4v,video/*" class="myFile hide-file" id="sendVideoPrivate" multiple/></label>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.19/ua-parser.min.js"></script>
-<script src="phone.js"></script>
-
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="code-behind.js"></script>
 <script src="https://smtpjs.com/v3/smtp.js">
 </script>
+<script src="chat.js"></script>
 </html>

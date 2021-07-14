@@ -49,15 +49,14 @@
   </div>
 
     <div class="set-class flex-down">
-        <button onclick="resetPassword()" class="setting-button">Reset password</button>
+        <button onclick="updatePassword()" class="setting-button">Reset password</button>
+        <button onclick="resetPassword()" class="setting-button">Reset password via Email</button>
         <button onclick="verifyAccount()" class="setting-button">Send E-mail verification</button>
         <button onclick="showAddNumber()" class="setting-button">Send SMS verification</button>
-        <button onclick="showDeletePopUpAccountFromClass()" class="setting-button delete">Delete account</button>
+      
     </div>
 
-    <div class=" set-class flex-down">  
-        <button  class="setting-button" onclick="openPageInHeader(2)">Log out</button>   
-    </div>
+    
    
     <div class="set-class flex-down">
         <button  class="setting-button" onclick="help()">Help</button> 
@@ -65,11 +64,17 @@
     </div>
 
     <div class="set-class flex-down">
-        <button  class="setting-button" onclick="darkModeApp()">Dark mode</button> 
         <button  class="setting-button" onclick="LightMode()">Light mode</button> 
+        <button  class="setting-button" onclick="darkModeApp()">Dark mode</button> 
+        <button  class="setting-button" onclick="blueMode()" >Dark dimmed mode</button> 
         <button  class="setting-button" onclick="limeMode()" style="color: lime;">Lime mode</button> 
-        <button  class="setting-button" onclick="blueMode()" style="color: blue;">Blue mode</button> 
           
+    </div>
+
+    <div class="set-class flex-down">      
+        <button  class="setting-button delete" onclick="openPageInHeader(2)">Log out</button> 
+        <button  class="setting-button delete" onclick="openPageInHeader(2)">Disable account</button> 
+        <button onclick="showDeletePopUpAccountFromClass()" class="setting-button delete">Delete account</button>
     </div>
 
 </div>
